@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 
 import { getImage } from '../../server-actions/images';
+import { Button } from '@/components/ui/button';
 
 const GenerateImage = () => {
   const [input, setInput] = useState('');
@@ -32,6 +33,7 @@ const GenerateImage = () => {
           placeholder="Name something..."
           onChange={handleInputChange}
         />
+        <Button type="submit">Generate</Button>
       </form>
       {currentImage && <Image src={currentImage} alt="Generated Image" width={200} height={200} />}
     </div>
