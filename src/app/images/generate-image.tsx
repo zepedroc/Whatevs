@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 
 import { getImage } from '../../server-actions/images';
-import { Button } from '@/src/components/ui/button';
-import { Input } from '@/src/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { LightModeToggle } from '@/components/light-mode-toggle';
 
 const GenerateImage = () => {
   const [input, setInput] = useState('');
@@ -26,6 +27,7 @@ const GenerateImage = () => {
   return (
     <div>
       <h1>Generate Image:</h1>
+      <LightModeToggle />
 
       <form onSubmit={handleSubmit}>
         <Input type="text" value={input} placeholder="Name something..." onChange={handleInputChange} />
