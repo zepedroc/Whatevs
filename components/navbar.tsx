@@ -11,7 +11,7 @@ import {
 
 const NavBar = () => {
   return (
-    <NavigationMenu className="w-full mx-10 mt-5 flex justify-center">
+    <NavigationMenu className="w-full mt-5 flex justify-center">
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link href="/" legacyBehavior passHref>
