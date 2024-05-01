@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Aperture } from 'lucide-react';
 
-import { getImage } from '../../server-actions/images';
+import { getImage } from '../../../server-actions/images';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 

@@ -20,6 +20,11 @@ const NavBar = () => {
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
+          <Link href="/chatbot" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Chatbot</NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
           <Link href="/images" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>Images</NavigationMenuLink>
           </Link>
