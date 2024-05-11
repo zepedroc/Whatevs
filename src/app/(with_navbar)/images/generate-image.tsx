@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { JSX, SVGProps, useState } from 'react';
 import Image from 'next/image';
-import { Aperture } from 'lucide-react';
 
 import { getImage } from '../../../server-actions/images';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -29,23 +29,67 @@ const GenerateImage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <h1 className="text-2xl font-bold mb-4 mt-8">Generate Image</h1>
-
-      <form onSubmit={handleSubmit} className="flex items-center mb-4">
-        <Input type="text" value={input} placeholder="Name something..." onChange={handleInputChange} className="mr-2" />
-        <Button type="submit">Generate</Button>
-      </form>
-      {isLoading && (
-        <div className="animate-loading">
-          <Aperture className="m-7 h-8 w-8" />
+    <main className="flex flex-col items-center justify-center px-4 md:px-6 py-12 md:py-24">
+      <div className="max-w-3xl text-center space-y-4">
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Generate AI-Created Images</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-lg md:text-xl">
+          Unleash your creativity with our AI image generation tool. Enter a prompt below to get started.
+        </p>
+        <div className="flex items-center justify-center w-full space-x-2">
+          <Input className="flex-1" placeholder="Enter a prompt" type="text" onChange={handleInputChange} />
+          <Button size="lg" onClick={handleSubmit}>
+            Generate Image
+          </Button>
         </div>
-      )}
-      {currentImage && !isLoading && (
-        <Image src={currentImage} alt="Generated Image" width={400} height={400} className="rounded-lg" />
-      )}
-    </div>
+      </div>
+      <div className="mt-12 w-full max-w-2xl">
+        <div className="grid gap-6">
+          <div className="bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-lg">
+            {isLoading && (
+              <>
+                <div className="aspect-[4/3] bg-gray-100 dark:bg-gray-800 animate-pulse">
+                  <div className="flex items-center justify-center h-full">
+                    <ImageIcon className="w-12 h-12 text-gray-500 dark:text-gray-400" />
+                  </div>
+                </div>
+                <div className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
+                      <div className="h-3 w-24 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
+                    </div>
+                    <div className="h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
+                  </div>
+                </div>
+              </>
+            )}
+            {currentImage && !isLoading && <Image src={currentImage} alt="Generated Image" height={400} width={800} />}
+          </div>
+        </div>
+      </div>
+    </main>
   );
 };
+
+function ImageIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <circle cx="9" cy="9" r="2" />
+      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+    </svg>
+  );
+}
 
 export default GenerateImage;
