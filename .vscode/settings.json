@@ -5,6 +5,6 @@
     "**/src/app/**/index.tsx": "${dirname} - Index",
     "**/src/app/**/layout.tsx": "${dirname} - Layout",
     "**/src/app/**/template.tsx": "${dirname} - Template",
-    "**/src/components/**/index.tsx": "${dirname} - Component",
+    "**/src/components/**/index.tsx": "${dirname} - Component"
   }
 }
