@@ -1,9 +1,11 @@
 'use client';
 
-import { JSX, SVGProps } from 'react';
-import { useChat } from 'ai/react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useChat } from 'ai/react';
+import { useSearchParams } from 'next/navigation';
+
+import { SendIcon } from '../../icons/icons';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -29,7 +31,9 @@ const getUserMessage = (content: string) => {
 };
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const searchParams = useSearchParams();
+  const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode: searchParams.get('mode') } });
+
   return (
     <div className="flex flex-col h-85vh">
       <div className="flex-1 overflow-auto p-4">
@@ -54,25 +58,5 @@ export default function Chat() {
         </div>
       </form>
     </div>
-  );
-}
-
-function SendIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m22 2-7 20-4-9-9-4Z" />
-      <path d="M22 2 11 13" />
-    </svg>
   );
 }
