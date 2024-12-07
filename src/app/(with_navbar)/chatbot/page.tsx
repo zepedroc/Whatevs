@@ -40,7 +40,7 @@ function ChatContent() {
     <div className="flex flex-col h-85vh">
       <div className="bg-gray-100 p-2 text-center text-sm text-gray-600">Chat with {mode}</div>
       <div className="flex-1 overflow-auto p-4">
-        <div className="space-y-4">
+        <div className="mx-auto max-w-4xl space-y-4">
           {messages.length > 0
             ? messages.map((m) => <>{m.role === 'user' ? getUserMessage(m.content) : getChatMessage(m.content)}</>)
             : null}
@@ -57,7 +57,7 @@ function ChatContent() {
               onChange={handleInputChange}
             />
             <Button className="rounded-lg bg-gray-900 p-3 hover:bg-gray-800 transition-colors" type="submit">
-              <SendIcon className="h-5 w-5" />
+              <SendIcon className="h-5 w-5 text-white" />
             </Button>
           </div>
         </div>
