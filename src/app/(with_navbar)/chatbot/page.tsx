@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useChat } from 'ai/react';
@@ -10,29 +11,29 @@ import { SendIcon } from '../../icons/icons';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-const getChatMessage = (content: string) => {
-  return (
-    <div className="flex">
-      <div className="max-w-[70%] rounded-lg bg-gray-200 p-3 text-gray-800">
-        <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
-      </div>
-    </div>
-  );
-};
-
-const getUserMessage = (content: string) => {
-  return (
-    <div className="flex justify-end">
-      <div className="max-w-[70%] rounded-lg bg-gray-900 p-3 text-white">
-        <p>{content}</p>
-      </div>
-    </div>
-  );
-};
-
-export default function Chat() {
+function ChatContent() {
   const searchParams = useSearchParams();
   const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode: searchParams.get('mode') } });
+
+  const getChatMessage = (content: string) => {
+    return (
+      <div className="flex">
+        <div className="max-w-[70%] rounded-lg bg-gray-200 p-3 text-gray-800">
+          <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+        </div>
+      </div>
+    );
+  };
+
+  const getUserMessage = (content: string) => {
+    return (
+      <div className="flex justify-end">
+        <div className="max-w-[70%] rounded-lg bg-gray-900 p-3 text-white">
+          <p>{content}</p>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col h-85vh">
@@ -58,5 +59,13 @@ export default function Chat() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function Chat() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChatContent />
+    </Suspense>
   );
 }
