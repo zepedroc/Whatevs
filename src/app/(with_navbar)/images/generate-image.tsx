@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 async function getImage(prompt: string) {
   const response = await fetch('https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell', {
     headers: {
-      Authorization: 'Bearer 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',
+      Authorization: `Bearer ${process.env.HUGGINGFACE_INFERENCE_TOKEN}`,
       'Content-Type': 'application/json',
     },
     method: 'POST',
