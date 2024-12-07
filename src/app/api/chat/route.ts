@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
   // Call the language model
   const result = await streamText({
-    model: groq.chat('llama3-70b-8192'),
+    model: groq.chat('llama-3.3-70b-versatile'),
     messages,
     system: prompt ?? '',
   });
