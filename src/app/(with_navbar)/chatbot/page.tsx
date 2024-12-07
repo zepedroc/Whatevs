@@ -13,7 +13,8 @@ import { Button } from '@/components/ui/button';
 
 function ChatContent() {
   const searchParams = useSearchParams();
-  const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode: searchParams.get('mode') } });
+  const mode = searchParams.get('mode') || 'AI Assistant';
+  const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode } });
 
   const getChatMessage = (content: string) => {
     return (
@@ -37,6 +38,7 @@ function ChatContent() {
 
   return (
     <div className="flex flex-col h-85vh">
+      <div className="bg-gray-100 p-2 text-center text-sm text-gray-600">Chat with {mode}</div>
       <div className="flex-1 overflow-auto p-4">
         <div className="space-y-4">
           {messages.length > 0
@@ -45,17 +47,19 @@ function ChatContent() {
         </div>
       </div>
       <form onSubmit={handleSubmit} className="fixed bottom-0 w-screen">
-        <div className="flex items-center justify-between bg-gray-200 px-4 py-3">
-          <Input
-            className="flex-1 rounded-md border-none bg-transparent px-4 py-2 focus:outline-none"
-            placeholder="Type your message..."
-            type="text"
-            value={input}
-            onChange={handleInputChange}
-          />
-          <Button className="ml-4" type="submit">
-            <SendIcon className="h-5 w-5" />
-          </Button>
+        <div className="border-t border-gray-200 bg-white px-4 py-4 shadow-lg">
+          <div className="mx-auto max-w-4xl flex items-center gap-2">
+            <Input
+              className="flex-1 rounded-lg border border-gray-200 bg-gray-50 px-6 py-3 text-gray-700 focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-gray-300 transition-all"
+              placeholder="Type your message..."
+              type="text"
+              value={input}
+              onChange={handleInputChange}
+            />
+            <Button className="rounded-lg bg-gray-900 p-3 hover:bg-gray-800 transition-colors" type="submit">
+              <SendIcon className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </form>
     </div>

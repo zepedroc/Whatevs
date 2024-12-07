@@ -19,9 +19,9 @@ import { MoonIcon, MountainIcon } from '@/src/app/icons/icons';
 
 const chatModes = [
   { title: 'AI Assistant', href: `/chatbot`, description: 'Start fresh with a new chat.' },
-  { title: 'Elon Musk', href: `/chatbot?mode=${ChatMode.Elon_Musk}`, description: 'Talk to Elon Musk.' },
   { title: 'Psychologist', href: `/chatbot?mode=${ChatMode.Psychologist}`, description: 'Talk to a psychologist.' },
   { title: 'Grok', href: `/chatbot?mode=${ChatMode.Grok}`, description: 'A witty and irreverent AI assistant.' },
+  { title: 'Instructor', href: `/chatbot?mode=${ChatMode.Instructor}`, description: 'A skilled instructor.' },
 ];
 
 export default function NavBar() {
