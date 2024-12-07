@@ -4,10 +4,23 @@ import { useState } from 'react';
 import Image from 'next/image';
 
 import { ImageIcon } from '../../icons/icons';
-import { getImage } from '../../../server-actions/images';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
+async function getImage(prompt: string) {
+  const response = await fetch('https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell', {
+    headers: {
+      Authorization: 'Bearer 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',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify({ inputs: prompt }),
+  });
+
+  const result = await response.blob();
+  return result;
+}
 
 const GenerateImage = () => {
   const [input, setInput] = useState('');
@@ -24,9 +37,14 @@ const GenerateImage = () => {
 
     const img = await getImage(input);
 
-    setIsLoading(false);
-
-    setCurrentImage('data:image/png;base64,' + img);
+    // Convert blob to base64
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setCurrentImage(base64String);
+      setIsLoading(false);
+    };
+    reader.readAsDataURL(img);
   };
 
   return (
