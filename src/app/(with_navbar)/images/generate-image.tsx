@@ -37,10 +37,12 @@ const GenerateImage = () => {
           Unleash your creativity with our AI image generation tool. Enter a prompt below to get started.
         </p>
         <div className="flex items-center justify-center w-full space-x-2">
-          <Input className="flex-1" placeholder="Enter a prompt" type="text" onChange={handleInputChange} />
-          <Button size="lg" onClick={handleSubmit}>
-            Generate Image
-          </Button>
+          <form onSubmit={handleSubmit} className="flex w-full space-x-2">
+            <Input className="flex-1" placeholder="Enter a prompt" type="text" onChange={handleInputChange} value={input} />
+            <Button size="default" type="submit">
+              Generate Image
+            </Button>
+          </form>
         </div>
       </div>
       <div className="mt-12 w-full max-w-2xl">
