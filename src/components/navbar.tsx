@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useTheme } from 'next-themes';
 
 import {
   NavigationMenuLink,
@@ -12,10 +11,9 @@ import {
   NavigationMenuTrigger,
   NavigationMenuContent,
 } from '@/components/ui/navigation-menu';
-import { Toggle } from '@/components/ui/toggle';
 import { ChatMode } from '@/constants/chatbot-constants';
 import { cn } from '@/lib/utils';
-import { MoonIcon, MountainIcon } from '@/icons/icons';
+import { MountainIcon } from '@/icons/icons';
 
 const chatModes = [
   { title: 'AI Assistant', href: `/chatbot`, description: 'Start fresh with a new chat.' },
@@ -25,12 +23,6 @@ const chatModes = [
 ];
 
 export default function NavBar() {
-  const { setTheme, resolvedTheme } = useTheme();
-
-  const toggleDarkMode = () => {
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
-  };
-
   return (
     <header className="flex h-16 w-full items-center justify-between px-4 md:px-6">
       <nav className="flex items-center gap-6">
@@ -71,13 +63,6 @@ export default function NavBar() {
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
-      <Toggle
-        aria-label="Toggle dark mode"
-        className="rounded-full p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:hover:bg-gray-800"
-        onPressedChange={toggleDarkMode}
-      >
-        <MoonIcon className="h-5 w-5" />
-      </Toggle>
     </header>
   );
 }
