@@ -13,9 +13,9 @@ import {
   NavigationMenuContent,
 } from '@/components/ui/navigation-menu';
 import { Toggle } from '@/components/ui/toggle';
-import { ChatMode } from '@/src/app/chatbot/constants';
+import { ChatMode } from '@/constants/chatbot-constants';
 import { cn } from '@/lib/utils';
-import { MoonIcon, MountainIcon } from '@/src/app/icons/icons';
+import { MoonIcon, MountainIcon } from '@/icons/icons';
 
 const chatModes = [
   { title: 'AI Assistant', href: `/chatbot`, description: 'Start fresh with a new chat.' },

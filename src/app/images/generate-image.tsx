@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-import { ImageIcon } from '../../icons/icons';
+import { ImageIcon } from '@/icons/icons';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

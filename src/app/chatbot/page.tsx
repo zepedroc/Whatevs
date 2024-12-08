@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import { useChat } from 'ai/react';
 import { useSearchParams } from 'next/navigation';
 
-import { SendIcon } from '../../icons/icons';
+import { SendIcon } from '@/icons/icons';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

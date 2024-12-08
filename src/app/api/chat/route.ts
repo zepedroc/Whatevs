@@ -1,6 +1,7 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { CoreMessage, streamText } from 'ai';
-import { ChatMode } from '../../chatbot/constants';
+
+import { ChatMode } from '@/constants/chatbot-constants';
 
 export const dynamic = 'force-dynamic';
 
