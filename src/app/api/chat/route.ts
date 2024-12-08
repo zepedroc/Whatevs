@@ -34,12 +34,12 @@ export async function POST(req: Request) {
   const prompt = modes[mode];
 
   // Call the language model
-  const result = await streamText({
+  const result = streamText({
     model: groq.chat('llama-3.3-70b-versatile'),
     messages,
     system: prompt ?? '',
   });
 
   // Respond with the stream
-  return result.toAIStreamResponse();
+  return result.toDataStreamResponse();
 }
