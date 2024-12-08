@@ -1,4 +1,4 @@
-import { SVGProps } from 'react';
+import { SVGProps, JSX } from 'react';
 
 export function MoonIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (

@@ -1,8 +1,8 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import React, { JSX, SVGProps } from 'react';
 
 import {
   NavigationMenuLink,
@@ -82,7 +82,7 @@ export default function NavBar() {
   );
 }
 
-const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(
+const ListItem = React.forwardRef<React.ComponentRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(
   ({ className, title, children, ...props }, ref) => {
     return (
       <li>

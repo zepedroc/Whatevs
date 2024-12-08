@@ -16,9 +16,11 @@ function ChatContent() {
   const mode = searchParams.get('mode') || 'AI Assistant';
   const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode } });
 
-  const getChatMessage = (content: string) => {
+  const getChatMessage = (content: string, index: number) => {
+    const chatMessageNumber = Math.ceil(index / 2);
+
     return (
-      <div className="flex">
+      <div key={`chat-message-${chatMessageNumber}`} className="flex">
         <div className="max-w-[70%] rounded-lg bg-gray-200 p-3 text-gray-800">
           <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
         </div>
@@ -26,9 +28,11 @@ function ChatContent() {
     );
   };
 
-  const getUserMessage = (content: string) => {
+  const getUserMessage = (content: string, index: number) => {
+    const userMessageNumber = Math.ceil(index / 2) + 1;
+
     return (
-      <div className="flex justify-end">
+      <div key={`user-message-${userMessageNumber}`} className="flex justify-end">
         <div className="max-w-[70%] rounded-lg bg-gray-900 p-3 text-white">
           <p>{content}</p>
         </div>
@@ -42,7 +46,9 @@ function ChatContent() {
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-4xl space-y-4">
           {messages.length > 0
-            ? messages.map((m) => <>{m.role === 'user' ? getUserMessage(m.content) : getChatMessage(m.content)}</>)
+            ? messages.map((m, index) => (
+                <>{m.role === 'user' ? getUserMessage(m.content, index) : getChatMessage(m.content, index)}</>
+              ))
             : null}
         </div>
       </div>
