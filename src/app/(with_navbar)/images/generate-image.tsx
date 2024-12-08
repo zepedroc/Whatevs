@@ -27,11 +27,11 @@ const GenerateImage = () => {
   const [currentImage, setCurrentImage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
