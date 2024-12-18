@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 
 import {
   NavigationMenuLink,
@@ -14,19 +16,40 @@ import {
 import { ChatMode } from '@/constants/chatbot-constants';
 import { cn } from '@/lib/utils';
 import { MountainIcon } from '@/icons/icons';
-
-const chatModes = [
-  { title: 'AI Assistant', href: `/chatbot`, description: 'Start fresh with a new chat.' },
-  { title: 'Psychologist', href: `/chatbot?mode=${ChatMode.Psychologist}`, description: 'Talk to a psychologist.' },
-  { title: 'Grok', href: `/chatbot?mode=${ChatMode.Grok}`, description: 'A witty and irreverent AI assistant.' },
-  { title: 'Instructor', href: `/chatbot?mode=${ChatMode.Instructor}`, description: 'A skilled instructor.' },
-];
+import { LanguageSwitcher } from './language-switcher';
 
 export default function NavBar() {
+  const t = useTranslations();
+  const params = useParams();
+  const locale = params.locale as string;
+
+  const chatModes = [
+    {
+      title: t('chatModes.aiAssistant.title'),
+      href: `/${locale}/chatbot`,
+      description: t('chatModes.aiAssistant.description'),
+    },
+    {
+      title: t('chatModes.psychologist.title'),
+      href: `/${locale}/chatbot?mode=${ChatMode.Psychologist}`,
+      description: t('chatModes.psychologist.description'),
+    },
+    {
+      title: t('chatModes.grok.title'),
+      href: `/${locale}/chatbot?mode=${ChatMode.Grok}`,
+      description: t('chatModes.grok.description'),
+    },
+    {
+      title: t('chatModes.instructor.title'),
+      href: `/${locale}/chatbot?mode=${ChatMode.Instructor}`,
+      description: t('chatModes.instructor.description'),
+    },
+  ];
+
   return (
     <header className="flex h-16 w-full items-center justify-between px-4 md:px-6">
       <nav className="flex items-center gap-6">
-        <Link className="flex items-center gap-2 text-lg font-semibold" href="/">
+        <Link className="flex items-center gap-2 text-lg font-semibold" href={`/${locale}`}>
           <MountainIcon className="h-6 w-6" />
           <span className="sr-only">Whatevs</span>
         </Link>
@@ -35,13 +58,13 @@ export default function NavBar() {
             <NavigationMenuLink asChild>
               <Link
                 className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
-                href="/"
+                href={`/${locale}`}
               >
-                Home
+                {t('navigation.home')}
               </Link>
             </NavigationMenuLink>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Chatbot</NavigationMenuTrigger>
+              <NavigationMenuTrigger>{t('navigation.chatbot')}</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                   {chatModes.map((mode) => (
@@ -55,14 +78,15 @@ export default function NavBar() {
             <NavigationMenuLink asChild>
               <Link
                 className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
-                href="/images"
+                href={`/${locale}/images`}
               >
-                Images
+                {t('navigation.images')}
               </Link>
             </NavigationMenuLink>
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
+      <LanguageSwitcher />
     </header>
   );
 }

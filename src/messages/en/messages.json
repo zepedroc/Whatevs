@@ -1,0 +1,45 @@
+{
+  "navigation": {
+    "home": "Home",
+    "chatbot": "Chatbot",
+    "images": "Images"
+  },
+  "chatModes": {
+    "aiAssistant": {
+      "title": "AI Assistant",
+      "description": "Start fresh with a new chat."
+    },
+    "psychologist": {
+      "title": "Psychologist",
+      "description": "Talk to a psychologist."
+    },
+    "grok": {
+      "title": "Grok",
+      "description": "A witty and irreverent AI assistant."
+    },
+    "instructor": {
+      "title": "Instructor",
+      "description": "A skilled instructor."
+    }
+  },
+  "Index": {
+    "title": "Unlock the Power of AI",
+    "description": "Our AI-powered platform helps you build intelligent applications that transform your business.",
+    "getStarted": "Get Started",
+    "generateImages": "Generate Images",
+    "heroAlt": "AI Hero Image",
+    "locale": "en"
+  },
+  "Images": {
+    "title": "Generate AI-Created Images",
+    "description": "Unleash your creativity with our AI image generation tool. Enter a prompt below to get started.",
+    "inputPlaceholder": "Enter a prompt",
+    "generateButton": "Generate Image",
+    "generatedImageAlt": "Generated Image"
+  },
+  "Chat": {
+    "title": "Chat with {mode}",
+    "inputPlaceholder": "Type your message...",
+    "loading": "Loading..."
+  }
+} 

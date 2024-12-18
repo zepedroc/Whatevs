@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 import { ImageIcon } from '@/icons/icons';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -22,7 +22,8 @@ async function getImage(prompt: string) {
   return result;
 }
 
-const GenerateImage = () => {
+export default function ImagesPage() {
+  const t = useTranslations('Images');
   const [input, setInput] = useState('');
   const [currentImage, setCurrentImage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -50,15 +51,19 @@ const GenerateImage = () => {
   return (
     <main className="flex flex-col items-center justify-center px-4 md:px-6 py-12 md:py-24">
       <div className="max-w-3xl text-center space-y-4">
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Generate AI-Created Images</h1>
-        <p className="text-gray-500 dark:text-gray-400 text-lg md:text-xl">
-          Unleash your creativity with our AI image generation tool. Enter a prompt below to get started.
-        </p>
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">{t('title')}</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-lg md:text-xl">{t('description')}</p>
         <div className="flex items-center justify-center w-full space-x-2">
           <form onSubmit={handleSubmit} className="flex w-full space-x-2">
-            <Input className="flex-1" placeholder="Enter a prompt" type="text" onChange={handleInputChange} value={input} />
+            <Input
+              className="flex-1"
+              placeholder={t('inputPlaceholder')}
+              type="text"
+              onChange={handleInputChange}
+              value={input}
+            />
             <Button size="default" type="submit">
-              Generate Image
+              {t('generateButton')}
             </Button>
           </form>
         </div>
@@ -84,12 +89,12 @@ const GenerateImage = () => {
                 </div>
               </>
             )}
-            {currentImage && !isLoading && <Image src={currentImage} alt="Generated Image" height={400} width={800} />}
+            {currentImage && !isLoading && (
+              <Image src={currentImage} alt={t('generatedImageAlt')} height={400} width={800} />
+            )}
           </div>
         </div>
       </div>
     </main>
   );
-};
-
-export default GenerateImage;
+}

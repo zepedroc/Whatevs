@@ -5,15 +5,16 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useChat } from 'ai/react';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 import { SendIcon } from '@/icons/icons';
-
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 function ChatContent() {
   const searchParams = useSearchParams();
   const mode = searchParams.get('mode') || 'AI Assistant';
+  const t = useTranslations('Chat');
 
   const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode } });
 
@@ -43,7 +44,7 @@ function ChatContent() {
 
   return (
     <div className="flex flex-col h-85vh">
-      <div className="bg-gray-100 p-2 text-center text-sm text-gray-600">Chat with {mode}</div>
+      <div className="bg-gray-100 p-2 text-center text-sm text-gray-600">{t('title', { mode })}</div>
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-4xl space-y-4">
           {messages.length > 0
@@ -58,7 +59,7 @@ function ChatContent() {
           <div className="mx-auto max-w-4xl flex items-center gap-2">
             <Input
               className="flex-1 rounded-lg border border-gray-200 bg-gray-50 px-6 py-3 text-gray-700 focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-gray-300 transition-all"
-              placeholder="Type your message..."
+              placeholder={t('inputPlaceholder')}
               type="text"
               value={input}
               onChange={handleInputChange}
@@ -74,8 +75,10 @@ function ChatContent() {
 }
 
 export default function Chat() {
+  const t = useTranslations('Chat');
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>{t('loading')}</div>}>
       <ChatContent />
     </Suspense>
   );
