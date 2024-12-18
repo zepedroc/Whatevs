@@ -1,14 +1,16 @@
-import { NextIntlClientProvider, useMessages } from 'next-intl';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+
 import NavBar from '@/components/navbar';
 
-export default function LocaleLayout({
-  children,
-  params: { locale },
-}: {
+type LocaleLayoutProps = {
   children: React.ReactNode;
   params: { locale: string };
-}) {
-  const messages = useMessages();
+};
+
+export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
+  const { locale } = await params;
+  const messages = await getMessages({ locale });
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
