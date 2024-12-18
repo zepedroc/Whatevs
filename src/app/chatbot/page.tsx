@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 function ChatContent() {
   const searchParams = useSearchParams();
   const mode = searchParams.get('mode') || 'AI Assistant';
+
   const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode } });
 
   const getChatMessage = (content: string, index: number) => {
@@ -46,9 +47,9 @@ function ChatContent() {
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-4xl space-y-4">
           {messages.length > 0
-            ? messages.map((m, index) => (
-                <>{m.role === 'user' ? getUserMessage(m.content, index) : getChatMessage(m.content, index)}</>
-              ))
+            ? messages.map((m, index) =>
+                m.role === 'user' ? getUserMessage(m.content, index) : getChatMessage(m.content, index),
+              )
             : null}
         </div>
       </div>
