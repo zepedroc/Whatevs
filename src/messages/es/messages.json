@@ -10,7 +10,9 @@
     "portugal": "Portugal",
     "sweden": "Suecia",
     "japan": "Japón",
-    "usa": "EE.UU. (ET)"
+    "usa": "EE.UU. (ET)",
+    "digitalMode": "Digital",
+    "analogMode": "Analógico"
   },
   "chatModes": {
     "aiAssistant": {
