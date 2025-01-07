@@ -2,7 +2,15 @@
   "navigation": {
     "home": "Inicio",
     "chatbot": "Chatbot",
-    "images": "Imágenes"
+    "images": "Imágenes",
+    "worldClocks": "Relojes Mundiales"
+  },
+  "WorldClocks": {
+    "title": "Hora Mundial",
+    "portugal": "Portugal",
+    "sweden": "Suecia",
+    "japan": "Japón",
+    "usa": "EE.UU. (ET)"
   },
   "chatModes": {
     "aiAssistant": {

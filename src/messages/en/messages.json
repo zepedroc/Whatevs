@@ -2,7 +2,15 @@
   "navigation": {
     "home": "Home",
     "chatbot": "Chatbot",
-    "images": "Images"
+    "images": "Images",
+    "worldClocks": "World Clocks"
+  },
+  "WorldClocks": {
+    "title": "World Time",
+    "portugal": "Portugal",
+    "sweden": "Sweden",
+    "japan": "Japan",
+    "usa": "USA (ET)"
   },
   "chatModes": {
     "aiAssistant": {
