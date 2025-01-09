@@ -49,10 +49,6 @@ export default function NavBar() {
   return (
     <header className="flex h-16 w-full items-center justify-between px-4 md:px-6">
       <nav className="flex items-center gap-6">
-        <Link className="flex items-center gap-2 text-lg font-semibold" href={`/${locale}`}>
-          <MountainIcon className="h-6 w-6" />
-          <span className="sr-only">Whatevs</span>
-        </Link>
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuLink asChild>
