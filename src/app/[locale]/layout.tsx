@@ -21,13 +21,11 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body style={{ '--font-matrix': matrixFont.style.fontFamily } as React.CSSProperties}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <NavBar />
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <div style={{ '--font-matrix': matrixFont.style.fontFamily } as React.CSSProperties}>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <NavBar />
+        {children}
+      </NextIntlClientProvider>
+    </div>
   );
 }
