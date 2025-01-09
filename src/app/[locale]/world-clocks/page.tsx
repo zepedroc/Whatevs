@@ -23,7 +23,7 @@ export default function WorldClocksPage() {
   const ClockComponent = isAnalog ? AnalogClock : DigitalClock;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100 h-[calc(100vh-64px)]">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl font-bold mb-6 text-center">{t('WorldClocks.title')}</h1>
 
