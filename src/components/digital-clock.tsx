@@ -8,9 +8,10 @@ interface DigitalClockProps {
 }
 
 const DigitalClock: React.FC<DigitalClockProps> = ({ timezone, label }) => {
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState<Date | null>(null);
 
   useEffect(() => {
+    setTime(new Date());
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
@@ -20,13 +21,14 @@ const DigitalClock: React.FC<DigitalClockProps> = ({ timezone, label }) => {
     };
   }, []);
 
-  const digitalTime = time.toLocaleTimeString('en-US', {
-    timeZone: timezone,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-  });
+  const digitalTime =
+    time?.toLocaleTimeString('en-US', {
+      timeZone: timezone,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    }) ?? '--:--:--';
 
   return (
     <div className="flex flex-col items-center m-4 p-6 rounded-lg border border-green-500/30 bg-black/95 shadow-lg w-48">

@@ -8,9 +8,10 @@ type AnalogClockProps = {
 };
 
 const AnalogClock: React.FC<AnalogClockProps> = ({ timezone, label }) => {
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState<Date | null>(null);
 
   useEffect(() => {
+    setTime(new Date());
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
@@ -18,13 +19,14 @@ const AnalogClock: React.FC<AnalogClockProps> = ({ timezone, label }) => {
   }, []);
 
   const getTimeInTimezone = () => {
+    if (!time) return null;
     return new Date(time.toLocaleString('en-US', { timeZone: timezone }));
   };
 
   const timeInZone = getTimeInTimezone();
-  const seconds = timeInZone.getSeconds() * 6;
-  const minutes = timeInZone.getMinutes() * 6 + seconds / 60;
-  const hours = (timeInZone.getHours() % 12) * 30 + minutes / 12;
+  const seconds = timeInZone ? timeInZone.getSeconds() * 6 : 0;
+  const minutes = timeInZone ? timeInZone.getMinutes() * 6 + seconds / 60 : 0;
+  const hours = timeInZone ? (timeInZone.getHours() % 12) * 30 + minutes / 12 : 0;
 
   return (
     <div className="flex flex-col items-center m-4">
@@ -55,6 +57,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({ timezone, label }) => {
               left: 'calc(50% - 2px)',
               bottom: '50%',
               transformOrigin: 'bottom',
+              opacity: time ? 1 : 0,
             }}
           />
 
@@ -68,6 +71,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({ timezone, label }) => {
               left: 'calc(50% - 1px)',
               bottom: '50%',
               transformOrigin: 'bottom',
+              opacity: time ? 1 : 0,
             }}
           />
 
@@ -81,6 +85,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({ timezone, label }) => {
               left: 'calc(50% - 0.5px)',
               bottom: '50%',
               transformOrigin: 'bottom',
+              opacity: time ? 1 : 0,
             }}
           />
 
@@ -91,7 +96,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({ timezone, label }) => {
           />
         </div>
       </div>
-      <div className="mt-2 text-sm text-gray-600">{timeInZone.toLocaleTimeString()}</div>
+      <div className="mt-2 text-sm text-gray-600">{timeInZone ? timeInZone.toLocaleTimeString() : '--:--:--'}</div>
     </div>
   );
 };
