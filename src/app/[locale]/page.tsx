@@ -34,6 +34,7 @@ export default function Home() {
               height="550"
               src="/ai_homepage.jpeg"
               width="550"
+              priority
             />
           </div>
         </div>
