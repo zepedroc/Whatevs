@@ -1,17 +1,16 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { useParams, usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
-import { NavigationMenuLink, NavigationMenuList, NavigationMenu, NavigationMenuItem } from '@/components/ui/navigation-menu';
+import { NavigationMenuLink, NavigationMenuList, NavigationMenu } from '@/components/ui/navigation-menu';
 import { LanguageSwitcher } from './language-switcher';
 
 export default function NavBar() {
   const t = useTranslations();
   const params = useParams();
-  const pathname = usePathname();
   const locale = params.locale as string;
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [lineStyle, setLineStyle] = useState({
