@@ -6,7 +6,6 @@ import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 
 import { NavigationMenuLink, NavigationMenuList, NavigationMenu, NavigationMenuItem } from '@/components/ui/navigation-menu';
-import { cn } from '@/lib/utils';
 import { LanguageSwitcher } from './language-switcher';
 
 export default function NavBar() {

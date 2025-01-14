@@ -5,57 +5,35 @@ import { Suspense } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useChat } from 'ai/react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Check, ChevronsUpDown, Search } from 'lucide-react';
 
 import { SendIcon } from '@/icons/icons';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ChatMode } from '@/constants/chatbot-constants';
-import { cn } from '@/lib/utils';
-import { Input } from '@/components/ui/input';
-
-type ChatModeOption = {
-  value: ChatMode;
-  label: string;
-  description: string;
-};
+import { ChatModeSelector } from '@/components/chat-mode-selector';
 
 function ChatContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const mode = searchParams.get('mode') || ChatMode.AIAssistant;
   const t = useTranslations();
-  const [open, setOpen] = React.useState(false);
-  const [search, setSearch] = React.useState('');
 
-  const chatModes: ChatModeOption[] = [
-    {
-      value: ChatMode.AIAssistant,
-      label: t('chatModes.aiAssistant.title'),
-      description: t('chatModes.aiAssistant.description'),
-    },
-    {
-      value: ChatMode.Psychologist,
-      label: t('chatModes.psychologist.title'),
-      description: t('chatModes.psychologist.description'),
-    },
-    {
-      value: ChatMode.Grok,
-      label: t('chatModes.grok.title'),
-      description: t('chatModes.grok.description'),
-    },
-    {
-      value: ChatMode.Instructor,
-      label: t('chatModes.instructor.title'),
-      description: t('chatModes.instructor.description'),
-    },
-  ];
+  return (
+    <div className="flex flex-col h-85vh">
+      <div className="bg-gray-100 p-4 flex items-center">
+        <div className="flex-1 text-center">
+          <span className="text-sm text-gray-600">{t('Chat.title', { mode })}</span>
+        </div>
+        <ChatModeSelector mode={mode} />
+      </div>
+      <ChatMessages key={mode} mode={mode} />
+    </div>
+  );
+}
 
-  const filteredModes = chatModes.filter((chatMode) => chatMode.label.toLowerCase().includes(search.toLowerCase()));
-
+function ChatMessages({ mode }: { mode: string }) {
+  const t = useTranslations();
   const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode } });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -90,49 +68,7 @@ function ChatContent() {
   };
 
   return (
-    <div className="flex flex-col h-85vh">
-      <div className="bg-gray-100 p-4 flex items-center justify-between">
-        <span className="text-sm text-gray-600">{t('Chat.title', { mode })}</span>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" role="combobox" aria-expanded={open} className="w-[250px] justify-between">
-              {mode ? chatModes.find((chatMode) => chatMode.value === mode)?.label : t('Chat.selectMode')}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[250px] p-2">
-            <div className="flex items-center border-b pb-2">
-              <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-              <Input
-                placeholder={t('Chat.searchMode')}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="h-8 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-            </div>
-            <div className="mt-2 max-h-[300px] overflow-y-auto">
-              {filteredModes.length === 0 ? (
-                <p className="py-6 text-center text-sm">{t('Chat.noModeFound')}</p>
-              ) : (
-                filteredModes.map((chatMode) => (
-                  <Button
-                    key={chatMode.value}
-                    variant="ghost"
-                    className="w-full justify-start gap-2"
-                    onClick={() => {
-                      router.push(`?mode=${chatMode.value}`);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check className={cn('h-4 w-4', mode === chatMode.value ? 'opacity-100' : 'opacity-0')} />
-                    {chatMode.label}
-                  </Button>
-                ))
-              )}
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
+    <>
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-4xl space-y-4">
           {messages.length > 0
@@ -158,7 +94,7 @@ function ChatContent() {
           </div>
         </div>
       </form>
-    </div>
+    </>
   );
 }
 
