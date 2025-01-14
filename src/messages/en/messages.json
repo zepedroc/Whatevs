@@ -50,6 +50,9 @@
   "Chat": {
     "title": "Chat with {mode}",
     "inputPlaceholder": "Type your message...",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "selectMode": "Select a chat mode",
+    "searchMode": "Search modes",
+    "noModeFound": "No mode found"
   }
 } 
