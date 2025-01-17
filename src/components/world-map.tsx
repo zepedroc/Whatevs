@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import L, { LatLngExpression, LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -25,7 +25,26 @@ function LocationMarker() {
   );
 }
 
-export default function WorldMap() {
+function MapController({ targetLocation }: { targetLocation: LatLngTuple | null }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (targetLocation) {
+      map.setView(targetLocation, 13, {
+        animate: false,
+        duration: 0,
+      });
+    }
+  }, [map, targetLocation]);
+
+  return null;
+}
+
+interface WorldMapProps {
+  targetLocation: LatLngTuple | null;
+}
+
+export default function WorldMap({ targetLocation }: WorldMapProps) {
   const portoPosition: LatLngExpression = [41.1522, -8.6095];
 
   useEffect(() => {
@@ -52,6 +71,7 @@ export default function WorldMap() {
         <Popup>Porto, Portugal</Popup>
       </Marker>
       <LocationMarker />
+      <MapController targetLocation={targetLocation} />
     </MapContainer>
   );
 }

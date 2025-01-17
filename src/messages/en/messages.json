@@ -15,6 +15,11 @@
     "digitalMode": "Digital",
     "analogMode": "Analog"
   },
+  "WorldMap": {
+    "title": "World Map",
+    "searchPlaceholder": "Enter location...",
+    "searchButton": "Search"
+  },
   "chatModes": {
     "aiAssistant": {
       "title": "AI Assistant",
