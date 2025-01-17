@@ -3,7 +3,8 @@
     "home": "Inicio",
     "chatbot": "Chatbot",
     "images": "Imágenes",
-    "worldClocks": "Relojes Mundiales"
+    "worldClocks": "Relojes Mundiales",
+    "worldMap": "Mapa Mundial"
   },
   "WorldClocks": {
     "title": "Hora Mundial",

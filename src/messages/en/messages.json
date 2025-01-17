@@ -3,7 +3,8 @@
     "home": "Home",
     "chatbot": "Chatbot",
     "images": "Images",
-    "worldClocks": "World Clocks"
+    "worldClocks": "World Clocks",
+    "worldMap": "World Map"
   },
   "WorldClocks": {
     "title": "World Time",
