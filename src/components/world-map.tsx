@@ -1,17 +1,34 @@
 'use client';
 
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L, { LatLngExpression } from 'leaflet';
+import { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import L, { LatLngExpression, LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+function LocationMarker() {
+  const [position, setPosition] = useState<LatLngTuple | null>(null);
+
+  useMapEvents({
+    click(e) {
+      setPosition([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+
+  return position === null ? null : (
+    <Marker position={position}>
+      <Popup>
+        Latitude: {(position as number[])[0].toFixed(4)}
+        <br />
+        Longitude: {(position as number[])[1].toFixed(4)}
+      </Popup>
+    </Marker>
+  );
+}
+
 export default function WorldMap() {
-  const center: LatLngExpression = [0, 0];
-  const madridPosition: LatLngExpression = [40.4168, -3.7038];
+  const portoPosition: LatLngExpression = [41.1522, -8.6095];
 
   useEffect(() => {
-    // Fix Leaflet's default icon path issues
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: '/leaflet/marker-icon-2x.png',
       iconUrl: '/leaflet/marker-icon.png',
@@ -21,8 +38,8 @@ export default function WorldMap() {
 
   return (
     <MapContainer
-      center={center}
-      zoom={2}
+      center={portoPosition}
+      zoom={12}
       scrollWheelZoom={true}
       className="h-full w-full rounded-lg"
       style={{ background: '#f0f0f0' }}
@@ -31,9 +48,10 @@ export default function WorldMap() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={madridPosition}>
-        <Popup>Madrid, Spain</Popup>
+      <Marker position={portoPosition}>
+        <Popup>Porto, Portugal</Popup>
       </Marker>
+      <LocationMarker />
     </MapContainer>
   );
 }
