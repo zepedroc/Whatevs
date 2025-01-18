@@ -70,6 +70,17 @@ export default function WorldMap({ targetLocation }: WorldMapProps) {
       <Marker position={portoPosition}>
         <Popup>Porto, Portugal</Popup>
       </Marker>
+      {targetLocation && (
+        <Marker position={targetLocation}>
+          <Popup>
+            Target Location
+            <br />
+            Latitude: {targetLocation[0].toFixed(4)}
+            <br />
+            Longitude: {targetLocation[1].toFixed(4)}
+          </Popup>
+        </Marker>
+      )}
       <LocationMarker />
       <MapController targetLocation={targetLocation} />
     </MapContainer>

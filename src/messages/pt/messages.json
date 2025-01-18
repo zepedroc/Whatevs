@@ -18,7 +18,11 @@
   "WorldMap": {
     "title": "Mapa Mundial",
     "searchPlaceholder": "Introduza a localização...",
-    "searchButton": "Pesquisar"
+    "searchButton": "Pesquisar",
+    "searchByLocation": "Pesquisar por Local",
+    "searchByCoordinates": "Pesquisar por Coordenadas",
+    "latitudePlaceholder": "Latitude (-90 a 90)",
+    "longitudePlaceholder": "Longitude (-180 a 180)"
   },
   "chatModes": {
     "aiAssistant": {

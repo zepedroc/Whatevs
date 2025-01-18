@@ -17,13 +17,17 @@
   },
   "WorldMap": {
     "title": "Mapa Mundial",
-    "searchPlaceholder": "Ingresa ubicación...",
-    "searchButton": "Buscar"
+    "searchPlaceholder": "Introduce ubicación...",
+    "searchButton": "Buscar",
+    "searchByLocation": "Buscar por Ubicación",
+    "searchByCoordinates": "Buscar por Coordenadas",
+    "latitudePlaceholder": "Latitud (-90 a 90)",
+    "longitudePlaceholder": "Longitud (-180 a 180)"
   },
   "chatModes": {
     "aiAssistant": {
-      "title": "Asistente IA",
-      "description": "Comienza un nuevo chat."
+      "title": "Asistente de IA",
+      "description": "Inicia una nueva conversación."
     },
     "psychologist": {
       "title": "Psicólogo",
@@ -31,11 +35,11 @@
     },
     "grok": {
       "title": "Grok",
-      "description": "Un asistente IA ingenioso e irreverente."
+      "description": "Un asistente de IA ingenioso e irreverente."
     },
     "instructor": {
       "title": "Instructor",
-      "description": "Un instructor calificado."
+      "description": "Un instructor cualificado."
     }
   },
   "Index": {
@@ -48,14 +52,17 @@
   },
   "Images": {
     "title": "Generar Imágenes con IA",
-    "description": "Libera tu creatividad con nuestra herramienta de generación de imágenes con IA. Ingresa un prompt para comenzar.",
-    "inputPlaceholder": "Ingresa un prompt",
+    "description": "Libera tu creatividad con nuestra herramienta de generación de imágenes con IA. Introduce un prompt para comenzar.",
+    "inputPlaceholder": "Introduce un prompt",
     "generateButton": "Generar Imagen",
     "generatedImageAlt": "Imagen Generada"
   },
   "Chat": {
     "title": "Chat con {mode}",
     "inputPlaceholder": "Escribe tu mensaje...",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "selectMode": "Selecciona un modo de chat",
+    "searchMode": "Buscar modos",
+    "noModeFound": "No se encontró ningún modo"
   }
 } 
