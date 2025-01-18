@@ -17,12 +17,14 @@
   },
   "WorldMap": {
     "title": "Mapa Mundial",
-    "searchPlaceholder": "Introduce ubicación...",
+    "searchPlaceholder": "Introduce la ubicación...",
     "searchButton": "Buscar",
     "searchByLocation": "Buscar por Ubicación",
     "searchByCoordinates": "Buscar por Coordenadas",
+    "searchByChat": "Preguntar a la IA",
     "latitudePlaceholder": "Latitud (-90 a 90)",
-    "longitudePlaceholder": "Longitud (-180 a 180)"
+    "longitudePlaceholder": "Longitud (-180 a 180)",
+    "askLocation": "Pregunta sobre un lugar..."
   },
   "chatModes": {
     "aiAssistant": {
@@ -52,7 +54,7 @@
   },
   "Images": {
     "title": "Generar Imágenes con IA",
-    "description": "Libera tu creatividad con nuestra herramienta de generación de imágenes con IA. Introduce un prompt para comenzar.",
+    "description": "Libera tu creatividad con nuestra herramienta de creación de imágenes con IA. Introduce un prompt para comenzar.",
     "inputPlaceholder": "Introduce un prompt",
     "generateButton": "Generar Imagen",
     "generatedImageAlt": "Imagen Generada"
@@ -61,7 +63,7 @@
     "title": "Chat con {mode}",
     "inputPlaceholder": "Escribe tu mensaje...",
     "loading": "Cargando...",
-    "selectMode": "Selecciona un modo de chat",
+    "selectMode": "Selecciona un modo",
     "searchMode": "Buscar modos",
     "noModeFound": "No se encontró ningún modo"
   }

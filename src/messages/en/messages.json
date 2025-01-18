@@ -17,12 +17,14 @@
   },
   "WorldMap": {
     "title": "World Map",
-    "searchPlaceholder": "Enter location...",
+    "searchPlaceholder": "Enter a location...",
     "searchButton": "Search",
     "searchByLocation": "Search by Location",
     "searchByCoordinates": "Search by Coordinates",
-    "latitudePlaceholder": "Latitude (-90 to 90)",
-    "longitudePlaceholder": "Longitude (-180 to 180)"
+    "searchByChat": "Ask AI",
+    "latitudePlaceholder": "Latitude",
+    "longitudePlaceholder": "Longitude",
+    "askLocation": "Ask about a location..."
   },
   "chatModes": {
     "aiAssistant": {

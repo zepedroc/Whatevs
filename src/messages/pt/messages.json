@@ -21,8 +21,10 @@
     "searchButton": "Pesquisar",
     "searchByLocation": "Pesquisar por Local",
     "searchByCoordinates": "Pesquisar por Coordenadas",
+    "searchByChat": "Perguntar à IA",
     "latitudePlaceholder": "Latitude (-90 a 90)",
-    "longitudePlaceholder": "Longitude (-180 a 180)"
+    "longitudePlaceholder": "Longitude (-180 a 180)",
+    "askLocation": "Pergunte sobre um local..."
   },
   "chatModes": {
     "aiAssistant": {

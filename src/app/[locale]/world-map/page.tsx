@@ -21,17 +21,15 @@ export default function WorldMapPage() {
 
   return (
     <div className="h-[calc(100vh-4rem)] overflow-hidden p-4">
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center px-[15px]">
-          <h1 className="text-2xl font-bold">{t('title')}</h1>
-          <MapActions onLocationFound={handleLocationFound} />
+      <h1 className="text-2xl font-bold mb-4 px-[15px]">{t('title')}</h1>
+      <div className="flex gap-4 h-[calc(100vh-8rem)]">
+        <div className="flex-1 rounded-lg overflow-hidden">
+          <Suspense fallback={<div>Loading map...</div>}>
+            <WorldMap targetLocation={targetLocation} />
+          </Suspense>
         </div>
-        <div className="h-[calc(100vh-12rem)] p-[15px]">
-          <div className="h-full rounded-lg overflow-hidden">
-            <Suspense fallback={<div>Loading map...</div>}>
-              <WorldMap targetLocation={targetLocation} />
-            </Suspense>
-          </div>
+        <div className="w-[300px] bg-background rounded-lg p-4 shadow-sm">
+          <MapActions onLocationFound={handleLocationFound} />
         </div>
       </div>
     </div>
