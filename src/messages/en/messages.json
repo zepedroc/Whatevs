@@ -3,7 +3,8 @@
     "home": "Home",
     "chatbot": "Chatbot",
     "images": "Images",
-    "worldClocks": "World Clocks"
+    "worldClocks": "World Clocks",
+    "worldMap": "World Map"
   },
   "WorldClocks": {
     "title": "World Time",
@@ -13,6 +14,17 @@
     "usa": "USA (ET)",
     "digitalMode": "Digital",
     "analogMode": "Analog"
+  },
+  "WorldMap": {
+    "title": "World Map",
+    "searchPlaceholder": "Enter a location...",
+    "searchButton": "Search",
+    "searchByLocation": "Search by Location",
+    "searchByCoordinates": "Search by Coordinates",
+    "searchByChat": "Ask AI",
+    "latitudePlaceholder": "Latitude",
+    "longitudePlaceholder": "Longitude",
+    "askLocation": "Ask about a location..."
   },
   "chatModes": {
     "aiAssistant": {

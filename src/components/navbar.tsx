@@ -52,6 +52,7 @@ export default function NavBar() {
     { key: 'chatbot', href: `/${locale}/chatbot`, label: t('navigation.chatbot') },
     { key: 'images', href: `/${locale}/images`, label: t('navigation.images') },
     { key: 'worldClocks', href: `/${locale}/world-clocks`, label: t('navigation.worldClocks') },
+    { key: 'worldMap', href: `/${locale}/world-map`, label: t('navigation.worldMap') },
   ];
 
   return (

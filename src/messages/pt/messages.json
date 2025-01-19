@@ -3,7 +3,8 @@
     "home": "Início",
     "chatbot": "Chatbot",
     "images": "Imagens",
-    "worldClocks": "Relógios Mundiais"
+    "worldClocks": "Relógios Mundiais",
+    "worldMap": "Mapa Mundial"
   },
   "WorldClocks": {
     "title": "Hora Mundial",
@@ -14,10 +15,21 @@
     "digitalMode": "Digital",
     "analogMode": "Analógico"
   },
+  "WorldMap": {
+    "title": "Mapa Mundial",
+    "searchPlaceholder": "Introduza a localização...",
+    "searchButton": "Pesquisar",
+    "searchByLocation": "Pesquisar por Local",
+    "searchByCoordinates": "Pesquisar por Coordenadas",
+    "searchByChat": "Perguntar à IA",
+    "latitudePlaceholder": "Latitude (-90 a 90)",
+    "longitudePlaceholder": "Longitude (-180 a 180)",
+    "askLocation": "Pergunte sobre um local..."
+  },
   "chatModes": {
     "aiAssistant": {
-      "title": "Assistente IA",
-      "description": "Comece uma nova conversa."
+      "title": "Assistente de IA",
+      "description": "Inicie uma nova conversa."
     },
     "psychologist": {
       "title": "Psicólogo",
@@ -25,7 +37,7 @@
     },
     "grok": {
       "title": "Grok",
-      "description": "Um assistente IA espirituoso e irreverente."
+      "description": "Um assistente de IA espirituoso e irreverente."
     },
     "instructor": {
       "title": "Instrutor",
@@ -33,8 +45,8 @@
     }
   },
   "Index": {
-    "title": "Liberte o Poder da IA",
-    "description": "Nossa plataforma com IA ajuda você a construir aplicações inteligentes que transformam seu negócio.",
+    "title": "Liberta o Poder da IA",
+    "description": "A nossa plataforma com IA ajuda-o a construir aplicações inteligentes que transformam o seu negócio.",
     "getStarted": "Começar",
     "generateImages": "Gerar Imagens",
     "heroAlt": "Imagem Hero IA",
@@ -42,14 +54,14 @@
   },
   "Images": {
     "title": "Gerar Imagens com IA",
-    "description": "Liberte sua criatividade com nossa ferramenta de geração de imagens com IA. Digite um prompt para começar.",
-    "inputPlaceholder": "Digite um prompt",
+    "description": "Liberta a tua criatividade com a nossa ferramenta de criação de imagens com IA. Introduza um prompt para começar.",
+    "inputPlaceholder": "Introduza um prompt",
     "generateButton": "Gerar Imagem",
     "generatedImageAlt": "Imagem Gerada"
   },
   "Chat": {
     "title": "Chat com {mode}",
-    "inputPlaceholder": "Digite sua mensagem...",
-    "loading": "Carregando..."
+    "inputPlaceholder": "Introduza a sua mensagem...",
+    "loading": "A carregar..."
   }
 } 
