@@ -8,6 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { MapIcon, CompassIcon, MessageSquareIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ChatMessages } from '@/components/chat-messages';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type SearchMode = 'location' | 'coordinates' | 'chat';
 
@@ -104,7 +106,7 @@ export function MapActions({ onLocationFound }: MapActionsProps) {
   const currentMode = searchModes.find((mode) => mode.value === searchMode);
 
   return (
-    <div className="flex flex-col gap-4 h-full">
+    <div className="flex flex-col h-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
@@ -138,7 +140,7 @@ export function MapActions({ onLocationFound }: MapActionsProps) {
         </PopoverContent>
       </Popover>
 
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col min-h-0 mt-4">
         {searchMode === 'location' && (
           <form onSubmit={handleLocationSearch} className="flex flex-col gap-2">
             <Input
@@ -174,20 +176,36 @@ export function MapActions({ onLocationFound }: MapActionsProps) {
         )}
 
         {searchMode === 'chat' && (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2 h-full">
-            <Textarea
-              className="flex-1 min-h-[200px] resize-none"
-              value={input}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              placeholder={t('askLocation')}
-            />
-            <Button type="submit" className="w-full">
-              {t('searchButton')}
-            </Button>
-          </form>
+          <div className="flex-1 flex flex-col min-h-0">
+            <div className="flex-1 min-h-0">
+              <ScrollArea className="h-full">
+                <div className="p-4">
+                  <ChatMessages messages={messages} />
+                </div>
+              </ScrollArea>
+            </div>
+          </div>
         )}
       </div>
+
+      {searchMode === 'chat' && (
+        <div className="flex-shrink-0 pt-4">
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-2">
+              <Textarea
+                className="resize-none min-h-[60px]"
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                placeholder={t('askLocation')}
+              />
+              <Button type="submit" className="w-full">
+                {t('searchButton')}
+              </Button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,8 +2,6 @@
 
 import * as React from 'react';
 import { Suspense } from 'react';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { useChat } from 'ai/react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -13,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { ChatMode } from '@/constants/chatbot-constants';
 import { ChatModeSelector } from '@/components/chat-mode-selector';
+import { ChatMessages } from '@/components/chat-messages';
 
 function ChatContent() {
   const searchParams = useSearchParams();
@@ -27,12 +26,12 @@ function ChatContent() {
         </div>
         <ChatModeSelector mode={mode} />
       </div>
-      <ChatMessages key={mode} mode={mode} />
+      <ChatSection mode={mode} />
     </div>
   );
 }
 
-function ChatMessages({ mode }: { mode: string }) {
+function ChatSection({ mode }: { mode: string }) {
   const t = useTranslations();
   const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode } });
 
@@ -43,39 +42,11 @@ function ChatMessages({ mode }: { mode: string }) {
     }
   };
 
-  const getChatMessage = (content: string, index: number) => {
-    const chatMessageNumber = Math.ceil(index / 2);
-
-    return (
-      <div key={`chat-message-${chatMessageNumber}`} className="flex">
-        <div className="max-w-[70%] rounded-lg bg-gray-200 p-3 text-gray-800">
-          <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
-        </div>
-      </div>
-    );
-  };
-
-  const getUserMessage = (content: string, index: number) => {
-    const userMessageNumber = Math.ceil(index / 2) + 1;
-
-    return (
-      <div key={`user-message-${userMessageNumber}`} className="flex justify-end">
-        <div className="max-w-[70%] rounded-lg bg-gray-900 p-3 text-white">
-          <p>{content}</p>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <>
       <div className="flex-1 overflow-auto p-4">
-        <div className="mx-auto max-w-4xl space-y-4">
-          {messages.length > 0
-            ? messages.map((m, index) =>
-                m.role === 'user' ? getUserMessage(m.content, index) : getChatMessage(m.content, index),
-              )
-            : null}
+        <div className="mx-auto max-w-4xl">
+          <ChatMessages messages={messages} />
         </div>
       </div>
       <form onSubmit={handleSubmit} className="fixed bottom-0 w-screen">
