@@ -28,7 +28,7 @@ export default function WorldMapPage() {
         <div className="flex-1">
           <WorldMap targetLocation={targetLocation} timezone={timezone} isLoadingTimezone={isLoadingTimezone} />
         </div>
-        <div className="w-[300px] bg-white rounded-lg shadow-lg p-4">
+        <div className="w-[300px] bg-white p-4">
           <MapActions onLocationFound={handleLocationFound} onTimezoneChange={handleTimezoneChange} />
         </div>
       </div>
