@@ -1,35 +1,22 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { Suspense, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useState } from 'react';
+import { LatLngTuple } from 'leaflet';
+import WorldMap from '@/components/world-map';
 import { MapActions } from '@/components/map-actions';
 
-// We need to dynamically import the map component because Leaflet requires window object
-const WorldMap = dynamic(() => import('@/components/world-map'), {
-  ssr: false,
-  loading: () => <div>Loading map...</div>,
-});
-
 export default function WorldMapPage() {
-  const t = useTranslations('WorldMap');
-  const [targetLocation, setTargetLocation] = useState<[number, number] | null>(null);
-
-  const handleLocationFound = (lat: number, lng: number) => {
-    setTargetLocation([lat, lng]);
-  };
+  const [targetLocation, setTargetLocation] = useState<LatLngTuple | null>(null);
+  const [timezone, setTimezone] = useState('Europe/Lisbon');
 
   return (
-    <div className="h-[calc(100vh-4rem)] overflow-hidden p-4">
-      <h1 className="text-2xl font-bold mb-4 px-[15px]">{t('title')}</h1>
-      <div className="flex gap-4 h-[calc(100vh-8rem)]">
-        <div className="flex-1 rounded-lg overflow-hidden">
-          <Suspense fallback={<div>Loading map...</div>}>
-            <WorldMap targetLocation={targetLocation} />
-          </Suspense>
+    <div className="h-[calc(100vh-4rem)] p-4">
+      <div className="flex gap-4 h-full">
+        <div className="flex-1">
+          <WorldMap targetLocation={targetLocation} timezone={timezone} />
         </div>
-        <div className="w-[300px] bg-background rounded-lg p-4 shadow-sm">
-          <MapActions onLocationFound={handleLocationFound} />
+        <div className="w-[300px] bg-white rounded-lg shadow-lg p-4">
+          <MapActions onLocationFound={(lat, lng) => setTargetLocation([lat, lng])} onTimezoneChange={setTimezone} />
         </div>
       </div>
     </div>

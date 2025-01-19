@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -21,13 +23,23 @@ export function ChatMessages({ messages, containerClassName = 'space-y-4' }: Cha
 
   if (messages.length === 0) return null;
 
+  const formatMessage = (content: string) => {
+    // Check if it's a location finder response (contains "New location:" and JSON)
+    if (content.includes('New location:')) {
+      const lines = content.split('\n');
+      // Return only the first line (the user-friendly message)
+      return lines[0];
+    }
+    return content;
+  };
+
   return (
     <div className={containerClassName}>
       {messages.map((m, index) =>
         m.role === 'user' ? (
           <UserMessage key={`user-message-${index}`} content={m.content} index={index} />
         ) : (
-          <AssistantMessage key={`chat-message-${index}`} content={m.content} index={index} />
+          <AssistantMessage key={`chat-message-${index}`} content={formatMessage(m.content)} index={index} />
         ),
       )}
       <div ref={messagesEndRef} />

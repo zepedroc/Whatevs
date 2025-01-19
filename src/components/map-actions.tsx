@@ -21,9 +21,10 @@ interface SearchModeOption {
 
 interface MapActionsProps {
   onLocationFound: (lat: number, lng: number) => void;
+  onTimezoneChange?: (timezone: string) => void;
 }
 
-export function MapActions({ onLocationFound }: MapActionsProps) {
+export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProps) {
   const t = useTranslations('WorldMap');
   const [searchMode, setSearchMode] = useState<SearchMode>('location');
   const [open, setOpen] = useState(false);
@@ -52,18 +53,33 @@ export function MapActions({ onLocationFound }: MapActionsProps) {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     body: { mode: 'location_finder' },
     onFinish: async (message) => {
-      const location = message.content.trim();
       try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`,
+        // Get the JSON part from the second line
+        const lines = message.content.split('\n');
+        if (lines.length < 2) return;
+
+        const response = JSON.parse(lines[1]);
+
+        if (response.location === 'Unknown location') {
+          return;
+        }
+
+        // Update timezone if callback is provided
+        if (onTimezoneChange && response.timezone) {
+          onTimezoneChange(response.timezone);
+        }
+
+        // Fetch coordinates for the location
+        const geoResponse = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(response.location)}`,
         );
-        const data = await response.json();
+        const data = await geoResponse.json();
 
         if (data && data[0]) {
           onLocationFound(parseFloat(data[0].lat), parseFloat(data[0].lon));
         }
       } catch (error) {
-        console.error('Error fetching location:', error);
+        console.error('Error processing location:', error);
       }
     },
   });
