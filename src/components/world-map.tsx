@@ -44,9 +44,10 @@ function MapController({ targetLocation }: { targetLocation: LatLngTuple | null 
 interface WorldMapProps {
   targetLocation: LatLngTuple | null;
   timezone: string;
+  isLoadingTimezone?: boolean;
 }
 
-export default function WorldMap({ targetLocation, timezone }: WorldMapProps) {
+export default function WorldMap({ targetLocation, timezone, isLoadingTimezone = false }: WorldMapProps) {
   const portoPosition: LatLngExpression = [41.1522, -8.6095];
 
   useEffect(() => {
@@ -87,7 +88,7 @@ export default function WorldMap({ targetLocation, timezone }: WorldMapProps) {
         <LocationMarker />
         <MapController targetLocation={targetLocation} />
       </MapContainer>
-      <LocationClock timezone={timezone} />
+      <LocationClock timezone={timezone} isLoading={isLoadingTimezone} />
     </div>
   );
 }

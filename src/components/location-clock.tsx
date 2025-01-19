@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 interface LocationClockProps {
   timezone: string;
+  isLoading?: boolean;
 }
 
-export function LocationClock({ timezone }: LocationClockProps) {
+export function LocationClock({ timezone, isLoading = false }: LocationClockProps) {
   const [time, setTime] = useState<string>('');
 
   useEffect(() => {
@@ -38,11 +40,18 @@ export function LocationClock({ timezone }: LocationClockProps) {
     return () => clearInterval(interval);
   }, [timezone]);
 
-  if (!timezone || !time) return null;
+  if (!timezone && !isLoading) return null;
 
   return (
     <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 text-lg font-mono shadow-lg z-[1000]">
-      {time}
+      {isLoading ? (
+        <div className="flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span>Loading timezone...</span>
+        </div>
+      ) : (
+        time
+      )}
     </div>
   );
 }

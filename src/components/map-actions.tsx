@@ -20,7 +20,7 @@ interface SearchModeOption {
 }
 
 interface MapActionsProps {
-  onLocationFound: (lat: number, lng: number) => void;
+  onLocationFound: (lat: number, lng: number, isFromChat?: boolean) => void;
   onTimezoneChange?: (timezone: string) => void;
 }
 
@@ -31,6 +31,7 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
   const [searchLocation, setSearchLocation] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
+  const [isLoadingTimezone, setIsLoadingTimezone] = useState(false);
 
   const searchModes: SearchModeOption[] = [
     {
@@ -76,7 +77,7 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
         const data = await geoResponse.json();
 
         if (data && data[0]) {
-          onLocationFound(parseFloat(data[0].lat), parseFloat(data[0].lon));
+          onLocationFound(parseFloat(data[0].lat), parseFloat(data[0].lon), true);
         }
       } catch (error) {
         console.error('Error processing location:', error);
@@ -84,9 +85,38 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
     },
   });
 
+  // Separate chat instance for timezone lookups
+  const timezoneLookup = useChat({
+    body: { mode: 'location_finder' },
+    id: 'timezone-lookup', // Unique ID to separate this chat instance
+    onFinish: async (message) => {
+      try {
+        const lines = message.content.split('\n');
+        if (lines.length >= 2) {
+          const response = JSON.parse(lines[1]);
+          if (response.timezone) {
+            onTimezoneChange?.(response.timezone);
+          }
+        }
+      } catch (error) {
+        console.error('Error processing timezone:', error);
+      }
+    },
+  });
+
+  const getTimezoneForLocation = async (location: string) => {
+    await timezoneLookup.reload(); // Clear previous messages
+    await timezoneLookup.append({
+      id: 'lookup',
+      content: `What's the timezone of ${location}?`,
+      role: 'user',
+    });
+  };
+
   const handleLocationSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setIsLoadingTimezone(true);
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchLocation)}`,
       );
@@ -94,20 +124,28 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
 
       if (data && data[0]) {
         onLocationFound(parseFloat(data[0].lat), parseFloat(data[0].lon));
+        // Get timezone for the location
+        await getTimezoneForLocation(searchLocation);
+      } else {
+        setIsLoadingTimezone(false);
       }
     } catch (error) {
       console.error('Error fetching location:', error);
+      setIsLoadingTimezone(false);
     }
   };
 
-  const handleCoordinateSearch = (e: React.FormEvent) => {
+  const handleCoordinateSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     const lat = parseFloat(latitude);
     const lng = parseFloat(longitude);
 
     if (!isNaN(lat) && !isNaN(lng)) {
       if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+        setIsLoadingTimezone(true);
         onLocationFound(lat, lng);
+        // Get timezone for the coordinates
+        await getTimezoneForLocation(`${lat}, ${lng}`);
       }
     }
   };
