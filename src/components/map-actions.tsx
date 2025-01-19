@@ -31,7 +31,6 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
   const [searchLocation, setSearchLocation] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
-  const [isLoadingTimezone, setIsLoadingTimezone] = useState(false);
 
   const searchModes: SearchModeOption[] = [
     {
@@ -116,7 +115,6 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
   const handleLocationSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setIsLoadingTimezone(true);
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchLocation)}`,
       );
@@ -126,12 +124,9 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
         onLocationFound(parseFloat(data[0].lat), parseFloat(data[0].lon));
         // Get timezone for the location
         await getTimezoneForLocation(searchLocation);
-      } else {
-        setIsLoadingTimezone(false);
       }
     } catch (error) {
       console.error('Error fetching location:', error);
-      setIsLoadingTimezone(false);
     }
   };
 
@@ -142,7 +137,6 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
 
     if (!isNaN(lat) && !isNaN(lng)) {
       if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
-        setIsLoadingTimezone(true);
         onLocationFound(lat, lng);
         // Get timezone for the coordinates
         await getTimezoneForLocation(`${lat}, ${lng}`);
