@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
+interface SpeechRecognitionEvent extends Event {
+  readonly results: SpeechRecognitionResultList;
+}
+
 export interface SpeechRecognitionState {
   isRecording: boolean;
   recordingComplete: boolean;
@@ -13,7 +17,7 @@ export function useSpeechRecognition() {
     transcript: '',
   });
 
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const startRecording = () => {
     setState((prev) => ({ ...prev, isRecording: true, recordingComplete: false, transcript: '' }));
@@ -22,9 +26,9 @@ export function useSpeechRecognition() {
       recognitionRef.current = new window.webkitSpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = 'en-US'; // Add language setting
+      recognitionRef.current.lang = 'en-US';
 
-      recognitionRef.current.onresult = (event: any) => {
+      recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
         const current = event.results[event.results.length - 1];
         const { transcript } = current[0];
         setState((prev) => ({ ...prev, transcript }));
@@ -38,7 +42,7 @@ export function useSpeechRecognition() {
         }));
       };
 
-      recognitionRef.current.onerror = (event: any) => {
+      recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         setState((prev) => ({
           ...prev,
