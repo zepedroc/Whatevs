@@ -53,6 +53,7 @@ export default function NavBar() {
     { key: 'images', href: `/${locale}/images`, label: t('navigation.images') },
     { key: 'worldClocks', href: `/${locale}/world-clocks`, label: t('navigation.worldClocks') },
     { key: 'worldMap', href: `/${locale}/world-map`, label: t('navigation.worldMap') },
+    { key: 'agent', href: `/${locale}/agent`, label: t('navigation.agent') },
   ];
 
   return (

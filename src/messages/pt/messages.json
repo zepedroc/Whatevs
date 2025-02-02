@@ -4,7 +4,8 @@
     "chatbot": "Chatbot",
     "images": "Imagens",
     "worldClocks": "Relógios Mundiais",
-    "worldMap": "Mapa Mundial"
+    "worldMap": "Mapa Mundial",
+    "agent": "Agente de Voz"
   },
   "WorldClocks": {
     "title": "Hora Mundial",
@@ -67,5 +68,19 @@
     "title": "Chat com {mode}",
     "inputPlaceholder": "Introduza a sua mensagem...",
     "loading": "A carregar..."
+  },
+  "Agent": {
+    "title": "Agente de Voz",
+    "listening": "Ouvindo...",
+    "startPrompt": "Clique no microfone para começar",
+    "transcript": "Transcrição",
+    "unsupportedBrowser": "Seu navegador não suporta reconhecimento de voz",
+    "error": "Erro no reconhecimento de voz",
+    "networkError": "Erro de conexão de rede",
+    "networkErrorHint": "Por favor, verifique sua conexão com a internet e tente novamente",
+    "permissionError": "Acesso ao microfone negado. Por favor, permita o acesso ao microfone",
+    "noSpeechError": "Nenhuma fala foi detectada. Por favor, tente novamente",
+    "abortedError": "O reconhecimento de voz foi interrompido",
+    "startError": "Não foi possível iniciar o reconhecimento de voz. Por favor, tente novamente"
   }
 } 

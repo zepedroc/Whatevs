@@ -4,7 +4,8 @@
     "chatbot": "Chatbot",
     "images": "Images",
     "worldClocks": "World Clocks",
-    "worldMap": "World Map"
+    "worldMap": "World Map",
+    "agent": "Voice Agent"
   },
   "WorldClocks": {
     "title": "World Time",
@@ -70,5 +71,23 @@
     "selectMode": "Select a chat mode",
     "searchMode": "Search modes",
     "noModeFound": "No mode found"
+  },
+  "Agent": {
+    "title": "Voice Agent",
+    "listening": "Listening...",
+    "startPrompt": "Click the microphone to start",
+    "transcript": "Transcript",
+    "unsupportedBrowser": "Your browser doesn't support speech recognition",
+    "error": "Speech recognition error",
+    "networkError": "Network connection error",
+    "networkErrorHint": "Please check your internet connection and try again",
+    "permissionError": "Microphone access denied. Please allow microphone access",
+    "noSpeechError": "No speech was detected. Please try again",
+    "abortedError": "Speech recognition was aborted",
+    "startError": "Couldn't start speech recognition. Please try again",
+    "recorded": "Recorded",
+    "recording": "Recording",
+    "recordingComplete": "Thanks for talking",
+    "speakNow": "Start speaking..."
   }
 } 
