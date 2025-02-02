@@ -46,6 +46,11 @@ export function ChatModeSelector({ mode }: ChatModeSelectorProps) {
       label: t('chatModes.instructor.title'),
       description: t('chatModes.instructor.description'),
     },
+    {
+      value: ChatMode.DeepSeekReasoning,
+      label: t('chatModes.deepSeekReasoning.title'),
+      description: t('chatModes.deepSeekReasoning.description'),
+    },
   ];
 
   return (

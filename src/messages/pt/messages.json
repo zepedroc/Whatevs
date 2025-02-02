@@ -28,20 +28,24 @@
   },
   "chatModes": {
     "aiAssistant": {
-      "title": "Assistente de IA",
-      "description": "Inicie uma nova conversa."
+      "title": "Assistente IA",
+      "description": "Comece uma nova conversa."
     },
     "psychologist": {
       "title": "Psicólogo",
-      "description": "Fale com um psicólogo."
+      "description": "Converse com um psicólogo."
     },
     "grok": {
       "title": "Grok",
-      "description": "Um assistente de IA espirituoso e irreverente."
+      "description": "Um assistente IA irreverente e espirituoso."
     },
     "instructor": {
       "title": "Instrutor",
-      "description": "Um instrutor qualificado."
+      "description": "Um instrutor especializado."
+    },
+    "deepSeekReasoning": {
+      "title": "DeepSeek Raciocínio",
+      "description": "Uma IA especializada em resolução de problemas complexos e análise lógica."
     }
   },
   "Index": {

@@ -42,6 +42,10 @@
     "instructor": {
       "title": "Instructor",
       "description": "A skilled instructor."
+    },
+    "deepSeekReasoning": {
+      "title": "DeepSeek Reasoning",
+      "description": "An AI specialized in complex problem-solving and logical analysis."
     }
   },
   "Index": {
