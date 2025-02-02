@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { ChatMode } from '@/constants/chatbot-constants';
 import { ChatModeSelector } from '@/components/chat-mode-selector';
 import { ChatMessages } from '@/components/chat-messages';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 
 function ChatContent() {
   const searchParams = useSearchParams();
@@ -33,13 +34,30 @@ function ChatContent() {
 
 function ChatSection({ mode }: { mode: string }) {
   const t = useTranslations();
-  const { messages, input, handleInputChange, handleSubmit } = useChat({ body: { mode } });
+  const { messages, input, handleInputChange, handleSubmit: chatHandleSubmit, setInput } = useChat({ body: { mode } });
+  const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
+
+  // Update input field with transcript when recording
+  React.useEffect(() => {
+    if (transcript) {
+      setInput(transcript);
+    }
+  }, [transcript, setInput]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
+  };
+
+  // Wrap the submit handler to stop recording if active
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    if (isRecording) {
+      toggleRecording();
+    }
+    chatHandleSubmit(e);
   };
 
   return (
@@ -59,10 +77,40 @@ function ChatSection({ mode }: { mode: string }) {
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
             />
-            <Button className="rounded-lg bg-gray-900 p-3 hover:bg-gray-800 transition-colors" type="submit">
-              <SendIcon className="h-5 w-5 text-white" />
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                onClick={toggleRecording}
+                className={`rounded-lg p-3 transition-colors ${
+                  isRecording ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                }`}
+                title={isRecording ? t('Chat.stopRecording') : t('Chat.startRecording')}
+              >
+                {isRecording ? (
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5">
+                    <path
+                      fill="currentColor"
+                      d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
+                    />
+                  </svg>
+                )}
+              </Button>
+              <Button className="rounded-lg bg-gray-900 p-3 hover:bg-gray-800 transition-colors" type="submit">
+                <SendIcon className="h-5 w-5 text-white" />
+              </Button>
+            </div>
           </div>
+          {/* Recording indicator */}
+          {isRecording && (
+            <div className="mx-auto max-w-4xl mt-2 flex items-center gap-2">
+              <div className="rounded-full w-2 h-2 bg-red-400 animate-pulse" />
+              <span className="text-xs text-gray-500">{t('Chat.recording')}</span>
+            </div>
+          )}
         </div>
       </form>
     </>

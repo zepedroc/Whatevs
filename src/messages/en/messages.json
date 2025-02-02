@@ -50,7 +50,7 @@
     }
   },
   "Index": {
-    "title": "Unlock the Power of AI",
+    "title": "Hello world!",
     "description": "Our AI-powered platform helps you build intelligent applications that transform your business.",
     "getStarted": "Get Started",
     "generateImages": "Generate Images",
@@ -67,7 +67,10 @@
   "Chat": {
     "title": "Chat with {mode}",
     "inputPlaceholder": "Type your message...",
-    "loading": "Loading...",
+    "loading": "Loading chat...",
+    "recording": "Recording in progress...",
+    "startRecording": "Start voice recording",
+    "stopRecording": "Stop voice recording",
     "selectMode": "Select a chat mode",
     "searchMode": "Search modes",
     "noModeFound": "No mode found"
@@ -86,7 +89,6 @@
     "abortedError": "Speech recognition was aborted",
     "startError": "Couldn't start speech recognition. Please try again",
     "recorded": "Recorded",
-    "recording": "Recording",
     "recordingComplete": "Thanks for talking",
     "speakNow": "Start speaking..."
   }

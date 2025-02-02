@@ -50,7 +50,7 @@
     }
   },
   "Index": {
-    "title": "Liberta o Poder da IA",
+    "title": "Olá mundo!",
     "description": "A nossa plataforma com IA ajuda-o a construir aplicações inteligentes que transformam o seu negócio.",
     "getStarted": "Começar",
     "generateImages": "Gerar Imagens",
@@ -66,8 +66,11 @@
   },
   "Chat": {
     "title": "Chat com {mode}",
-    "inputPlaceholder": "Introduza a sua mensagem...",
-    "loading": "A carregar..."
+    "inputPlaceholder": "Digite sua mensagem...",
+    "loading": "Carregando chat...",
+    "recording": "Gravação em andamento...",
+    "startRecording": "Iniciar gravação de voz",
+    "stopRecording": "Parar gravação de voz"
   },
   "Agent": {
     "title": "Agente de Voz",

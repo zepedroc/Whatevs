@@ -1,11 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
-
-// Declare the global interface for TypeScript
-declare global {
-  interface Window {
-    webkitSpeechRecognition: any;
-  }
-}
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 export interface SpeechRecognitionState {
   isRecording: boolean;
@@ -23,25 +16,53 @@ export function useSpeechRecognition() {
   const recognitionRef = useRef<any>(null);
 
   const startRecording = () => {
-    setState((prev) => ({ ...prev, isRecording: true, recordingComplete: false }));
-    recognitionRef.current = new window.webkitSpeechRecognition();
-    recognitionRef.current.continuous = true;
-    recognitionRef.current.interimResults = true;
+    setState((prev) => ({ ...prev, isRecording: true, recordingComplete: false, transcript: '' }));
 
-    recognitionRef.current.onresult = (event: any) => {
-      const { transcript } = event.results[event.results.length - 1][0];
-      setState((prev) => ({ ...prev, transcript }));
-    };
+    try {
+      recognitionRef.current = new window.webkitSpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'en-US'; // Add language setting
 
-    recognitionRef.current.start();
-  };
+      recognitionRef.current.onresult = (event: any) => {
+        const current = event.results[event.results.length - 1];
+        const { transcript } = current[0];
+        setState((prev) => ({ ...prev, transcript }));
+      };
 
-  const stopRecording = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      setState((prev) => ({ ...prev, isRecording: false, recordingComplete: true }));
+      recognitionRef.current.onend = () => {
+        setState((prev) => ({
+          ...prev,
+          isRecording: false,
+          recordingComplete: true,
+        }));
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setState((prev) => ({
+          ...prev,
+          isRecording: false,
+          recordingComplete: true,
+        }));
+      };
+
+      recognitionRef.current.start();
+    } catch (error) {
+      console.error('Failed to start speech recognition:', error);
+      setState((prev) => ({
+        ...prev,
+        isRecording: false,
+        recordingComplete: false,
+      }));
     }
   };
+
+  const stopRecording = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+  }, []);
 
   const toggleRecording = () => {
     if (!state.isRecording) {
@@ -50,6 +71,10 @@ export function useSpeechRecognition() {
       stopRecording();
     }
   };
+
+  const resetTranscript = useCallback(() => {
+    setState((prev) => ({ ...prev, transcript: '', recordingComplete: false }));
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -62,5 +87,6 @@ export function useSpeechRecognition() {
   return {
     ...state,
     toggleRecording,
+    resetTranscript,
   };
 }
