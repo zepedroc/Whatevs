@@ -5,6 +5,7 @@
     "images": "Images",
     "worldClocks": "World Clocks",
     "worldMap": "World Map",
+    "games": "Games",
     "agent": "Voice Agent"
   },
   "WorldClocks": {
@@ -91,5 +92,9 @@
     "recorded": "Recorded",
     "recordingComplete": "Thanks for talking",
     "speakNow": "Start speaking..."
+  },
+  "Games": {
+    "title": "Games",
+    "description": "Play fun multiplayer games with friends and family."
   }
 } 

@@ -5,6 +5,7 @@
     "images": "Imagens",
     "worldClocks": "Relógios Mundiais",
     "worldMap": "Mapa Mundial",
+    "games": "Jogos",
     "agent": "Agente de Voz"
   },
   "WorldClocks": {
@@ -85,5 +86,9 @@
     "noSpeechError": "Nenhuma fala foi detectada. Por favor, tente novamente",
     "abortedError": "O reconhecimento de voz foi interrompido",
     "startError": "Não foi possível iniciar o reconhecimento de voz. Por favor, tente novamente"
+  },
+  "Games": {
+    "title": "Jogos",
+    "description": "Jogue jogos multijogador divertidos com amigos e família."
   }
 } 
