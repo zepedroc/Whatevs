@@ -1,14 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-
-interface SpeechRecognitionEvent extends Event {
-  readonly results: SpeechRecognitionResultList;
-}
-
-export interface SpeechRecognitionState {
-  isRecording: boolean;
-  recordingComplete: boolean;
-  transcript: string;
-}
+import {
+  SpeechRecognition,
+  SpeechRecognitionEvent,
+  SpeechRecognitionErrorEvent,
+  SpeechRecognitionState,
+} from '../types/speechRecognition';
 
 export function useSpeechRecognition() {
   const [state, setState] = useState<SpeechRecognitionState>({
