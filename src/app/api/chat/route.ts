@@ -20,7 +20,9 @@ export async function POST(req: Request) {
 
   // Select the appropriate model based on mode
   const model =
-    mode === ChatMode.DeepSeekReasoning ? groq.chat('deepseek-r1-distill-llama-70b') : groq.chat('llama-3.3-70b-versatile');
+    mode === ChatMode.DeepSeekReasoning
+      ? groq.chat('deepseek-r1-distill-llama-70b')
+      : groq.chat('meta-llama/llama-4-maverick-17b-128e-instruct');
 
   // Call the language model
   const result = streamText({

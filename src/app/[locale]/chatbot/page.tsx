@@ -2,10 +2,9 @@
 
 import * as React from 'react';
 import { Suspense } from 'react';
-import { useChat } from 'ai/react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-
+import { useChat } from '@ai-sdk/react';
 import { SendIcon } from '@/icons/icons';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
