@@ -3,10 +3,13 @@
 ## Next features
 
 - Allow to input images on chat
+- Allow to input files on chat
+- Build a canvas for ai generated code (allow three.js)
+- Add real time access to the internet
 
 ## Bugs
 
-- Fix games code
+-
 
 ## Minor things
 

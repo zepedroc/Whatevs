@@ -37,13 +37,6 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
   });
 
   // Game state for rendering
-  const [_leftPaddleY, setLeftPaddleY] = useState(height / 2 - PADDLE_HEIGHT / 2);
-  const [_rightPaddleY, setRightPaddleY] = useState(height / 2 - PADDLE_HEIGHT / 2);
-  const [_ballX, setBallX] = useState(width / 2);
-  const [_ballY, setBallY] = useState(height / 2);
-  const [_leftScore, setLeftScore] = useState(0);
-  const [_rightScore, setRightScore] = useState(0);
-  const [_winner, setWinner] = useState('');
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [keysPressed, setKeysPressed] = useState<{ [key: string]: boolean }>({});
@@ -90,10 +83,6 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
     gameStateRef.current.ballY = height / 2;
     gameStateRef.current.ballSpeedX = BALL_SPEED * dirX;
     gameStateRef.current.ballSpeedY = BALL_SPEED * dirY;
-
-    // Update state for rendering
-    setBallX(width / 2);
-    setBallY(height / 2);
   };
 
   // Check if game is over
@@ -102,13 +91,11 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
       gameStateRef.current.gameOver = true;
       gameStateRef.current.winner = 'Left Player';
       setGameOver(true);
-      setWinner('Left Player');
       return true;
     } else if (gameStateRef.current.rightScore >= winningScore) {
       gameStateRef.current.gameOver = true;
       gameStateRef.current.winner = 'Right Player';
       setGameOver(true);
-      setWinner('Right Player');
       return true;
     }
     return false;
@@ -129,10 +116,7 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
       winner: '',
     };
 
-    setLeftScore(0);
-    setRightScore(0);
     setGameOver(false);
-    setWinner('');
     setGameStarted(true);
   };
 
@@ -142,7 +126,6 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
       previousTimeRef.current = time;
     }
 
-    const _deltaTime = time - previousTimeRef.current;
     previousTimeRef.current = time;
 
     const canvas = canvasRef.current;
@@ -181,19 +164,15 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
     // Move paddles based on key presses
     if (currentKeysPressed['w'] && gameStateRef.current.leftPaddleY > 0) {
       gameStateRef.current.leftPaddleY -= PADDLE_SPEED;
-      setLeftPaddleY(gameStateRef.current.leftPaddleY);
     }
     if (currentKeysPressed['s'] && gameStateRef.current.leftPaddleY < height - PADDLE_HEIGHT) {
       gameStateRef.current.leftPaddleY += PADDLE_SPEED;
-      setLeftPaddleY(gameStateRef.current.leftPaddleY);
     }
     if (currentKeysPressed['ArrowUp'] && gameStateRef.current.rightPaddleY > 0) {
       gameStateRef.current.rightPaddleY -= PADDLE_SPEED;
-      setRightPaddleY(gameStateRef.current.rightPaddleY);
     }
     if (currentKeysPressed['ArrowDown'] && gameStateRef.current.rightPaddleY < height - PADDLE_HEIGHT) {
       gameStateRef.current.rightPaddleY += PADDLE_SPEED;
-      setRightPaddleY(gameStateRef.current.rightPaddleY);
     }
 
     // Move ball
@@ -221,7 +200,6 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
     if (gameStateRef.current.ballX <= 0) {
       // Right player scores
       gameStateRef.current.rightScore += 1;
-      setRightScore(gameStateRef.current.rightScore);
 
       // Check if game is over
       if (!checkGameOver()) {
@@ -230,17 +208,12 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
     } else if (gameStateRef.current.ballX >= width - BALL_SIZE) {
       // Left player scores
       gameStateRef.current.leftScore += 1;
-      setLeftScore(gameStateRef.current.leftScore);
 
       // Check if game is over
       if (!checkGameOver()) {
         resetBall();
       }
     }
-
-    // Update ball position state for rendering
-    setBallX(gameStateRef.current.ballX);
-    setBallY(gameStateRef.current.ballY);
 
     // Draw paddles with different colors
     // Left paddle (blue)
