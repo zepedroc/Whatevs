@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+
 import { useTranslations } from 'next-intl';
 
 import AnalogClock from '@/components/analog-clock';
 import DigitalClock from '@/components/digital-clock';
-
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
 export default function WorldClocksPage() {
   const t = useTranslations();

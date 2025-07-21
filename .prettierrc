@@ -10,8 +10,24 @@
         "semi": true,
         "bracketSameLine": false,
         "useTabs": false,
-        "singleQuote": true
+        "singleQuote": true,
+        "importOrder": [ 
+          "^(react)(?:$|/)",               
+          "^(next)(?:$|/)",               
+          "^(?![.@])",                          
+          "^@(?!/)",      
+          "^@/components/(.*)$",                       
+          "^@/(.*)$",                           
+          "^\\.\\./(?!\\.)",                    
+          "^\\.\\.(?:/\\.\\.)+/",               
+          "^\\./.*\\.s?css$",                  
+          "^\\./",                              
+          "\\.(s?css)$"                       
+        ],
+        "importOrderSeparation": true,
+        "importOrderSortSpecifiers": true
       }
     }
-  ]
+  ], 
+  "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }

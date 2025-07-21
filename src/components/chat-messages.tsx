@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+
+import { Message } from 'ai';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Message } from 'ai';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 

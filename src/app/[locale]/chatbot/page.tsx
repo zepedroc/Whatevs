@@ -2,16 +2,21 @@
 
 import * as React from 'react';
 import { Suspense } from 'react';
+
 import { useSearchParams } from 'next/navigation';
+
 import { useTranslations } from 'next-intl';
+
 import { useChat } from '@ai-sdk/react';
-import { SendIcon } from '@/icons/icons';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { ChatMode } from '@/constants/chatbot-constants';
-import { ChatModeSelector } from '@/components/chat-mode-selector';
+
 import { ChatMessages } from '@/components/chat-messages';
+import { ChatModeSelector } from '@/components/chat-mode-selector';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+
+import { ChatMode } from '@/constants/chatbot-constants';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { SendIcon } from '@/icons/icons';
 
 function ChatContent() {
   const searchParams = useSearchParams();
