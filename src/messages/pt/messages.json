@@ -4,7 +4,9 @@
     "chatbot": "Chatbot",
     "images": "Imagens",
     "worldClocks": "Relógios Mundiais",
-    "worldMap": "Mapa Mundial"
+    "worldMap": "Mapa Mundial",
+    "games": "Jogos",
+    "agent": "Agente de Voz"
   },
   "WorldClocks": {
     "title": "Hora Mundial",
@@ -28,24 +30,28 @@
   },
   "chatModes": {
     "aiAssistant": {
-      "title": "Assistente de IA",
-      "description": "Inicie uma nova conversa."
+      "title": "Assistente IA",
+      "description": "Comece uma nova conversa."
     },
     "psychologist": {
       "title": "Psicólogo",
-      "description": "Fale com um psicólogo."
+      "description": "Converse com um psicólogo."
     },
     "grok": {
       "title": "Grok",
-      "description": "Um assistente de IA espirituoso e irreverente."
+      "description": "Um assistente IA irreverente e espirituoso."
     },
     "instructor": {
       "title": "Instrutor",
-      "description": "Um instrutor qualificado."
+      "description": "Um instrutor especializado."
+    },
+    "deepSeekReasoning": {
+      "title": "DeepSeek Raciocínio",
+      "description": "Uma IA especializada em resolução de problemas complexos e análise lógica."
     }
   },
   "Index": {
-    "title": "Liberta o Poder da IA",
+    "title": "Olá mundo!",
     "description": "A nossa plataforma com IA ajuda-o a construir aplicações inteligentes que transformam o seu negócio.",
     "getStarted": "Começar",
     "generateImages": "Gerar Imagens",
@@ -61,7 +67,28 @@
   },
   "Chat": {
     "title": "Chat com {mode}",
-    "inputPlaceholder": "Introduza a sua mensagem...",
-    "loading": "A carregar..."
+    "inputPlaceholder": "Digite sua mensagem...",
+    "loading": "Carregando chat...",
+    "recording": "Gravação em andamento...",
+    "startRecording": "Iniciar gravação de voz",
+    "stopRecording": "Parar gravação de voz"
+  },
+  "Agent": {
+    "title": "Agente de Voz",
+    "listening": "Ouvindo...",
+    "startPrompt": "Clique no microfone para começar",
+    "transcript": "Transcrição",
+    "unsupportedBrowser": "Seu navegador não suporta reconhecimento de voz",
+    "error": "Erro no reconhecimento de voz",
+    "networkError": "Erro de conexão de rede",
+    "networkErrorHint": "Por favor, verifique sua conexão com a internet e tente novamente",
+    "permissionError": "Acesso ao microfone negado. Por favor, permita o acesso ao microfone",
+    "noSpeechError": "Nenhuma fala foi detectada. Por favor, tente novamente",
+    "abortedError": "O reconhecimento de voz foi interrompido",
+    "startError": "Não foi possível iniciar o reconhecimento de voz. Por favor, tente novamente"
+  },
+  "Games": {
+    "title": "Jogos",
+    "description": "Jogue jogos multijogador divertidos com amigos e família."
   }
 } 

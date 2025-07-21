@@ -4,7 +4,9 @@
     "chatbot": "Chatbot",
     "images": "Images",
     "worldClocks": "World Clocks",
-    "worldMap": "World Map"
+    "worldMap": "World Map",
+    "games": "Games",
+    "agent": "Voice Agent"
   },
   "WorldClocks": {
     "title": "World Time",
@@ -42,10 +44,14 @@
     "instructor": {
       "title": "Instructor",
       "description": "A skilled instructor."
+    },
+    "deepSeekReasoning": {
+      "title": "DeepSeek Reasoning",
+      "description": "An AI specialized in complex problem-solving and logical analysis."
     }
   },
   "Index": {
-    "title": "Unlock the Power of AI",
+    "title": "Hello world!",
     "description": "Our AI-powered platform helps you build intelligent applications that transform your business.",
     "getStarted": "Get Started",
     "generateImages": "Generate Images",
@@ -62,9 +68,33 @@
   "Chat": {
     "title": "Chat with {mode}",
     "inputPlaceholder": "Type your message...",
-    "loading": "Loading...",
+    "loading": "Loading chat...",
+    "recording": "Recording in progress...",
+    "startRecording": "Start voice recording",
+    "stopRecording": "Stop voice recording",
     "selectMode": "Select a chat mode",
     "searchMode": "Search modes",
     "noModeFound": "No mode found"
+  },
+  "Agent": {
+    "title": "Voice Agent",
+    "listening": "Listening...",
+    "startPrompt": "Click the microphone to start",
+    "transcript": "Transcript",
+    "unsupportedBrowser": "Your browser doesn't support speech recognition",
+    "error": "Speech recognition error",
+    "networkError": "Network connection error",
+    "networkErrorHint": "Please check your internet connection and try again",
+    "permissionError": "Microphone access denied. Please allow microphone access",
+    "noSpeechError": "No speech was detected. Please try again",
+    "abortedError": "Speech recognition was aborted",
+    "startError": "Couldn't start speech recognition. Please try again",
+    "recorded": "Recorded",
+    "recordingComplete": "Thanks for talking",
+    "speakNow": "Start speaking..."
+  },
+  "Games": {
+    "title": "Games",
+    "description": "Play fun multiplayer games with friends and family."
   }
 } 

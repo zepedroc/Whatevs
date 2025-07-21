@@ -4,7 +4,9 @@
     "chatbot": "Chatbot",
     "images": "Imágenes",
     "worldClocks": "Relojes Mundiales",
-    "worldMap": "Mapa Mundial"
+    "worldMap": "Mapa Mundial",
+    "games": "Juegos",
+    "agent": "Agente de Voz"
   },
   "WorldClocks": {
     "title": "Hora Mundial",
@@ -45,7 +47,7 @@
     }
   },
   "Index": {
-    "title": "Libera el Poder de la IA",
+    "title": "¡Hola mundo!",
     "description": "Nuestra plataforma con IA te ayuda a construir aplicaciones inteligentes que transforman tu negocio.",
     "getStarted": "Comenzar",
     "generateImages": "Generar Imágenes",
@@ -62,9 +64,30 @@
   "Chat": {
     "title": "Chat con {mode}",
     "inputPlaceholder": "Escribe tu mensaje...",
-    "loading": "Cargando...",
+    "loading": "Cargando chat...",
+    "recording": "Grabación en curso...",
+    "startRecording": "Iniciar grabación de voz",
+    "stopRecording": "Detener grabación de voz",
     "selectMode": "Selecciona un modo",
     "searchMode": "Buscar modos",
     "noModeFound": "No se encontró ningún modo"
+  },
+  "Agent": {
+    "title": "Agente de Voz",
+    "listening": "Escuchando...",
+    "startPrompt": "Haz clic en el micrófono para comenzar",
+    "transcript": "Transcripción",
+    "unsupportedBrowser": "Tu navegador no soporta el reconocimiento de voz",
+    "error": "Error en el reconocimiento de voz",
+    "networkError": "Error de conexión de red",
+    "networkErrorHint": "Por favor, verifica tu conexión a internet e inténtalo de nuevo",
+    "permissionError": "Acceso al micrófono denegado. Por favor, permite el acceso al micrófono",
+    "noSpeechError": "No se detectó ninguna voz. Por favor, inténtalo de nuevo",
+    "abortedError": "El reconocimiento de voz fue interrumpido",
+    "startError": "No se pudo iniciar el reconocimiento de voz. Por favor, inténtalo de nuevo"
+  },
+  "Games": {
+    "title": "Juegos",
+    "description": "Juega divertidos juegos multijugador con amigos y familia."
   }
 } 
