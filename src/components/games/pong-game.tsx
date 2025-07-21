@@ -37,15 +37,15 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
   });
 
   // Game state for rendering
-  const [leftPaddleY, setLeftPaddleY] = useState(height / 2 - PADDLE_HEIGHT / 2);
-  const [rightPaddleY, setRightPaddleY] = useState(height / 2 - PADDLE_HEIGHT / 2);
-  const [ballX, setBallX] = useState(width / 2);
-  const [ballY, setBallY] = useState(height / 2);
-  const [leftScore, setLeftScore] = useState(0);
-  const [rightScore, setRightScore] = useState(0);
+  const [_leftPaddleY, setLeftPaddleY] = useState(height / 2 - PADDLE_HEIGHT / 2);
+  const [_rightPaddleY, setRightPaddleY] = useState(height / 2 - PADDLE_HEIGHT / 2);
+  const [_ballX, setBallX] = useState(width / 2);
+  const [_ballY, setBallY] = useState(height / 2);
+  const [_leftScore, setLeftScore] = useState(0);
+  const [_rightScore, setRightScore] = useState(0);
+  const [_winner, setWinner] = useState('');
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [winner, setWinner] = useState('');
   const [keysPressed, setKeysPressed] = useState<{ [key: string]: boolean }>({});
 
   // Refs for direct access in the game loop
@@ -142,7 +142,7 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
       previousTimeRef.current = time;
     }
 
-    const deltaTime = time - previousTimeRef.current;
+    const _deltaTime = time - previousTimeRef.current;
     previousTimeRef.current = time;
 
     const canvas = canvasRef.current;

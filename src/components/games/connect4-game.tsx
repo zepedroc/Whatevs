@@ -36,7 +36,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   );
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
   const [winner, setWinner] = useState<0 | 1 | 2>(0);
-  const [isDraw, setIsDraw] = useState(false);
+  const [_isDraw, setIsDraw] = useState(false);
   const [lastMove, setLastMove] = useState<[number, number] | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [animatingPiece, setAnimatingPiece] = useState<AnimatingPiece | null>(null);
@@ -212,7 +212,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
     }, dropSpeed);
 
     return () => clearTimeout(timer);
-  }, [animatingPiece, isAnimating, board]);
+  }, [animatingPiece, isAnimating, board, checkWin]);
 
   // Make a move
   const makeMove = (column: number) => {
@@ -244,7 +244,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   // Check if a cell is part of the winning combination
   const isWinningCell = (row: number, col: number): boolean => {
     if (!winningCells) return false;
-    return winningCells.some(([r, c]) => r === row && c === col);
+    return winningCells.some(([r, c]: [number, number]) => r === row && c === col);
   };
 
   // Render the game board
@@ -278,7 +278,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
             </div>
           )
         ) : (
-          <div>Player {currentPlayer}'s turn</div>
+          <div>Player {currentPlayer}&apos;s turn</div>
         )}
       </div>
 
@@ -369,7 +369,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
       </div>
 
       {/* CSS Animations */}
-      <style jsx global>{`
+      <style>{`
         @keyframes pulse {
           0% {
             transform: scale(1.1);
