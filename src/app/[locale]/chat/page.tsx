@@ -1,16 +1,18 @@
 'use client';
 
-import * as React from 'react';
-import { Suspense } from 'react';
+import { ClipboardEvent, FormEvent, KeyboardEvent, Suspense, useEffect, useState } from 'react';
 
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 
 import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 
 import { useChat } from '@ai-sdk/react';
 
 import { ChatMessages } from '@/components/chat-messages';
 import { ChatModeSelector } from '@/components/chat-mode-selector';
+import FilePreview from '@/components/file-preview';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -41,27 +43,54 @@ function ChatSection({ mode }: { mode: string }) {
   const { messages, input, handleInputChange, handleSubmit: chatHandleSubmit, setInput } = useChat({ body: { mode } });
   const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
 
+  const [files, setFiles] = useState<FileList | null>(null);
+
   // Update input field with transcript when recording
-  React.useEffect(() => {
+  useEffect(() => {
     if (transcript) {
       setInput(transcript);
     }
   }, [transcript, setInput]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
   };
 
+  const handlePaste = (event: ClipboardEvent) => {
+    const items = event.clipboardData?.items;
+
+    if (items) {
+      const files = Array.from(items)
+        .map((item) => item.getAsFile())
+        .filter((file): file is File => file !== null);
+
+      if (files.length > 0) {
+        const validFiles = files.filter((file) => file.type.startsWith('image/') || file.type.startsWith('text/'));
+
+        if (validFiles.length === files.length) {
+          const dataTransfer = new DataTransfer();
+          validFiles.forEach((file) => dataTransfer.items.add(file));
+          setFiles(dataTransfer.files);
+        } else {
+          toast.error('Only image and text files are allowed');
+        }
+      }
+    }
+  };
+
   // Wrap the submit handler to stop recording if active
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement> | KeyboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     if (isRecording) {
       toggleRecording();
     }
-    chatHandleSubmit(e);
+
+    const options = files ? { experimental_attachments: files } : {};
+
+    chatHandleSubmit(e, options);
   };
 
   return (
@@ -73,6 +102,7 @@ function ChatSection({ mode }: { mode: string }) {
       </div>
       <form onSubmit={handleSubmit} className="fixed bottom-0 w-screen">
         <div className="border-t border-gray-200 bg-white px-4 py-4 shadow-lg">
+          <FilePreview files={files} />
           <div className="mx-auto max-w-4xl flex items-center gap-2">
             <Textarea
               className="flex-1 rounded-lg border border-gray-200 bg-gray-50 px-6 py-3 text-gray-700 focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-gray-300 transition-all min-h-[60px] resize-none"
@@ -80,6 +110,7 @@ function ChatSection({ mode }: { mode: string }) {
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
             />
             <div className="flex gap-2">
               <Button
