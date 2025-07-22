@@ -3,7 +3,7 @@
 ## Next features
 
 - Allow to click on images to see them in their original size
-- Allow to input images on chat (by drag)
+- Allow to input images on chat (by drag/by choosing file)
 - Allow to input files on chat
 - Build a canvas for ai generated code (allow three.js)
 - Add real time access to the internet

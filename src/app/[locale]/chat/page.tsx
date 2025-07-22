@@ -91,6 +91,7 @@ function ChatSection({ mode }: { mode: string }) {
     const options = files ? { experimental_attachments: files } : {};
 
     chatHandleSubmit(e, options);
+    setFiles(null);
   };
 
   return (
