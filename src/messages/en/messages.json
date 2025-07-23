@@ -69,6 +69,7 @@
     "title": "Chat with {mode}",
     "inputPlaceholder": "Type your message...",
     "loading": "Loading chat...",
+    "thinking": "The AI is thinking...",
     "recording": "Recording in progress...",
     "startRecording": "Start voice recording",
     "stopRecording": "Stop voice recording",

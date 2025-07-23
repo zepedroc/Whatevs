@@ -40,7 +40,14 @@ function ChatContent() {
 
 function ChatSection({ mode }: { mode: string }) {
   const t = useTranslations();
-  const { messages, input, handleInputChange, handleSubmit: chatHandleSubmit, setInput } = useChat({ body: { mode } });
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit: chatHandleSubmit,
+    setInput,
+    status,
+  } = useChat({ body: { mode } });
   const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
 
   const [files, setFiles] = useState<File[]>([]);
@@ -108,11 +115,21 @@ function ChatSection({ mode }: { mode: string }) {
     return dataTransfer.files;
   }
 
+  const showLoading = status === 'submitted';
+
   return (
     <>
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-4xl">
           <ChatMessages messages={messages} />
+          {showLoading && (
+            <div className="flex mt-4">
+              <div className="max-w-[70%] rounded-lg flex flex-row items-center gap-2">
+                <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs text-gray-900">{t('Chat.thinking')}</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <form onSubmit={handleSubmit} className="fixed bottom-0 w-screen">
@@ -129,6 +146,7 @@ function ChatSection({ mode }: { mode: string }) {
                   onKeyDown={handleKeyDown}
                   onPaste={handlePaste}
                   rows={1}
+                  disabled={status === 'submitted' || status === 'streaming'}
                 />
                 <div className="flex gap-2 ml-2 pb-1">
                   <Button
@@ -138,6 +156,7 @@ function ChatSection({ mode }: { mode: string }) {
                       isRecording ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
                     }`}
                     title={isRecording ? t('Chat.stopRecording') : t('Chat.startRecording')}
+                    disabled={status === 'submitted' || status === 'streaming'}
                   >
                     {isRecording ? (
                       <svg className="h-5 w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -152,7 +171,11 @@ function ChatSection({ mode }: { mode: string }) {
                       </svg>
                     )}
                   </Button>
-                  <Button className="rounded-lg bg-gray-900 p-3 hover:bg-gray-800 transition-colors" type="submit">
+                  <Button
+                    className="rounded-lg bg-gray-900 p-3 hover:bg-gray-800 transition-colors"
+                    type="submit"
+                    disabled={status === 'submitted' || status === 'streaming'}
+                  >
                     <SendIcon className="h-5 w-5 text-white" />
                   </Button>
                 </div>
