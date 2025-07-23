@@ -10,6 +10,8 @@ import remarkGfm from 'remark-gfm';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
+import CodeBlock from './CodeBlock';
+
 interface ChatMessagesProps {
   messages: Message[];
   containerClassName?: string;
@@ -98,11 +100,29 @@ export function AssistantMessage({ content, index }: MessageProps) {
   const hasReasoning = content.includes('<think>');
   const isStreaming = content.includes('<think>') && !content.includes('</think>');
 
+  const markdownComponents = {
+    code({ node, inline, className, children, ...props }: any) {
+      const match = /language-(\w+)/.exec(className || '');
+      const language = match ? match[1] : '';
+      const value = String(children).replace(/\n$/, '');
+      if (!inline && language) {
+        return <CodeBlock language={language} value={value} />;
+      }
+      return (
+        <code className={'bg-gray-200 px-1 py-0.5 rounded'} {...props}>
+          {children}
+        </code>
+      );
+    },
+  };
+
   if (!hasReasoning) {
     return (
       <div key={`chat-message-${messageNumber}`} className="flex">
-        <div className="max-w-[70%] rounded-lg bg-gray-200 p-3 text-gray-800">
-          <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+        <div className="max-w-[70%] rounded-lg p-3 text-gray-800">
+          <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+            {content}
+          </Markdown>
         </div>
       </div>
     );
@@ -114,8 +134,10 @@ export function AssistantMessage({ content, index }: MessageProps) {
 
     return (
       <div key={`chat-message-${messageNumber}`} className="flex">
-        <div className="max-w-[70%] rounded-lg bg-gray-200 p-3 text-gray-800">
-          <Markdown remarkPlugins={[remarkGfm]}>{beforeThink}</Markdown>
+        <div className="max-w-[70%] rounded-lg p-3 text-gray-800">
+          <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+            {beforeThink}
+          </Markdown>
 
           <Accordion type="single" collapsible className="mt-2">
             <AccordionItem value="reasoning" className="border-gray-300">
@@ -139,15 +161,21 @@ export function AssistantMessage({ content, index }: MessageProps) {
 
   return (
     <div key={`chat-message-${messageNumber}`} className="flex">
-      <div className="max-w-[70%] rounded-lg bg-gray-200 p-3 text-gray-800">
-        {beforeThink && <Markdown remarkPlugins={[remarkGfm]}>{beforeThink}</Markdown>}
+      <div className="max-w-[70%] rounded-lg p-3 text-gray-800">
+        {beforeThink && (
+          <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+            {beforeThink}
+          </Markdown>
+        )}
 
         <Accordion type="single" collapsible className="mt-2">
           <AccordionItem value="reasoning" className="border-gray-300">
             <AccordionTrigger className="text-sm text-gray-600 hover:text-gray-900">View Reasoning Steps</AccordionTrigger>
             <AccordionContent>
               <div className="bg-gray-100 rounded p-2 text-sm">
-                <Markdown remarkPlugins={[remarkGfm]}>{thinkContent}</Markdown>
+                <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                  {thinkContent}
+                </Markdown>
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -155,7 +183,9 @@ export function AssistantMessage({ content, index }: MessageProps) {
 
         {afterThink && (
           <div className="mt-2">
-            <Markdown remarkPlugins={[remarkGfm]}>{afterThink}</Markdown>
+            <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+              {afterThink}
+            </Markdown>
           </div>
         )}
       </div>
