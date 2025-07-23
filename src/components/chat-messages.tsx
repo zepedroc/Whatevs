@@ -78,6 +78,8 @@ export function UserMessage({ content, index, attachments }: MessageProps) {
                   key={attachment.name}
                   src={attachment.url || ''}
                   alt={attachment.name || ''}
+                  width={100}
+                  height={100}
                 />
               ) : null,
             )}

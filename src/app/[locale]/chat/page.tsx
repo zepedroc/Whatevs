@@ -75,6 +75,10 @@ function ChatSection({ mode }: { mode: string }) {
     }
   };
 
+  /**
+   * Handle the pasting of files from the clipboard
+   * @param event - The clipboard event
+   */
   const handlePaste = (event: ClipboardEvent) => {
     const items = event.clipboardData?.items;
 
@@ -97,6 +101,19 @@ function ChatSection({ mode }: { mode: string }) {
 
   const handleRemoveFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  /**
+   * Handle the addition of files from the file picker
+   * @param newFiles - The files to add
+   */
+  const handleAddFiles = (newFiles: File[]) => {
+    const validFiles = newFiles.filter((file) => file.type.startsWith('image/'));
+    if (validFiles.length > 0) {
+      setFiles((prev) => [...prev, ...validFiles]);
+    } else {
+      toast.error('Only image files are allowed');
+    }
   };
 
   const handleImageClick = (file: File) => {
@@ -154,6 +171,7 @@ function ChatSection({ mode }: { mode: string }) {
         status={status}
         t={t}
         textareaRef={textareaRef as React.RefObject<HTMLTextAreaElement>}
+        onAddFiles={handleAddFiles}
       />
       {/* Image Modal */}
       {modalImage && (
@@ -166,6 +184,8 @@ function ChatSection({ mode }: { mode: string }) {
               src={URL.createObjectURL(modalImage)}
               alt={modalImage.name}
               className="object-contain max-w-[90vw] max-h-[90vh] rounded shadow-lg"
+              width={1000}
+              height={1000}
             />
             <button
               className="absolute top-2 right-2 bg-white bg-opacity-80 rounded-full p-2 text-black hover:bg-opacity-100"

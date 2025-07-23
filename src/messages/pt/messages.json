@@ -69,10 +69,11 @@
     "title": "Chat com {mode}",
     "inputPlaceholder": "Digite sua mensagem...",
     "loading": "Carregando chat...",
-    "thinking": "A IA está a pensar...",
+    "thinking": "A pensar...",
     "recording": "Gravação em andamento...",
     "startRecording": "Iniciar gravação de voz",
-    "stopRecording": "Parar gravação de voz"
+    "stopRecording": "Parar gravação de voz",
+    "addImage": "Adicionar imagem(ns)"
   },
   "Agent": {
     "title": "Agente de Voz",
