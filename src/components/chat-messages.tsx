@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 
+import Image from 'next/image';
+
 import { Attachment, Message } from 'ai';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -71,7 +73,12 @@ export function UserMessage({ content, index, attachments }: MessageProps) {
           <div className="flex flex-row gap-2 mb-2">
             {attachments.map((attachment) =>
               attachment.contentType?.startsWith('image') ? (
-                <img className="rounded-md w-40" key={attachment.name} src={attachment.url} alt={attachment.name} />
+                <Image
+                  className="rounded-md w-40"
+                  key={attachment.name}
+                  src={attachment.url || ''}
+                  alt={attachment.name || ''}
+                />
               ) : null,
             )}
           </div>

@@ -67,8 +67,6 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
 
   // Find winning cells
   const findWinningCells = (board: GameBoard, row: number, col: number, player: 1 | 2): WinningCells => {
-    const winningCells: [number, number][] = [];
-
     // Check horizontal
     let count = 0;
     let tempCells: [number, number][] = [];

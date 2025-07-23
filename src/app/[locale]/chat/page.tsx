@@ -2,6 +2,7 @@
 
 import { ClipboardEvent, FormEvent, KeyboardEvent, Suspense, useEffect, useRef, useState } from 'react';
 
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 
 import { useTranslations } from 'next-intl';
@@ -161,7 +162,7 @@ function ChatSection({ mode }: { mode: string }) {
           onClick={() => setModalImage(null)}
         >
           <div className="relative max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
-            <img
+            <Image
               src={URL.createObjectURL(modalImage)}
               alt={modalImage.name}
               className="object-contain max-w-[90vw] max-h-[90vh] rounded shadow-lg"
