@@ -36,7 +36,6 @@ export function ChatMessages({ messages, containerClassName = 'space-y-4' }: Cha
     return content;
   };
 
-  console.log('🚀 -> ChatMessages -> messages:', messages);
   return (
     <div className={containerClassName}>
       {messages.map((m, index) =>
@@ -63,7 +62,6 @@ interface MessageProps {
 }
 
 export function UserMessage({ content, index, attachments }: MessageProps) {
-  console.log('🚀 -> UserMessage -> content:', content);
   const messageNumber = Math.ceil(index / 2) + 1;
 
   return (
