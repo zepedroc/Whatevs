@@ -10,7 +10,7 @@ import remarkGfm from 'remark-gfm';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
-import CodeBlock from './CodeBlock';
+import CodeBlock from './code-block';
 
 interface ChatMessagesProps {
   messages: Message[];
