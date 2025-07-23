@@ -7,13 +7,10 @@
     "plugin:react/jsx-runtime"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "react"],
+  "plugins": ["@typescript-eslint", "react", "react-you-might-not-need-an-effect"],
   "rules": {
     "react/prop-types": "off",
-    "@typescript-eslint/no-unused-vars": ["warn", {
-      "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_"
-    }],
+    "@typescript-eslint/no-unused-vars": "error",
     "no-console": ["warn", { "allow": ["warn", "error"] }]
   },
   "settings": {

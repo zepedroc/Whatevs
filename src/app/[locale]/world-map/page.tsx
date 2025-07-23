@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+
 import { LatLngTuple } from 'leaflet';
-import WorldMap from '@/components/world-map';
+
 import { MapActions } from '@/components/map-actions';
+import WorldMap from '@/components/world-map';
 
 export default function WorldMapPage() {
   const [targetLocation, setTargetLocation] = useState<LatLngTuple | null>(null);

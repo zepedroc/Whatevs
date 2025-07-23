@@ -1,8 +1,10 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import dynamic from 'next/dynamic';
 import { useState } from 'react';
+
+import dynamic from 'next/dynamic';
+
+import { useTranslations } from 'next-intl';
 
 // Use dynamic import with no SSR for the game component since it uses browser APIs
 const PongGame = dynamic(() => import('@/components/games/pong-game'), { ssr: false });

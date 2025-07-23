@@ -36,7 +36,6 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   );
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
   const [winner, setWinner] = useState<0 | 1 | 2>(0);
-  const [_isDraw, setIsDraw] = useState(false);
   const [lastMove, setLastMove] = useState<[number, number] | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [animatingPiece, setAnimatingPiece] = useState<AnimatingPiece | null>(null);
@@ -53,7 +52,6 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
     );
     setCurrentPlayer(1);
     setWinner(0);
-    setIsDraw(false);
     setLastMove(null);
     setIsGameOver(false);
     setAnimatingPiece(null);
@@ -69,8 +67,6 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
 
   // Find winning cells
   const findWinningCells = (board: GameBoard, row: number, col: number, player: 1 | 2): WinningCells => {
-    const winningCells: [number, number][] = [];
-
     // Check horizontal
     let count = 0;
     let tempCells: [number, number][] = [];
@@ -192,7 +188,6 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
 
       // Check for draw
       if (checkDraw(newBoard)) {
-        setIsDraw(true);
         setIsGameOver(true);
         return;
       }
@@ -320,8 +315,8 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
                         transform: isWinningCell(rowIndex, colIndex)
                           ? 'scale(1.1) rotate(0deg)'
                           : lastMove && lastMove[0] === rowIndex && lastMove[1] === colIndex
-                          ? 'scale(1.05)'
-                          : 'scale(1)',
+                            ? 'scale(1.05)'
+                            : 'scale(1)',
                         boxShadow: isWinningCell(rowIndex, colIndex) ? '0 0 10px 3px rgba(255, 255, 255, 0.7)' : 'none',
                         animation: isWinningCell(rowIndex, colIndex) ? 'pulse 1.5s infinite' : 'none',
                         transition: 'transform 0.3s, box-shadow 0.3s, background-color 0.3s',

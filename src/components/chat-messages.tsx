@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+
+import Image from 'next/image';
+
+import { Attachment, Message } from 'ai';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Message } from 'ai';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
@@ -39,7 +42,12 @@ export function ChatMessages({ messages, containerClassName = 'space-y-4' }: Cha
     <div className={containerClassName}>
       {messages.map((m, index) =>
         m.role === 'user' ? (
-          <UserMessage key={`user-message-${index}`} content={m.content} index={index} />
+          <UserMessage
+            key={`user-message-${index}`}
+            content={m.content}
+            index={index}
+            attachments={m.experimental_attachments}
+          />
         ) : (
           <AssistantMessage key={`chat-message-${index}`} content={formatMessage(m.content)} index={index} />
         ),
@@ -52,15 +60,34 @@ export function ChatMessages({ messages, containerClassName = 'space-y-4' }: Cha
 interface MessageProps {
   content: string;
   index: number;
+  attachments?: Attachment[];
 }
 
-export function UserMessage({ content, index }: MessageProps) {
+export function UserMessage({ content, index, attachments }: MessageProps) {
   const messageNumber = Math.ceil(index / 2) + 1;
 
   return (
     <div key={`user-message-${messageNumber}`} className="flex justify-end">
-      <div className="max-w-[70%] rounded-lg bg-gray-900 p-3 text-white">
-        <p>{content}</p>
+      <div className="max-w-[70%] flex flex-col items-end">
+        {attachments?.length ? (
+          <div className="flex flex-row gap-2 mb-2">
+            {attachments.map((attachment) =>
+              attachment.contentType?.startsWith('image') ? (
+                <Image
+                  className="rounded-md w-40"
+                  key={attachment.name}
+                  src={attachment.url || ''}
+                  alt={attachment.name || ''}
+                  width={100}
+                  height={100}
+                />
+              ) : null,
+            )}
+          </div>
+        ) : null}
+        <div className="rounded-lg bg-gray-900 p-3 text-white w-full">
+          <p>{content}</p>
+        </div>
       </div>
     </div>
   );

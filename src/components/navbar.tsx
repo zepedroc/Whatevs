@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 
-import { NavigationMenuLink, NavigationMenuList, NavigationMenu } from '@/components/ui/navigation-menu';
+import { useTranslations } from 'next-intl';
+
+import { NavigationMenu, NavigationMenuLink, NavigationMenuList } from '@/components/ui/navigation-menu';
+
 import { LanguageSwitcher } from './language-switcher';
 
 export default function NavBar() {
@@ -49,7 +52,7 @@ export default function NavBar() {
 
   const navItems = [
     { key: 'home', href: `/${locale}`, label: t('navigation.home') },
-    { key: 'chatbot', href: `/${locale}/chatbot`, label: t('navigation.chatbot') },
+    { key: 'chat', href: `/${locale}/chat`, label: t('navigation.chat') },
     { key: 'images', href: `/${locale}/images`, label: t('navigation.images') },
     { key: 'worldClocks', href: `/${locale}/world-clocks`, label: t('navigation.worldClocks') },
     { key: 'worldMap', href: `/${locale}/world-map`, label: t('navigation.worldMap') },

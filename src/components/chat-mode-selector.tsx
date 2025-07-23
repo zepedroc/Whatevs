@@ -1,12 +1,15 @@
 'use client';
 
 import * as React from 'react';
+
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+
 import { Check, ChevronsUpDown } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+
 import { ChatMode } from '@/constants/chatbot-constants';
 import { cn } from '@/lib/utils';
 

@@ -1,7 +1,7 @@
 {
   "navigation": {
     "home": "Inicio",
-    "chatbot": "Chatbot",
+    "chat": "Chat",
     "images": "Imágenes",
     "worldClocks": "Relojes Mundiales",
     "worldMap": "Mapa Mundial",
@@ -65,12 +65,14 @@
     "title": "Chat con {mode}",
     "inputPlaceholder": "Escribe tu mensaje...",
     "loading": "Cargando chat...",
+    "thinking": "Pensando...",
     "recording": "Grabación en curso...",
     "startRecording": "Iniciar grabación de voz",
     "stopRecording": "Detener grabación de voz",
     "selectMode": "Selecciona un modo",
     "searchMode": "Buscar modos",
-    "noModeFound": "No se encontró ningún modo"
+    "noModeFound": "No se encontró ningún modo",
+    "addImage": "Añadir imagen(es)"
   },
   "Agent": {
     "title": "Agente de Voz",
