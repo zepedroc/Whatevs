@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-solarizedlight.css';
 
 interface CodeBlockProps {
   language?: string;
@@ -27,10 +30,11 @@ const languageMap: Record<string, string> = {
   md: 'Markdown',
 };
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({ language = '', value }) => {
   const [copied, setCopied] = useState(false);
+  const codeRef = useRef<HTMLElement>(null);
 
-  const langLabel = languageMap[language || ''] || language || 'Code';
+  const langLabel = languageMap[language] || language || 'Code';
 
   const handleCopy = async () => {
     try {
@@ -42,23 +46,29 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
     }
   };
 
+  useEffect(() => {
+    if (codeRef.current) {
+      Prism.highlightElement(codeRef.current);
+    }
+  }, [value, language]);
+
   return (
-    <>
-      <div className="my-4 rounded-lg border border-gray-200 bg-gray-50 overflow-hidden shadow-md">
-        <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200">
-          <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{langLabel}</span>
-          <button
-            onClick={handleCopy}
-            className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            {copied ? 'Copied!' : 'Copy'}
-          </button>
-        </div>
-        <pre className="overflow-x-auto p-4 text-sm text-gray-800 bg-gray-50">
-          <code className={`language-${language}`}>{value}</code>
-        </pre>
+    <div className="my-4 rounded-lg border border-gray-200 bg-gray-50 overflow-hidden shadow-md">
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200">
+        <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{langLabel}</span>
+        <button
+          onClick={handleCopy}
+          className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          {copied ? 'Copied!' : 'Copy'}
+        </button>
       </div>
-    </>
+      <pre className="overflow-x-auto p-4 text-sm bg-gray-50" style={{ background: 'transparent' }}>
+        <code ref={codeRef} className={`language-${language} bg-transparent`}>
+          {value}
+        </code>
+      </pre>
+    </div>
   );
 };
 
