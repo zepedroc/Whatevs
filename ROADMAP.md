@@ -9,7 +9,7 @@
 
 ## Bugs
 
-- When we click to see the image on its original size, the close button is misplaced
+-
 
 ## Minor things
 

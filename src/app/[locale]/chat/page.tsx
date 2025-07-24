@@ -23,7 +23,7 @@ function ChatContent() {
   const t = useTranslations();
 
   return (
-    <div className="flex flex-col h-85vh bg-gray-50">
+    <div className="flex flex-col h-[80vh] bg-gray-50">
       <div className="bg-gray-100 p-4 flex items-center">
         <div className="flex-1 text-center">
           <span className="text-sm text-gray-600">{t('Chat.title', { mode })}</span>
@@ -144,7 +144,7 @@ function ChatSection({ mode }: { mode: string }) {
 
   return (
     <>
-      <div className="flex-1 overflow-auto p-12">
+      <div className="flex-1 overflow-auto p-8">
         <div className="mx-auto max-w-4xl">
           <ChatMessages messages={messages} />
           {showLoading && (
