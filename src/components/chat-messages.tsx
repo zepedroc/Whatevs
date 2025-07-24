@@ -87,7 +87,7 @@ export function UserMessage({ content, index, attachments }: MessageProps) {
             )}
           </div>
         ) : null}
-        <div className="rounded-lg bg-gray-900 p-3 text-white w-full">
+        <div className="rounded-lg bg-gray-100 p-3 text-gray-800 w-full text-sm">
           <p>{content}</p>
         </div>
       </div>
@@ -109,7 +109,7 @@ export function AssistantMessage({ content, index }: MessageProps) {
         return <CodeBlock language={language} value={value} />;
       }
       return (
-        <code className={'bg-gray-200 px-1 py-0.5 rounded'} {...props}>
+        <code className={'bg-gray-100 px-1 py-0.5 rounded text-gray-800'} {...props}>
           {children}
         </code>
       );
@@ -119,7 +119,7 @@ export function AssistantMessage({ content, index }: MessageProps) {
   if (!hasReasoning) {
     return (
       <div key={`chat-message-${messageNumber}`} className="flex">
-        <div className="max-w-[70%] rounded-lg p-3 text-gray-800">
+        <div className="max-w-[70%] rounded-lg p-3 text-gray-900 bg-gray-50 text-sm">
           <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
             {content}
           </Markdown>
@@ -134,7 +134,7 @@ export function AssistantMessage({ content, index }: MessageProps) {
 
     return (
       <div key={`chat-message-${messageNumber}`} className="flex">
-        <div className="max-w-[70%] rounded-lg p-3 text-gray-800">
+        <div className="max-w-[70%] rounded-lg p-3 text-gray-900 bg-gray-50 text-sm">
           <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
             {beforeThink}
           </Markdown>
@@ -161,7 +161,7 @@ export function AssistantMessage({ content, index }: MessageProps) {
 
   return (
     <div key={`chat-message-${messageNumber}`} className="flex">
-      <div className="max-w-[70%] rounded-lg p-3 text-gray-800">
+      <div className="max-w-[70%] rounded-lg p-3 text-gray-900 bg-gray-50 text-sm">
         {beforeThink && (
           <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
             {beforeThink}

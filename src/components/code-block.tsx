@@ -44,17 +44,17 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
 
   return (
     <>
-      <div className="my-4 rounded-lg border border-gray-300 bg-gray-900 overflow-hidden shadow-md">
-        <div className="flex items-center justify-between px-4 py-2 bg-gray-800 border-b border-gray-700">
-          <span className="text-xs font-semibold text-gray-200 uppercase tracking-wide">{langLabel}</span>
+      <div className="my-4 rounded-lg border border-gray-200 bg-gray-50 overflow-hidden shadow-md">
+        <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200">
+          <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{langLabel}</span>
           <button
             onClick={handleCopy}
-            className="text-xs px-2 py-1 rounded bg-gray-700 hover:bg-gray-600 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             {copied ? 'Copied!' : 'Copy'}
           </button>
         </div>
-        <pre className="overflow-x-auto p-4 text-sm text-gray-100 bg-gray-900">
+        <pre className="overflow-x-auto p-4 text-sm text-gray-800 bg-gray-50">
           <code className={`language-${language}`}>{value}</code>
         </pre>
       </div>

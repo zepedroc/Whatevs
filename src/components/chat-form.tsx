@@ -64,13 +64,12 @@ export default function ChatForm({
             <div className="flex items-end">
               <Textarea
                 ref={textareaRef}
-                className="flex-1 border-none bg-transparent p-0 shadow-none resize-none min-h-[32px] outline-none focus-visible:ring-0 focus-visible:border-none focus-visible:ring-offset-0 focus:ring-offset-0 cursor-text"
+                className="flex-1 border-none bg-transparent p-0 shadow-none outline-none focus-visible:ring-0 focus-visible:border-none focus-visible:ring-offset-0 focus:ring-offset-0 cursor-text"
                 placeholder={t('Chat.inputPlaceholder')}
                 value={input}
                 onChange={onInputChange}
                 onKeyDown={onKeyDown}
                 onPaste={onPaste}
-                rows={1}
                 disabled={status === 'submitted' || status === 'streaming'}
               />
               <div className="flex gap-2 ml-2 pb-1 items-center">
