@@ -44,6 +44,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language = '', value }) =>
       setCopied(true);
       setTimeout(() => setCopied(false), 1200);
     } catch (err) {
+      console.error(err);
       setCopied(false);
     }
   };

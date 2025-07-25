@@ -12,10 +12,5 @@
     "react/prop-types": "off",
     "@typescript-eslint/no-unused-vars": "error",
     "no-console": ["warn", { "allow": ["warn", "error"] }]
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
   }
 }

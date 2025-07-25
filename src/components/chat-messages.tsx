@@ -10,7 +10,7 @@ import remarkGfm from 'remark-gfm';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
-import CodeBlock from './code-block';
+import { markdownComponents } from '@/lib/markdown-components';
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -99,22 +99,6 @@ export function AssistantMessage({ content, index }: MessageProps) {
   const messageNumber = Math.ceil(index / 2);
   const hasReasoning = content.includes('<think>');
   const isStreaming = content.includes('<think>') && !content.includes('</think>');
-
-  const markdownComponents = {
-    code({ node, inline, className, children, ...props }: any) {
-      const match = /language-(\w+)/.exec(className || '');
-      const language = match ? match[1] : '';
-      const value = String(children).replace(/\n$/, '');
-      if (!inline && language) {
-        return <CodeBlock language={language} value={value} />;
-      }
-      return (
-        <code className={'bg-gray-100 px-1 py-0.5 rounded text-gray-800'} {...props}>
-          {children}
-        </code>
-      );
-    },
-  };
 
   if (!hasReasoning) {
     return (
