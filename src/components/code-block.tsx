@@ -55,7 +55,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language = '', value }) =>
   }, [value, language]);
 
   return (
-    <div className="my-4 rounded-lg border border-gray-200 bg-gray-50 overflow-hidden shadow-md">
+    <div className="my-4 rounded-lg border border-gray-200 overflow-hidden shadow-md">
       <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200">
         <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{langLabel}</span>
         <button

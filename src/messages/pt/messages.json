@@ -67,13 +67,17 @@
   },
   "Chat": {
     "title": "Chat com {mode}",
-    "inputPlaceholder": "Digite sua mensagem...",
+    "inputPlaceholder": "Escreve a tua mensagem...",
     "loading": "Carregando chat...",
-    "thinking": "A pensar...",
+    "thinking": "Pensando...",
     "recording": "Gravação em andamento...",
     "startRecording": "Iniciar gravação de voz",
     "stopRecording": "Parar gravação de voz",
-    "addImage": "Adicionar imagem(ns)"
+    "selectMode": "Selecione um modo de chat",
+    "searchMode": "Pesquisar modos",
+    "noModeFound": "Nenhum modo encontrado",
+    "addImage": "Adicionar imagem(ns)",
+    "newChat": "Novo chat"
   },
   "Agent": {
     "title": "Agente de Voz",

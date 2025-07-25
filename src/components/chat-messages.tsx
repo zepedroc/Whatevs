@@ -119,7 +119,7 @@ export function AssistantMessage({ content, index }: MessageProps) {
   if (!hasReasoning) {
     return (
       <div key={`chat-message-${messageNumber}`} className="flex">
-        <div className="max-w-[70%] rounded-lg p-3 text-gray-900 bg-gray-50 text-sm">
+        <div className="max-w-[70%] rounded-lg p-3 text-gray-900 text-sm">
           <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
             {content}
           </Markdown>
@@ -134,7 +134,7 @@ export function AssistantMessage({ content, index }: MessageProps) {
 
     return (
       <div key={`chat-message-${messageNumber}`} className="flex">
-        <div className="max-w-[70%] rounded-lg p-3 text-gray-900 bg-gray-50 text-sm">
+        <div className="max-w-[70%] rounded-lg p-3 text-gray-900 text-sm">
           <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
             {beforeThink}
           </Markdown>
@@ -161,7 +161,7 @@ export function AssistantMessage({ content, index }: MessageProps) {
 
   return (
     <div key={`chat-message-${messageNumber}`} className="flex">
-      <div className="max-w-[70%] rounded-lg p-3 text-gray-900 bg-gray-50 text-sm">
+      <div className="max-w-[70%] rounded-lg p-3 text-gray-900 text-sm">
         {beforeThink && (
           <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
             {beforeThink}

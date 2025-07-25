@@ -5,7 +5,6 @@
 - Allow to input files on chat
 - Build a canvas for ai generated code (allow three.js)
 - Add real time access to the internet
-- Add a "new chat" button
 
 ## Bugs
 

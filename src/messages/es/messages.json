@@ -66,13 +66,14 @@
     "inputPlaceholder": "Escribe tu mensaje...",
     "loading": "Cargando chat...",
     "thinking": "Pensando...",
-    "recording": "Grabación en curso...",
+    "recording": "Grabación en progreso...",
     "startRecording": "Iniciar grabación de voz",
     "stopRecording": "Detener grabación de voz",
-    "selectMode": "Selecciona un modo",
+    "selectMode": "Selecciona un modo de chat",
     "searchMode": "Buscar modos",
     "noModeFound": "No se encontró ningún modo",
-    "addImage": "Añadir imagen(es)"
+    "addImage": "Agregar imagen(es)",
+    "newChat": "Nuevo chat"
   },
   "Agent": {
     "title": "Agente de Voz",

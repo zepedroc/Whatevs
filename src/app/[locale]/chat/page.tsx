@@ -23,7 +23,7 @@ function ChatContent() {
   const t = useTranslations();
 
   return (
-    <div className="flex flex-col h-[80vh] bg-gray-50">
+    <div className="flex flex-col h-[80vh]">
       <div className="bg-gray-100 p-4 flex items-center">
         <div className="flex-1 text-center">
           <span className="text-sm text-gray-600">{t('Chat.title', { mode })}</span>
@@ -43,6 +43,7 @@ function ChatSection({ mode }: { mode: string }) {
     handleInputChange,
     handleSubmit: chatHandleSubmit,
     setInput,
+    setMessages,
     status,
   } = useChat({ body: { mode } });
   const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
@@ -72,6 +73,18 @@ function ChatSection({ mode }: { mode: string }) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
+    }
+  };
+
+  /**
+   * Handle starting a new chat by clearing all messages and files
+   */
+  const handleNewChat = () => {
+    setMessages([]);
+    setFiles([]);
+    setInput('');
+    if (textareaRef.current) {
+      textareaRef.current.focus();
     }
   };
 
@@ -172,6 +185,7 @@ function ChatSection({ mode }: { mode: string }) {
         t={t}
         textareaRef={textareaRef as React.RefObject<HTMLTextAreaElement>}
         onAddFiles={handleAddFiles}
+        onNewChat={handleNewChat}
       />
       {/* Image Modal */}
       {modalImage && (
