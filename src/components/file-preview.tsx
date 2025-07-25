@@ -18,7 +18,7 @@ export default function FilePreview({ files, onRemove, onImageClick }: FilePrevi
   return (
     <div className="flex flex-row flex-wrap gap-2 mb-2">
       {files.map((file, idx) => (
-        <div key={file.name + idx} className="flex items-center bg-gray-100 rounded-lg px-3 py-2 shadow-sm max-w-xs">
+        <div key={file.name + idx} className="flex items-center bg-gray-50 rounded-lg px-3 py-2 shadow-sm max-w-xs">
           <div className="flex items-center">
             {file.type.startsWith('image') ? (
               <button
@@ -41,8 +41,8 @@ export default function FilePreview({ files, onRemove, onImageClick }: FilePrevi
               </div>
             )}
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-medium text-gray-800 truncate max-w-[100px]">{file.name}</span>
-              <span className="text-[10px] text-gray-500">{formatSize(file.size)}</span>
+              <span className="text-xs font-medium text-gray-700 truncate max-w-[100px]">{file.name}</span>
+              <span className="text-[10px] text-gray-400">{formatSize(file.size)}</span>
             </div>
           </div>
           {onRemove && (

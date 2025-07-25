@@ -76,7 +76,8 @@
     "selectMode": "Select a chat mode",
     "searchMode": "Search modes",
     "noModeFound": "No mode found",
-    "addImage": "Add image(s)"
+    "addImage": "Add image(s)",
+    "newChat": "New chat"
   },
   "Agent": {
     "title": "Voice Agent",

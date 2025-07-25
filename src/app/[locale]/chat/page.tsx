@@ -23,7 +23,7 @@ function ChatContent() {
   const t = useTranslations();
 
   return (
-    <div className="flex flex-col h-85vh">
+    <div className="flex flex-col h-[80vh]">
       <div className="bg-gray-100 p-4 flex items-center">
         <div className="flex-1 text-center">
           <span className="text-sm text-gray-600">{t('Chat.title', { mode })}</span>
@@ -43,6 +43,7 @@ function ChatSection({ mode }: { mode: string }) {
     handleInputChange,
     handleSubmit: chatHandleSubmit,
     setInput,
+    setMessages,
     status,
   } = useChat({ body: { mode } });
   const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
@@ -72,6 +73,18 @@ function ChatSection({ mode }: { mode: string }) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
+    }
+  };
+
+  /**
+   * Handle starting a new chat by clearing all messages and files
+   */
+  const handleNewChat = () => {
+    setMessages([]);
+    setFiles([]);
+    setInput('');
+    if (textareaRef.current) {
+      textareaRef.current.focus();
     }
   };
 
@@ -144,7 +157,7 @@ function ChatSection({ mode }: { mode: string }) {
 
   return (
     <>
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-auto p-8">
         <div className="mx-auto max-w-4xl">
           <ChatMessages messages={messages} />
           {showLoading && (
@@ -172,6 +185,7 @@ function ChatSection({ mode }: { mode: string }) {
         t={t}
         textareaRef={textareaRef as React.RefObject<HTMLTextAreaElement>}
         onAddFiles={handleAddFiles}
+        onNewChat={handleNewChat}
       />
       {/* Image Modal */}
       {modalImage && (
@@ -179,21 +193,16 @@ function ChatSection({ mode }: { mode: string }) {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
           onClick={() => setModalImage(null)}
         >
-          <div className="relative max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-full max-h-full">
             <Image
               src={URL.createObjectURL(modalImage)}
               alt={modalImage.name}
-              className="object-contain max-w-[90vw] max-h-[90vh] rounded shadow-lg"
+              className="object-contain rounded shadow-lg"
               width={1000}
               height={1000}
+              style={{ width: 'auto', height: 'auto', maxWidth: '90vw', maxHeight: '90vh' }}
+              onClick={(e) => e.stopPropagation()}
             />
-            <button
-              className="absolute top-2 right-2 bg-white bg-opacity-80 rounded-full p-2 text-black hover:bg-opacity-100"
-              onClick={() => setModalImage(null)}
-              aria-label="Close image preview"
-            >
-              ×
-            </button>
           </div>
         </div>
       )}
