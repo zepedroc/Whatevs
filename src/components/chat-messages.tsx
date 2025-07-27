@@ -65,7 +65,7 @@ interface MessageProps {
   attachments?: Attachment[];
 }
 
-export function UserMessage({ content, index, attachments }: MessageProps) {
+function UserMessage({ content, index, attachments }: MessageProps) {
   const messageNumber = Math.ceil(index / 2) + 1;
 
   return (
@@ -95,7 +95,7 @@ export function UserMessage({ content, index, attachments }: MessageProps) {
   );
 }
 
-export function AssistantMessage({ content, index }: MessageProps) {
+function AssistantMessage({ content, index }: MessageProps) {
   const messageNumber = Math.ceil(index / 2);
   const hasReasoning = content.includes('<think>');
   const isStreaming = content.includes('<think>') && !content.includes('</think>');

@@ -13,4 +13,3 @@
 ## Minor things
 
 - Update tailwindcss to 4.0.0
-- Add knip

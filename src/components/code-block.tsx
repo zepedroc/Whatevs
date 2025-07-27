@@ -32,7 +32,7 @@ const languageMap: Record<string, string> = {
   md: 'Markdown',
 };
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({ language = '', value }) => {
+const CodeBlock: React.FC<CodeBlockProps> = ({ language = '', value }) => {
   const [copied, setCopied] = useState(false);
   const codeRef = useRef<HTMLElement>(null);
 
