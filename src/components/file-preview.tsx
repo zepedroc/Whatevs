@@ -20,13 +20,13 @@ export default function FilePreview({ files, onRemove, onImageClick }: FilePrevi
       {files.map((file, idx) => (
         <div
           key={file.name + idx}
-          className="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm max-w-xs"
+          className="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-xs max-w-xs"
         >
           <div className="flex items-center">
             {file.type.startsWith('image') ? (
               <button
                 type="button"
-                className="mr-2 focus:outline-none"
+                className="mr-2 focus:outline-hidden"
                 onClick={() => onImageClick && onImageClick(file)}
                 tabIndex={-1}
               >
@@ -52,7 +52,7 @@ export default function FilePreview({ files, onRemove, onImageClick }: FilePrevi
             <div className="flex items-center ml-4">
               <button
                 type="button"
-                className="p-1 text-gray-400 hover:text-gray-700 focus:outline-none"
+                className="p-1 text-gray-400 hover:text-gray-700 focus:outline-hidden"
                 onClick={() => onRemove(idx)}
                 aria-label="Remove file"
               >

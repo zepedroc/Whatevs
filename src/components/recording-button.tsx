@@ -7,7 +7,7 @@ export function RecordingButton({ isRecording, onClick }: RecordingButtonProps) 
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center rounded-full w-14 h-14 focus:outline-none transition-colors ${
+      className={`flex items-center justify-center rounded-full w-14 h-14 focus:outline-hidden transition-colors ${
         isRecording ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-gray-900 hover:bg-gray-800 text-white'
       }`}
       title={isRecording ? 'Stop Recording' : 'Start Recording'}

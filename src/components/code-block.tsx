@@ -61,7 +61,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language = '', value }) => {
         <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{langLabel}</span>
         <button
           onClick={handleCopy}
-          className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-blue-400"
         >
           {copied ? 'Copied!' : 'Copy'}
         </button>

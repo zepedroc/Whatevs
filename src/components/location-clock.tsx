@@ -43,7 +43,7 @@ export function LocationClock({ timezone, isLoading = false }: LocationClockProp
   if (!timezone && !isLoading) return null;
 
   return (
-    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 text-lg font-mono shadow-lg z-[1000]">
+    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-xs rounded-lg px-4 py-2 text-lg font-mono shadow-lg z-1000">
       {isLoading ? (
         <div className="flex items-center gap-2">
           <Loader2 className="h-4 w-4 animate-spin" />

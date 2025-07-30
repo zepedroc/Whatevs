@@ -237,7 +237,7 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
       </div>
 
       {searchMode === 'chat' && (
-        <div className="flex-shrink-0 pt-4">
+        <div className="shrink-0 pt-4">
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
               <Textarea
