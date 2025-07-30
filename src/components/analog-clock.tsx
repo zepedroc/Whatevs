@@ -33,7 +33,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({ timezone, label }) => {
       <h2 className="text-lg font-semibold mb-2">{label}</h2>
       <div className="relative w-48 h-48">
         {/* Clock face */}
-        <div className="absolute inset-0 rounded-full bg-white border-4 border-gray-300 shadow">
+        <div className="absolute inset-0 rounded-full bg-white border-4 border-gray-300 shadow-sm">
           {/* Hour markers */}
           {[...Array(12)].map((_, i) => (
             <div

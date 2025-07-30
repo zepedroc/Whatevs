@@ -354,7 +354,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
                 animation: 'fadeIn 0.5s forwards',
               }}
             >
-              <div className="text-center p-4 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 transform scale-110 rotate-3 shadow-xl">
+              <div className="text-center p-4 rounded-lg bg-linear-to-r from-blue-600 to-purple-600 transform scale-110 rotate-3 shadow-xl">
                 <div className="text-4xl font-bold text-white mb-2 animate-bounce">PLAYER {winner} WINS!</div>
                 <div className="text-xl text-yellow-300 font-semibold">{winner === 1 ? 'Blue' : 'Red'} connected four!</div>
               </div>

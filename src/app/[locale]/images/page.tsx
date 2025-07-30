@@ -76,7 +76,7 @@ export default function ImagesPage() {
           <div className="bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-lg">
             {isLoading && (
               <>
-                <div className="aspect-[4/3] bg-gray-100 dark:bg-gray-800 animate-pulse">
+                <div className="aspect-4/3 bg-gray-100 dark:bg-gray-800 animate-pulse">
                   <div className="flex items-center justify-center h-full">
                     <ImageIcon className="w-12 h-12 text-gray-500 dark:text-gray-400" />
                   </div>
