@@ -1,7 +1,8 @@
-import { createOpenAI } from '@ai-sdk/openai';
-import { CoreMessage, streamText } from 'ai';
+import { UIMessage, convertToModelMessages, streamText } from 'ai';
 
-import { modes, ChatMode } from '@/constants/chatbot-constants';
+import { createOpenAI } from '@ai-sdk/openai';
+
+import { ChatMode, modes } from '@/constants/chatbot-constants';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +14,7 @@ const groq = createOpenAI({
 export type Mode = keyof typeof modes;
 
 export async function POST(req: Request) {
-  const { messages, mode }: { messages: CoreMessage[]; mode: Mode } = await req.json();
+  const { messages, mode }: { messages: UIMessage[]; mode: Mode } = await req.json();
 
   // Get the prompt based on the selected mode
   const prompt = modes[mode];
@@ -27,10 +28,10 @@ export async function POST(req: Request) {
   // Call the language model
   const result = streamText({
     model,
-    messages,
+    messages: convertToModelMessages(messages),
     system: prompt ?? '',
   });
 
   // Respond with the stream
-  return result.toDataStreamResponse();
+  return result.toUIMessageStreamResponse();
 }

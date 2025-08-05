@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import Image from 'next/image';
 
-import { Attachment, Message } from 'ai';
+import { UIMessage } from 'ai';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -13,7 +13,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { markdownComponents } from '@/lib/markdown-components';
 
 interface ChatMessagesProps {
-  messages: Message[];
+  messages: UIMessage[];
   containerClassName?: string;
 }
 
@@ -42,27 +42,43 @@ export function ChatMessages({ messages, containerClassName = 'space-y-4' }: Cha
 
   return (
     <div className={containerClassName}>
-      {messages.map((m, index) =>
-        m.role === 'user' ? (
+      {messages.map((m, index) => {
+        return m.role === 'user' ? (
           <UserMessage
             key={`user-message-${index}`}
-            content={m.content}
+            content={m.parts.find((part) => part.type === 'text')?.text || ''}
             index={index}
-            attachments={m.experimental_attachments}
+            attachments={m.parts
+              .filter((part) => part.type === 'file')
+              .map((part: any) => ({
+                name: part.filename,
+                url: part.url,
+                contentType: part.mediaType,
+              }))}
           />
         ) : (
-          <AssistantMessage key={`chat-message-${index}`} content={formatMessage(m.content)} index={index} />
-        ),
-      )}
+          <AssistantMessage
+            key={`chat-message-${index}`}
+            content={formatMessage(m.parts.find((part) => part.type === 'text')?.text || '')}
+            index={index}
+          />
+        );
+      })}
       <div ref={messagesEndRef} />
     </div>
   );
 }
 
+interface FileAttachment {
+  name?: string;
+  url?: string;
+  contentType?: string;
+}
+
 interface MessageProps {
   content: string;
   index: number;
-  attachments?: Attachment[];
+  attachments?: FileAttachment[];
 }
 
 function UserMessage({ content, index, attachments }: MessageProps) {
@@ -73,11 +89,11 @@ function UserMessage({ content, index, attachments }: MessageProps) {
       <div className="max-w-[70%] flex flex-col items-end">
         {attachments?.length ? (
           <div className="flex flex-row gap-2 mb-2">
-            {attachments.map((attachment) =>
+            {attachments.map((attachment, attachmentIndex) =>
               attachment.contentType?.startsWith('image') ? (
                 <Image
                   className="rounded-md w-40"
-                  key={attachment.name}
+                  key={attachment.name || attachmentIndex}
                   src={attachment.url || ''}
                   alt={attachment.name || ''}
                   width={100}
