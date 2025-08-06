@@ -50,7 +50,7 @@ export function ChatMessages({ messages, containerClassName = 'space-y-4' }: Cha
             index={index}
             attachments={m.parts
               .filter((part) => part.type === 'file')
-              .map((part: any) => ({
+              .map((part: FilePart) => ({
                 name: part.filename,
                 url: part.url,
                 contentType: part.mediaType,
@@ -67,6 +67,13 @@ export function ChatMessages({ messages, containerClassName = 'space-y-4' }: Cha
       <div ref={messagesEndRef} />
     </div>
   );
+}
+
+interface FilePart {
+  type: 'file';
+  filename?: string;
+  url?: string;
+  mediaType?: string;
 }
 
 interface FileAttachment {
