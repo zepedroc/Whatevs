@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface PongGameProps {
   width?: number;
@@ -9,15 +9,14 @@ interface PongGameProps {
 }
 
 // Game constants
-const PADDLE_HEIGHT = 100;
-const PADDLE_WIDTH = 10;
-const BALL_SIZE = 20;
-const BALL_SPEED = 5;
-const PADDLE_SPEED = 8;
 const DEFAULT_WINNING_SCORE = 5;
-const LEFT_PADDLE_COLOR = '#3b82f6';
-const RIGHT_PADDLE_COLOR = '#ef4444';
-const BALL_COLOR = '#ffffff';
+const PADDLE_WIDTH = 15;
+const PADDLE_HEIGHT = 80;
+const PADDLE_SPEED = 5;
+const BALL_SIZE = 10;
+const BALL_SPEED = 4;
+const LEFT_PADDLE_COLOR = '#3B82F6'; // Blue
+const RIGHT_PADDLE_COLOR = '#EF4444'; // Red
 
 export default function PongGame({ width = 800, height = 500, winningScore = DEFAULT_WINNING_SCORE }: PongGameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -72,8 +71,7 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
     };
   }, []);
 
-  // Reset ball to center
-  const resetBall = () => {
+  const resetBall = useCallback(() => {
     // Randomize initial direction
     const dirX = Math.random() > 0.5 ? 1 : -1;
     const dirY = Math.random() > 0.5 ? 1 : -1;
@@ -83,10 +81,10 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
     gameStateRef.current.ballY = height / 2;
     gameStateRef.current.ballSpeedX = BALL_SPEED * dirX;
     gameStateRef.current.ballSpeedY = BALL_SPEED * dirY;
-  };
+  }, [width, height]);
 
   // Check if game is over
-  const checkGameOver = () => {
+  const checkGameOver = useCallback(() => {
     if (gameStateRef.current.leftScore >= winningScore) {
       gameStateRef.current.gameOver = true;
       gameStateRef.current.winner = 'Left Player';
@@ -99,7 +97,7 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
       return true;
     }
     return false;
-  };
+  }, [winningScore]);
 
   // Reset game
   const resetGame = () => {
@@ -121,7 +119,7 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
   };
 
   // Game animation loop using requestAnimationFrame for smoother animation
-  const animate = (time: number) => {
+  const animate = useCallback((time: number) => {
     if (previousTimeRef.current === null) {
       previousTimeRef.current = time;
     }
@@ -224,21 +222,11 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
     ctx.fillStyle = RIGHT_PADDLE_COLOR;
     ctx.fillRect(width - PADDLE_WIDTH, gameStateRef.current.rightPaddleY, PADDLE_WIDTH, PADDLE_HEIGHT);
 
-    // Draw ball (as a circle)
-    ctx.beginPath();
-    ctx.arc(
-      gameStateRef.current.ballX + BALL_SIZE / 2,
-      gameStateRef.current.ballY + BALL_SIZE / 2,
-      BALL_SIZE / 2,
-      0,
-      Math.PI * 2,
-    );
-    ctx.fillStyle = BALL_COLOR;
-    ctx.fill();
-    ctx.closePath();
+    // Draw ball
+    ctx.fillStyle = 'white';
+    ctx.fillRect(gameStateRef.current.ballX, gameStateRef.current.ballY, BALL_SIZE, BALL_SIZE);
 
     // Draw center line
-    ctx.setLineDash([5, 15]);
     ctx.beginPath();
     ctx.moveTo(width / 2, 0);
     ctx.lineTo(width / 2, height);
@@ -259,7 +247,7 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
 
     // Continue animation loop
     requestRef.current = window.requestAnimationFrame(animate);
-  };
+  }, [width, height, checkGameOver, resetBall]);
 
   // Start/stop game loop
   useEffect(() => {
@@ -289,7 +277,7 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
         window.cancelAnimationFrame(requestRef.current);
       }
     };
-  }, [gameStarted]);
+  }, [gameStarted, animate, height, width]);
 
   return (
     <div className="flex flex-col items-center">

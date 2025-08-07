@@ -268,7 +268,7 @@ export default function SpaceInvadersGame() {
         clearInterval(gameLoopRef.current);
       }
     };
-  }, [gameStarted, gameOver, aliens, alienDirection, playerX, lastAlienShot]);
+  }, [gameStarted, gameOver, aliens, alienDirection, playerX, lastAlienShot, bullets]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-black to-black flex items-center justify-center p-8">
