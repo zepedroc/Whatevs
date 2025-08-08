@@ -1,16 +1,12 @@
 import { UIMessage, convertToModelMessages, streamText } from 'ai';
 
-import { createOpenAI } from '@ai-sdk/openai';
-import { load as loadHtml } from 'cheerio';
-
 import { ChatMode, modes } from '@/constants/chatbot-constants';
+import { groq } from '@/lib/aiClient';
+import { computeDaysUntilIfApplicable } from '@/lib/dateMath';
+import { rewriteSearchQueries } from '@/lib/queryRewrite';
+import { dedupeAndRankResults, fetchDuckDuckGoResults } from '@/lib/webSearch';
 
 export const dynamic = 'force-dynamic';
-
-const groq = createOpenAI({
-  apiKey: process.env.GROQ_API_KEY ?? '',
-  baseURL: 'https://api.groq.com/openai/v1',
-});
 
 export type Mode = keyof typeof modes;
 
@@ -34,63 +30,6 @@ function extractLastUserText(messages: UIMessage[], maxLen = 400): string {
   return '';
 }
 
-async function fetchDuckDuckGoResults(query: string, maxResults = 3) {
-  try {
-    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; ChatAppBot/1.0; +https://example.com)'
-      },
-      cache: 'no-store',
-    });
-    const html = await res.text();
-    const $ = loadHtml(html);
-    const results: { title: string; url: string; snippet: string }[] = [];
-    $('.result').each((_, el) => {
-      if (results.length >= maxResults) return false;
-      const anchor = $(el).find('.result__a');
-      const title = anchor.text().trim();
-      const href = anchor.attr('href') || '';
-      const snippet = $(el).find('.result__snippet').text().trim();
-      if (!title || !href) return;
-      try {
-        const resolved = new URL(href, 'https://duckduckgo.com');
-        const uddg = resolved.searchParams.get('uddg');
-        const finalUrl = uddg ? decodeURIComponent(uddg) : href;
-        results.push({ title, url: finalUrl, snippet });
-      } catch {
-        results.push({ title, url: href, snippet });
-      }
-    });
-
-    if (results.length === 0) {
-      // Fallback to DuckDuckGo Instant Answer API (limited but free)
-      const ia = await fetch(
-        `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&no_redirect=1`,
-        { cache: 'no-store' },
-      ).then((r) => r.json());
-      const related = Array.isArray(ia.RelatedTopics) ? ia.RelatedTopics : [];
-      for (const item of related) {
-        if (results.length >= maxResults) break;
-        if (item && item.Text && item.FirstURL) {
-          results.push({ title: item.Text, url: item.FirstURL, snippet: item.Text });
-        } else if (item && Array.isArray(item.Topics)) {
-          for (const t of item.Topics) {
-            if (results.length >= maxResults) break;
-            if (t && t.Text && t.FirstURL) {
-              results.push({ title: t.Text, url: t.FirstURL, snippet: t.Text });
-            }
-          }
-        }
-      }
-    }
-
-    return results;
-  } catch (err) {
-    console.error('DuckDuckGo fetch error', err);
-    return [] as { title: string; url: string; snippet: string }[];
-  }
-}
-
 export async function POST(req: Request) {
   const { messages, mode, webSearch }: { messages: UIMessage[]; mode: Mode; webSearch?: boolean } = await req.json();
 
@@ -102,12 +41,34 @@ export async function POST(req: Request) {
   if (webSearch) {
     const lastText = extractLastUserText(messages, 400);
     if (lastText) {
-      const results = await fetchDuckDuckGoResults(lastText, 3);
-      if (results.length > 0) {
-        const lines = results
-          .map((r, i) => `[${i + 1}] ${r.title}\n${r.snippet}\n${r.url}`)
+      // 1) Deterministic helper (e.g., days until X)
+      const computed = computeDaysUntilIfApplicable(lastText);
+
+      // 2) Query rewriting and multi-query search
+      const queries = await rewriteSearchQueries(lastText);
+      const allResults: { title: string; url: string; snippet: string }[] = [];
+      for (const q of queries) {
+        const results = await fetchDuckDuckGoResults(q, 5);
+        allResults.push(...results);
+      }
+      const deduped = dedupeAndRankResults(allResults, 8);
+
+      const computedLine = computed
+        ? `Computed: There are ${computed.days} days until ${computed.label} (target date ${computed.targetISO}).`
+        : '';
+
+      if (deduped.length > 0 || computedLine) {
+        const lines = deduped.map((r, i) => `[${i + 1}] ${r.title}\n${r.snippet}\n${r.url}`).join('\n\n');
+        const todayISO = new Date().toISOString().slice(0, 10);
+        webContext = [
+          `Today: ${todayISO}`,
+          computedLine,
+          'Use the following recent web search results to inform your answer. When you use a result, cite it with [n] and include the URL. If not helpful, ignore.',
+          `User query: ${lastText}`,
+          deduped.length ? `Results:\n${lines}` : '',
+        ]
+          .filter(Boolean)
           .join('\n\n');
-        webContext = `Use the following recent web search results to inform your answer. When you use a result, cite it with [n] and include the URL. If not helpful, ignore.\n\nQuery: ${lastText}\n\nResults:\n${lines}`;
       }
     }
   }
@@ -122,7 +83,15 @@ export async function POST(req: Request) {
   const result = streamText({
     model,
     messages: convertToModelMessages(messages),
-    system: [prompt ?? '', webContext].filter(Boolean).join('\n\n'),
+    system: [
+      // Mode-specific system prompt
+      prompt ?? '',
+      // Answer shaping for web + computation
+      'Answer the user succinctly. Compute any simple values needed (e.g., date differences) and present the final answer first. When using web results, cite with [n] and include the URL. If sources conflict, choose the most authoritative and explain briefly.',
+      webContext,
+    ]
+      .filter(Boolean)
+      .join('\n\n'),
   });
 
   // Respond with the stream

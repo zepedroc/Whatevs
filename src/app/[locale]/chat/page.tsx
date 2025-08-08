@@ -44,7 +44,10 @@ function ChatSection({ mode }: { mode: string }) {
     () => new DefaultChatTransport({ api: '/api/chat', body: { mode, webSearch: useWebSearch } }),
     [mode, useWebSearch],
   );
-  const { messages, sendMessage, setMessages, status } = useChat({ transport, id: 'main-chat' });
+  const { messages, sendMessage, setMessages, status } = useChat({
+    transport,
+    id: `main-chat-${mode}-${useWebSearch ? 'web' : 'noweb'}`,
+  });
   const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
 
   const [files, setFiles] = useState<File[]>([]);
