@@ -77,7 +77,9 @@
     "searchMode": "Search modes",
     "noModeFound": "No mode found",
     "addImage": "Add image(s)",
-    "newChat": "New chat"
+    "newChat": "New chat",
+    "enableWebSearch": "Enable web search",
+    "disableWebSearch": "Disable web search"
   },
   "Agent": {
     "title": "Voice Agent",
