@@ -222,9 +222,18 @@ export default function PongGame({ width = 800, height = 500, winningScore = DEF
     ctx.fillStyle = RIGHT_PADDLE_COLOR;
     ctx.fillRect(width - PADDLE_WIDTH, gameStateRef.current.rightPaddleY, PADDLE_WIDTH, PADDLE_HEIGHT);
 
-    // Draw ball
+    // Draw ball as a circle (restored)
+    ctx.beginPath();
+    ctx.arc(
+      gameStateRef.current.ballX + BALL_SIZE / 2,
+      gameStateRef.current.ballY + BALL_SIZE / 2,
+      BALL_SIZE / 2,
+      0,
+      Math.PI * 2,
+    );
     ctx.fillStyle = 'white';
-    ctx.fillRect(gameStateRef.current.ballX, gameStateRef.current.ballY, BALL_SIZE, BALL_SIZE);
+    ctx.fill();
+    ctx.closePath();
 
     // Draw center line
     ctx.beginPath();
