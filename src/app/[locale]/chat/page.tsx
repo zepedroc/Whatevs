@@ -1,6 +1,6 @@
 'use client';
 
-import { ClipboardEvent, FormEvent, KeyboardEvent, Suspense, useEffect, useRef, useState } from 'react';
+import { ClipboardEvent, FormEvent, KeyboardEvent, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
@@ -39,12 +39,12 @@ function ChatContent() {
 function ChatSection({ mode }: { mode: string }) {
   const t = useTranslations();
   const [input, setInput] = useState('');
-  const { messages, sendMessage, setMessages, status } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-      body: { mode },
-    }),
-  });
+  const [useWebSearch, setUseWebSearch] = useState(false);
+  const transport = useMemo(
+    () => new DefaultChatTransport({ api: '/api/chat', body: { mode, webSearch: useWebSearch } }),
+    [mode, useWebSearch],
+  );
+  const { messages, sendMessage, setMessages, status } = useChat({ transport, id: 'main-chat' });
   const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
 
   const [files, setFiles] = useState<File[]>([]);
@@ -194,6 +194,8 @@ function ChatSection({ mode }: { mode: string }) {
         textareaRef={textareaRef as React.RefObject<HTMLTextAreaElement>}
         onAddFiles={handleAddFiles}
         onNewChat={handleNewChat}
+        useWebSearch={useWebSearch}
+        onToggleWebSearch={() => setUseWebSearch((prev) => !prev)}
       />
       {/* Image Modal */}
       {modalImage && (

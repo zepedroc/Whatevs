@@ -77,7 +77,9 @@
     "searchMode": "Pesquisar modos",
     "noModeFound": "Nenhum modo encontrado",
     "addImage": "Adicionar imagem(ns)",
-    "newChat": "Novo chat"
+    "newChat": "Novo chat",
+    "enableWebSearch": "Ativar pesquisa na web",
+    "disableWebSearch": "Desativar pesquisa na web"
   },
   "Agent": {
     "title": "Agente de Voz",
