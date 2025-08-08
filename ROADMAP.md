@@ -4,7 +4,8 @@
 
 - Allow to input files on chat
 - Build a canvas for ai generated code (allow three.js)
-- Add gpt-oss unless if there's an image in the prompt
+- Display sources in a nicer way
+- Display when the user is searching the web
 
 ## Bugs
 

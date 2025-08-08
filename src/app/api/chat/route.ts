@@ -11,6 +11,12 @@ export const dynamic = 'force-dynamic';
 export type Mode = keyof typeof modes;
 
 type TextPart = { type: 'text'; text: string };
+type FilePart = {
+  type: 'file';
+  mediaType?: string;
+  mimeType?: string;
+  contentType?: string;
+};
 
 function extractLastUserText(messages: UIMessage[], maxLen = 400): string {
   for (let i = messages.length - 1; i >= 0; i -= 1) {
@@ -74,10 +80,28 @@ export async function POST(req: Request) {
   }
 
   // Select the appropriate model based on mode
-  const model =
-    mode === ChatMode.DeepSeekReasoning
-      ? groq.chat('deepseek-r1-distill-llama-70b')
-      : groq.chat('meta-llama/llama-4-maverick-17b-128e-instruct');
+  const lastUserHasImage = (() => {
+    for (let i = messages.length - 1; i >= 0; i -= 1) {
+      const message = messages[i];
+      if (message.role === 'user') {
+        const parts = (message as { parts?: unknown[] }).parts ?? [];
+        return parts.some((p) => {
+          if (typeof p !== 'object' || p === null) return false;
+          const obj = p as Partial<FilePart> & { type?: unknown };
+          if (obj.type !== 'file') return false;
+          const mt = obj.mediaType || obj.mimeType || obj.contentType || '';
+          return typeof mt === 'string' && mt.startsWith('image');
+        });
+      }
+    }
+    return false;
+  })();
+
+  const model = (() => {
+    if (mode === ChatMode.DeepSeekReasoning) return groq.chat('deepseek-r1-distill-llama-70b');
+    if (lastUserHasImage) return groq.chat('meta-llama/llama-4-maverick-17b-128e-instruct');
+    return groq.chat('openai/gpt-oss-120b');
+  })();
 
   // Call the language model
   const result = streamText({
