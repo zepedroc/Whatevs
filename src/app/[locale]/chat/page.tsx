@@ -31,7 +31,7 @@ function ChatContent() {
         </div>
         <ChatModeSelector mode={mode} />
       </div>
-      <ChatSection mode={mode} />
+      <ChatSection key={mode} mode={mode} />
     </div>
   );
 }

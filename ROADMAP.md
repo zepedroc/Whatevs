@@ -9,7 +9,6 @@
 ## Bugs
 
 - Re-design the reasoning part of the chat interface when a reasoning model is selected
-- The modes are messed up
 
 ## Minor things
 
