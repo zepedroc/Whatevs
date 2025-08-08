@@ -53,7 +53,7 @@ export function ChatMessages({ messages, containerClassName = 'space-y-4' }: Cha
               .map((part: FilePart) => ({
                 name: part.filename,
                 url: part.url,
-                contentType: part.mediaType,
+                contentType: part.mediaType || part.mimeType || part.contentType,
               }))}
           />
         ) : (
@@ -74,6 +74,8 @@ interface FilePart {
   filename?: string;
   url?: string;
   mediaType?: string;
+  mimeType?: string;
+  contentType?: string;
 }
 
 interface FileAttachment {
@@ -93,19 +95,9 @@ function UserMessage({ content, index, attachments }: MessageProps) {
 
   // Validate URL to prevent XSS attacks
   const isValidImageUrl = (url: string): boolean => {
-    try {
-      const urlObj = new URL(url);
-      // Only allow http and https protocols
-      if (!['http:', 'https:'].includes(urlObj.protocol)) {
-        return false;
-      }
-      // Basic check for image file extensions
-      const pathname = urlObj.pathname.toLowerCase();
-      const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
-      return validExtensions.some(ext => pathname.endsWith(ext));
-    } catch {
-      return false;
-    }
+    if (typeof url !== 'string' || url.length === 0) return false;
+    // Allow expected safe schemes for attachments and previews
+    return url.startsWith('https://') || url.startsWith('http://') || url.startsWith('blob:') || url.startsWith('data:');
   };
 
   return (
