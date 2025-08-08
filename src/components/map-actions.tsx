@@ -1,15 +1,20 @@
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { useChat } from '@ai-sdk/react';
+
+import { DefaultChatTransport, UIMessage } from 'ai';
 import { Check, ChevronsUpDown } from 'lucide-react';
+import { CompassIcon, MapIcon, MessageSquareIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+
+import { useChat } from '@ai-sdk/react';
+
+import { ChatMessages } from '@/components/chat-messages';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { MapIcon, CompassIcon, MessageSquareIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { ChatMessages } from '@/components/chat-messages';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
+
+import { cn } from '@/lib/utils';
 
 type SearchMode = 'location' | 'coordinates' | 'chat';
 
@@ -50,12 +55,17 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
     },
   ];
 
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    body: { mode: 'location_finder' },
-    onFinish: async (message) => {
+  const [input, setInput] = useState('');
+  const { messages, sendMessage } = useChat({
+    transport: new DefaultChatTransport({
+      api: '/api/chat',
+      body: { mode: 'location_finder' },
+    }),
+    onFinish: async ({ message }: { message: UIMessage }) => {
       try {
         // Get the JSON part from the second line
-        const lines = message.content.split('\n');
+        const textContent = message.parts.find((part) => part.type === 'text')?.text || '';
+        const lines = textContent.split('\n');
         if (lines.length < 2) return;
 
         const response = JSON.parse(lines[1]);
@@ -86,11 +96,15 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
 
   // Separate chat instance for timezone lookups
   const timezoneLookup = useChat({
-    body: { mode: 'location_finder' },
+    transport: new DefaultChatTransport({
+      api: '/api/chat',
+      body: { mode: 'location_finder' },
+    }),
     id: 'timezone-lookup', // Unique ID to separate this chat instance
-    onFinish: async (message) => {
+    onFinish: async ({ message }: { message: UIMessage }) => {
       try {
-        const lines = message.content.split('\n');
+        const textContent = message.parts.find((part) => part.type === 'text')?.text || '';
+        const lines = textContent.split('\n');
         if (lines.length >= 2) {
           const response = JSON.parse(lines[1]);
           if (response.timezone) {
@@ -104,12 +118,9 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
   });
 
   const getTimezoneForLocation = async (location: string) => {
-    await timezoneLookup.reload(); // Clear previous messages
-    await timezoneLookup.append({
-      id: 'lookup',
-      content: `What's the timezone of ${location}?`,
-      role: 'user',
-    });
+    // Clear previous messages by setting to empty array
+    timezoneLookup.setMessages([]);
+    timezoneLookup.sendMessage({ text: `What's the timezone of ${location}?` });
   };
 
   const handleLocationSearch = async (e: React.FormEvent) => {
@@ -147,7 +158,10 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e);
+      if (input.trim()) {
+        sendMessage({ text: input.trim() });
+        setInput('');
+      }
     }
   };
 
@@ -237,13 +251,21 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
       </div>
 
       {searchMode === 'chat' && (
-        <div className="flex-shrink-0 pt-4">
-          <form onSubmit={handleSubmit}>
+        <div className="shrink-0 pt-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (input.trim()) {
+                sendMessage({ text: input.trim() });
+                setInput('');
+              }
+            }}
+          >
             <div className="flex flex-col gap-2">
               <Textarea
                 className="resize-none min-h-[60px]"
                 value={input}
-                onChange={handleInputChange}
+                onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={t('askLocation')}
               />

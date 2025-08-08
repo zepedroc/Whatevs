@@ -65,7 +65,7 @@ export default function ChatForm({
             <FilePreview files={files} onRemove={onRemoveFile} onImageClick={onImageClick} />
             <Textarea
               ref={textareaRef}
-              className="flex-1 border-none bg-transparent p-0 shadow-none outline-none focus-visible:ring-0 focus-visible:border-none focus-visible:ring-offset-0 focus:ring-offset-0 cursor-text resize-none"
+              className="flex-1 border-none bg-transparent p-0 shadow-none outline-hidden focus-visible:ring-0 focus-visible:border-none focus-visible:ring-offset-0 focus:ring-offset-0 cursor-text resize-none"
               placeholder={t('Chat.inputPlaceholder')}
               value={input}
               onChange={onInputChange}

@@ -8,8 +8,8 @@
 
 ## Bugs
 
--
+- Re-design the reasoning part of the chat interface when a reasoning model is selected
 
 ## Minor things
 
-- Update tailwindcss to 4.0.0
+- Put eslint working

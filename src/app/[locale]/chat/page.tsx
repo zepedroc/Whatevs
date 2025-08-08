@@ -5,6 +5,7 @@ import { ClipboardEvent, FormEvent, KeyboardEvent, Suspense, useEffect, useRef, 
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 
+import { DefaultChatTransport } from 'ai';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
@@ -30,22 +31,20 @@ function ChatContent() {
         </div>
         <ChatModeSelector mode={mode} />
       </div>
-      <ChatSection mode={mode} />
+      <ChatSection key={mode} mode={mode} />
     </div>
   );
 }
 
 function ChatSection({ mode }: { mode: string }) {
   const t = useTranslations();
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit: chatHandleSubmit,
-    setInput,
-    setMessages,
-    status,
-  } = useChat({ body: { mode } });
+  const [input, setInput] = useState('');
+  const { messages, sendMessage, setMessages, status } = useChat({
+    transport: new DefaultChatTransport({
+      api: '/api/chat',
+      body: { mode },
+    }),
+  });
   const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
 
   const [files, setFiles] = useState<File[]>([]);
@@ -140,10 +139,19 @@ function ChatSection({ mode }: { mode: string }) {
       toggleRecording();
     }
 
-    const options = files.length > 0 ? { experimental_attachments: filesToFileList(files) } : {};
-
-    chatHandleSubmit(e, options);
-    setFiles([]);
+    if (input.trim()) {
+      if (files.length > 0) {
+        // Handle file attachments with the new v5 API
+        sendMessage({
+          text: input.trim(),
+          files: filesToFileList(files),
+        });
+      } else {
+        sendMessage({ text: input.trim() });
+      }
+      setInput('');
+      setFiles([]);
+    }
   };
 
   // Helper to convert File[] to FileList
@@ -172,7 +180,7 @@ function ChatSection({ mode }: { mode: string }) {
       </div>
       <ChatForm
         input={input}
-        onInputChange={handleInputChange}
+        onInputChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
         onSubmit={handleSubmit}

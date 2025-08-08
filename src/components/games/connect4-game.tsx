@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface Connect4GameProps {
   rows?: number;
@@ -65,8 +65,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
     return board[0].every((cell) => cell !== 0);
   };
 
-  // Find winning cells
-  const findWinningCells = (board: GameBoard, row: number, col: number, player: 1 | 2): WinningCells => {
+  const findWinningCells = useCallback((board: GameBoard, row: number, col: number, player: 1 | 2): WinningCells => {
     // Check horizontal
     let count = 0;
     let tempCells: [number, number][] = [];
@@ -142,17 +141,17 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
     }
 
     return null;
-  };
+  }, [rows, columns]);
 
   // Check for a win
-  const checkWin = (board: GameBoard, row: number, col: number, player: 1 | 2): boolean => {
+  const checkWin = useCallback((board: GameBoard, row: number, col: number, player: 1 | 2): boolean => {
     const cells = findWinningCells(board, row, col, player);
     if (cells) {
       setWinningCells(cells);
       return true;
     }
     return false;
-  };
+  }, [findWinningCells]);
 
   // Show win message with delay
   useEffect(() => {
@@ -354,7 +353,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
                 animation: 'fadeIn 0.5s forwards',
               }}
             >
-              <div className="text-center p-4 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 transform scale-110 rotate-3 shadow-xl">
+              <div className="text-center p-4 rounded-lg bg-linear-to-r from-blue-600 to-purple-600 transform scale-110 rotate-3 shadow-xl">
                 <div className="text-4xl font-bold text-white mb-2 animate-bounce">PLAYER {winner} WINS!</div>
                 <div className="text-xl text-yellow-300 font-semibold">{winner === 1 ? 'Blue' : 'Red'} connected four!</div>
               </div>

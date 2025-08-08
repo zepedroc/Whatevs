@@ -9,8 +9,9 @@ import { useTranslations } from 'next-intl';
 // Use dynamic import with no SSR for the game component since it uses browser APIs
 const PongGame = dynamic(() => import('@/components/games/pong-game'), { ssr: false });
 const Connect4Game = dynamic(() => import('@/components/games/connect4-game'), { ssr: false });
+const SpaceInvadersGame = dynamic(() => import('@/components/games/space-invaders'), { ssr: false });
 
-type GameType = 'pong' | 'connect4';
+type GameType = 'pong' | 'connect4' | 'space-invaders';
 
 export default function GamesPage() {
   const t = useTranslations('Games');
@@ -48,6 +49,16 @@ export default function GamesPage() {
           >
             Connect 4
           </button>
+          <button
+            onClick={() => handleGameSelect('space-invaders')}
+            className={`py-3 px-6 font-medium text-lg rounded-t-lg transition-colors ${
+              activeGame === 'space-invaders'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+            }`}
+          >
+            Space Invaders
+          </button>
         </div>
       </div>
 
@@ -74,6 +85,18 @@ export default function GamesPage() {
             </p>
             <div className="bg-black rounded-lg p-4 w-full max-w-4xl mx-auto">
               <Connect4Game />
+            </div>
+          </div>
+        )}
+
+        {activeGame === 'space-invaders' && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Space Invaders</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Classic Space Invaders game for two players. Take turns dropping pieces and connect four in a row to win!
+            </p>
+            <div className="bg-black rounded-lg p-4 w-full max-w-4xl mx-auto">
+              <SpaceInvadersGame />
             </div>
           </div>
         )}
