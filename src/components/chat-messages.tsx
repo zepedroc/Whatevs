@@ -91,17 +91,34 @@ interface MessageProps {
 function UserMessage({ content, index, attachments }: MessageProps) {
   const messageNumber = Math.ceil(index / 2) + 1;
 
+  // Validate URL to prevent XSS attacks
+  const isValidImageUrl = (url: string): boolean => {
+    try {
+      const urlObj = new URL(url);
+      // Only allow http and https protocols
+      if (!['http:', 'https:'].includes(urlObj.protocol)) {
+        return false;
+      }
+      // Basic check for image file extensions
+      const pathname = urlObj.pathname.toLowerCase();
+      const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+      return validExtensions.some(ext => pathname.endsWith(ext));
+    } catch {
+      return false;
+    }
+  };
+
   return (
     <div key={`user-message-${messageNumber}`} className="flex justify-end">
       <div className="max-w-[70%] flex flex-col items-end">
         {attachments?.length ? (
           <div className="flex flex-row gap-2 mb-2">
             {attachments.map((attachment, attachmentIndex) =>
-              attachment.contentType?.startsWith('image') ? (
+              attachment.contentType?.startsWith('image') && attachment.url && isValidImageUrl(attachment.url) ? (
                 <Image
                   className="rounded-md w-40"
                   key={attachment.name || attachmentIndex}
-                  src={attachment.url || ''}
+                  src={attachment.url}
                   alt={attachment.name || ''}
                   width={100}
                   height={100}
