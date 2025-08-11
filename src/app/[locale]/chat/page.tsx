@@ -175,7 +175,7 @@ function ChatSection({ mode }: { mode: string }) {
             <div className="flex mt-4">
               <div className="max-w-[70%] rounded-lg flex flex-row items-center gap-2">
                 <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs text-gray-900">{t('Chat.thinking')}</span>
+                <span className="text-xs text-gray-900">{useWebSearch ? t('Chat.searchingWeb') : t('Chat.thinking')}</span>
               </div>
             </div>
           )}

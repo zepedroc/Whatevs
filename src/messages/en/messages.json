@@ -70,6 +70,7 @@
     "inputPlaceholder": "Type your message...",
     "loading": "Loading chat...",
     "thinking": "Thinking...",
+    "searchingWeb": "Searching the web...",
     "recording": "Recording in progress...",
     "startRecording": "Start voice recording",
     "stopRecording": "Stop voice recording",

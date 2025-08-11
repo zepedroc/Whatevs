@@ -3,9 +3,9 @@
 ## Next features
 
 - Allow to input files on chat
+- Allow the chat to generate files
 - Build a canvas for ai generated code (allow three.js)
 - Display sources in a nicer way
-- Display when the user is searching the web
 
 ## Bugs
 
