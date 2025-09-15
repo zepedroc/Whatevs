@@ -2,10 +2,13 @@
 
 import { useState } from 'react';
 
-import { generateEuroMillionsPick } from '@/lib/euromillions';
+import { useTranslations } from 'next-intl';
+
 import { generateEuroDreamsPick } from '@/lib/eurodreams';
+import { generateEuroMillionsPick } from '@/lib/euromillions';
 
 export default function BetsPage() {
+  const t = useTranslations('Bets');
   const [euromillionsBetsCount, setEuromillionsBetsCount] = useState<number>(1);
   const [eurodreamsBetsCount, setEurodreamsBetsCount] = useState<number>(1);
   const [emPicks, setEmPicks] = useState<Array<ReturnType<typeof generateEuroMillionsPick>>>([]);
@@ -25,15 +28,15 @@ export default function BetsPage() {
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">Bets</h1>
+      <h1 className="text-3xl font-bold mb-8">{t('title')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <section className="rounded-lg border border-gray-200 p-6 dark:border-gray-800">
-          <h2 className="text-2xl font-semibold mb-4">EuroMillions</h2>
+          <h2 className="text-2xl font-semibold mb-4">{t('euromillions.title')}</h2>
           <div className="mb-6 flex items-end gap-4">
             <div>
               <label className="block text-sm font-medium mb-2" htmlFor="emCount">
-                Number of bets (max 10)
+                {t('countLabel')}
               </label>
               <input
                 id="emCount"
@@ -50,7 +53,7 @@ export default function BetsPage() {
               onClick={handleGenerateEM}
               className="h-10 px-4 rounded-md bg-gray-900 text-white hover:bg-gray-800 hover:cursor-pointer dark:bg-gray-100 dark:text-black dark:hover:bg-white"
             >
-              Generate
+              {t('generateButton')}
             </button>
           </div>
 
@@ -58,9 +61,9 @@ export default function BetsPage() {
             <div className="space-y-6">
               {emPicks.map((pick, idx) => (
                 <div key={idx} className="rounded-lg border border-gray-200 p-4 dark:border-gray-800">
-                  <div className="mb-2 text-sm font-semibold">Bet {idx + 1}</div>
+                  <div className="mb-2 text-sm font-semibold">{t('bet', { index: idx + 1 })}</div>
                   <div className="mb-2">
-                    <h3 className="text-xl font-semibold">Numbers (5):</h3>
+                    <h3 className="text-xl font-semibold">{t('euromillions.numbersTitle')}</h3>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {pick.numbers.map((n) => (
                         <span
@@ -73,7 +76,7 @@ export default function BetsPage() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold">Stars (2):</h3>
+                    <h3 className="text-xl font-semibold">{t('euromillions.starsTitle')}</h3>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {pick.stars.map((s) => (
                         <span
@@ -92,11 +95,11 @@ export default function BetsPage() {
         </section>
 
         <section className="rounded-lg border border-gray-200 p-6 dark:border-gray-800">
-          <h2 className="text-2xl font-semibold mb-4">EuroDreams</h2>
+          <h2 className="text-2xl font-semibold mb-4">{t('eurodreams.title')}</h2>
           <div className="mb-6 flex items-end gap-4">
             <div>
               <label className="block text-sm font-medium mb-2" htmlFor="edCount">
-                Number of bets (max 10)
+                {t('countLabel')}
               </label>
               <input
                 id="edCount"
@@ -113,7 +116,7 @@ export default function BetsPage() {
               onClick={handleGenerateED}
               className="h-10 px-4 rounded-md bg-gray-900 text-white hover:bg-gray-800 hover:cursor-pointer dark:bg-gray-100 dark:text-black dark:hover:bg-white"
             >
-              Generate
+              {t('generateButton')}
             </button>
           </div>
 
@@ -121,9 +124,9 @@ export default function BetsPage() {
             <div className="space-y-6">
               {edPicks.map((pick, idx) => (
                 <div key={idx} className="rounded-lg border border-gray-200 p-4 dark:border-gray-800">
-                  <div className="mb-2 text-sm font-semibold">Bet {idx + 1}</div>
+                  <div className="mb-2 text-sm font-semibold">{t('bet', { index: idx + 1 })}</div>
                   <div className="mb-2">
-                    <h3 className="text-xl font-semibold">Numbers (6):</h3>
+                    <h3 className="text-xl font-semibold">{t('eurodreams.numbersTitle')}</h3>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {pick.numbers.map((n) => (
                         <span
@@ -136,7 +139,7 @@ export default function BetsPage() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold">Dream (1):</h3>
+                    <h3 className="text-xl font-semibold">{t('eurodreams.dreamTitle')}</h3>
                     <div className="mt-2 flex flex-wrap gap-2">
                       <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-pink-400 text-black">
                         {pick.dream}
@@ -152,4 +155,3 @@ export default function BetsPage() {
     </div>
   );
 }
-

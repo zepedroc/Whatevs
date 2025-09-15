@@ -100,5 +100,21 @@
   "Games": {
     "title": "Jogos",
     "description": "Jogue jogos multijogador divertidos com amigos e família."
+  },
+  "Bets": {
+    "title": "Apostas",
+    "countLabel": "Número de apostas (máx. 10)",
+    "generateButton": "Gerar",
+    "bet": "Aposta {index}",
+    "euromillions": {
+      "title": "Euromilhões",
+      "numbersTitle": "Números (5):",
+      "starsTitle": "Estrelas (2):"
+    },
+    "eurodreams": {
+      "title": "EuroDreams",
+      "numbersTitle": "Números (6):",
+      "dreamTitle": "Sonho (1):"
+    }
   }
 } 
