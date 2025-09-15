@@ -101,6 +101,8 @@
   },
   "Games": {
     "title": "Games",
-    "description": "Play fun multiplayer games with friends and family."
+    "description": "Play fun multiplayer games with friends and family.",
+    "euromillionsTitle": "Euromillions Number Generator",
+    "euromillionsDescription": "Generate your lucky numbers for the next Euromillions draw."
   }
 } 

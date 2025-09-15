@@ -10,8 +10,9 @@ import { useTranslations } from 'next-intl';
 const PongGame = dynamic(() => import('@/components/games/pong-game'), { ssr: false });
 const Connect4Game = dynamic(() => import('@/components/games/connect4-game'), { ssr: false });
 const SpaceInvadersGame = dynamic(() => import('@/components/games/space-invaders'), { ssr: false });
+const EuromillionsGame = dynamic(() => import('@/components/games/euromillions-game'), { ssr: false });
 
-type GameType = 'pong' | 'connect4' | 'space-invaders';
+type GameType = 'pong' | 'connect4' | 'space-invaders' | 'euromillions';
 
 export default function GamesPage() {
   const t = useTranslations('Games');
@@ -59,6 +60,16 @@ export default function GamesPage() {
           >
             Space Invaders
           </button>
+          <button
+            onClick={() => handleGameSelect('euromillions')}
+            className={`py-3 px-6 font-medium text-lg rounded-t-lg transition-colors ${
+              activeGame === 'euromillions'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+            }`}
+          >
+            Euromillions
+          </button>
         </div>
       </div>
 
@@ -97,6 +108,18 @@ export default function GamesPage() {
             </p>
             <div className="bg-black rounded-lg p-4 w-full max-w-4xl mx-auto">
               <SpaceInvadersGame />
+            </div>
+          </div>
+        )}
+
+        {activeGame === 'euromillions' && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Euromillions Number Generator</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Generate your lucky numbers for the next Euromillions draw.
+            </p>
+            <div className="w-full max-w-4xl mx-auto">
+              <EuromillionsGame />
             </div>
           </div>
         )}
