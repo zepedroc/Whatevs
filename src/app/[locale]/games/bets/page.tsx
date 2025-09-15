@@ -45,6 +45,12 @@ export default function BetsPage() {
                 max={10}
                 value={euromillionsBetsCount}
                 onChange={(e) => setEuromillionsBetsCount(Number(e.target.value))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleGenerateEM();
+                  }
+                }}
                 className="w-32 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
               />
             </div>
@@ -108,6 +114,12 @@ export default function BetsPage() {
                 max={10}
                 value={eurodreamsBetsCount}
                 onChange={(e) => setEurodreamsBetsCount(Number(e.target.value))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleGenerateED();
+                  }
+                }}
                 className="w-32 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
               />
             </div>
