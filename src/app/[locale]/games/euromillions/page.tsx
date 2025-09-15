@@ -36,7 +36,7 @@ export default function EuroMillionsPage() {
 
         <button
           onClick={handleGenerate}
-          className="h-10 px-4 rounded-md bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-black dark:hover:bg-white"
+          className="h-10 px-4 rounded-md bg-gray-900 text-white hover:bg-gray-800 hover:cursor-pointer dark:bg-gray-100 dark:text-black dark:hover:bg-white"
         >
           Generate
         </button>
@@ -51,7 +51,10 @@ export default function EuroMillionsPage() {
                 <h2 className="text-xl font-semibold">Numbers (5):</h2>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {pick.numbers.map((n) => (
-                    <span key={n} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white">
+                    <span
+                      key={n}
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white"
+                    >
                       {n}
                     </span>
                   ))}
@@ -62,7 +65,10 @@ export default function EuroMillionsPage() {
                 <h2 className="text-xl font-semibold">Stars (2):</h2>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {pick.stars.map((s) => (
-                    <span key={s} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500 text-black">
+                    <span
+                      key={s}
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500 text-black"
+                    >
                       {s}
                     </span>
                   ))}
@@ -75,4 +81,3 @@ export default function EuroMillionsPage() {
     </div>
   );
 }
-

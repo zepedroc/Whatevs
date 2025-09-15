@@ -73,8 +73,7 @@ export function generateEuroMillionsPick(): EuroMillionsPick {
       const chosenHighOdd = pickUnique(oddHigh, highOddTarget);
       const chosenHighEven = pickUnique(evenHigh, highEvenTarget);
 
-      const numbers = [...chosenLowOdd, ...chosenLowEven, ...chosenHighOdd, ...chosenHighEven]
-        .sort((a, b) => a - b);
+      const numbers = [...chosenLowOdd, ...chosenLowEven, ...chosenHighOdd, ...chosenHighEven].sort((a, b) => a - b);
 
       if (numbers.length !== 5) continue;
 
@@ -109,4 +108,3 @@ export function validateEuroMillionsPick(pick: EuroMillionsPick): boolean {
 
   return true;
 }
-

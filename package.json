@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "tsc": "tsc",
-    "knip": "knip"
+    "knip": "knip",
+    "actions": "bun run test && bun run build && bun run lint"
   },
   "dependencies": {
     "@ai-sdk/openai": "2.0.2",
