@@ -57,6 +57,7 @@ export default function NavBar() {
     { key: 'worldClocks', href: `/${locale}/world-clocks`, label: t('navigation.worldClocks') },
     { key: 'worldMap', href: `/${locale}/world-map`, label: t('navigation.worldMap') },
     { key: 'games', href: `/${locale}/games`, label: t('navigation.games') },
+    { key: 'bets', href: `/${locale}/games/bets`, label: t('navigation.bets') },
   ];
 
   return (

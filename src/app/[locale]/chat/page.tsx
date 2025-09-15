@@ -1,6 +1,6 @@
 'use client';
 
-import { ClipboardEvent, FormEvent, KeyboardEvent, Suspense, useEffect, useRef, useState } from 'react';
+import { ClipboardEvent, FormEvent, KeyboardEvent, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
@@ -39,11 +39,14 @@ function ChatContent() {
 function ChatSection({ mode }: { mode: string }) {
   const t = useTranslations();
   const [input, setInput] = useState('');
+  const [useWebSearch, setUseWebSearch] = useState(false);
+  const transport = useMemo(
+    () => new DefaultChatTransport({ api: '/api/chat', body: { mode, webSearch: useWebSearch } }),
+    [mode, useWebSearch],
+  );
   const { messages, sendMessage, setMessages, status } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-      body: { mode },
-    }),
+    transport,
+    id: `main-chat-${mode}-${useWebSearch ? 'web' : 'noweb'}`,
   });
   const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
 
@@ -172,7 +175,7 @@ function ChatSection({ mode }: { mode: string }) {
             <div className="flex mt-4">
               <div className="max-w-[70%] rounded-lg flex flex-row items-center gap-2">
                 <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs text-gray-900">{t('Chat.thinking')}</span>
+                <span className="text-xs text-gray-900">{useWebSearch ? t('Chat.searchingWeb') : t('Chat.thinking')}</span>
               </div>
             </div>
           )}
@@ -194,6 +197,8 @@ function ChatSection({ mode }: { mode: string }) {
         textareaRef={textareaRef as React.RefObject<HTMLTextAreaElement>}
         onAddFiles={handleAddFiles}
         onNewChat={handleNewChat}
+        useWebSearch={useWebSearch}
+        onToggleWebSearch={() => setUseWebSearch((prev) => !prev)}
       />
       {/* Image Modal */}
       {modalImage && (

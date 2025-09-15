@@ -22,6 +22,8 @@ interface ChatFormProps {
   t: (key: string) => string;
   onAddFiles?: (files: File[]) => void;
   onNewChat: () => void;
+  useWebSearch: boolean;
+  onToggleWebSearch: () => void;
 }
 
 export default function ChatForm({
@@ -40,6 +42,8 @@ export default function ChatForm({
   textareaRef: externalTextareaRef,
   onAddFiles,
   onNewChat,
+  useWebSearch,
+  onToggleWebSearch,
 }: ChatFormProps & { textareaRef?: React.RefObject<HTMLTextAreaElement> }) {
   const internalRef = useRef<HTMLTextAreaElement>(null);
   const textareaRef = externalTextareaRef || internalRef;
@@ -117,6 +121,21 @@ export default function ChatForm({
                   </svg>
                   <input type="file" accept="image/*" multiple className="hidden" onChange={handleFileInputChange} />
                 </label>
+                <Button
+                  type="button"
+                  onClick={onToggleWebSearch}
+                  className={`rounded-lg p-2 transition-colors ${
+                    useWebSearch ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                  }`}
+                  title={useWebSearch ? t('Chat.disableWebSearch') : t('Chat.enableWebSearch')}
+                  disabled={status === 'submitted' || status === 'streaming'}
+                  style={{ minWidth: '32px', height: '32px' }}
+                >
+                  {/* Magnifying glass icon */}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                    <path d="M10 2a8 8 0 105.293 14.293l4.707 4.707a1 1 0 001.414-1.414l-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12A6 6 0 0110 4z" />
+                  </svg>
+                </Button>
                 <Button
                   type="button"
                   onClick={toggleRecording}

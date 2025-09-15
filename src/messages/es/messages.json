@@ -6,6 +6,7 @@
     "worldClocks": "Relojes Mundiales",
     "worldMap": "Mapa Mundial",
     "games": "Juegos",
+    "bets": "Apuestas",
     "agent": "Agente de Voz"
   },
   "WorldClocks": {
@@ -66,6 +67,7 @@
     "inputPlaceholder": "Escribe tu mensaje...",
     "loading": "Cargando chat...",
     "thinking": "Pensando...",
+    "searchingWeb": "Buscando en la web...",
     "recording": "Grabación en progreso...",
     "startRecording": "Iniciar grabación de voz",
     "stopRecording": "Detener grabación de voz",
@@ -73,7 +75,9 @@
     "searchMode": "Buscar modos",
     "noModeFound": "No se encontró ningún modo",
     "addImage": "Agregar imagen(es)",
-    "newChat": "Nuevo chat"
+    "newChat": "Nuevo chat",
+    "enableWebSearch": "Activar búsqueda web",
+    "disableWebSearch": "Desactivar búsqueda web"
   },
   "Agent": {
     "title": "Agente de Voz",
@@ -92,5 +96,21 @@
   "Games": {
     "title": "Juegos",
     "description": "Juega divertidos juegos multijugador con amigos y familia."
+  },
+  "Bets": {
+    "title": "Apuestas",
+    "countLabel": "Número de apuestas (máx. 10)",
+    "generateButton": "Generar",
+    "bet": "Apuesta {index}",
+    "euromillions": {
+      "title": "Euromillones",
+      "numbersTitle": "Números (5):",
+      "starsTitle": "Estrellas (2):"
+    },
+    "eurodreams": {
+      "title": "EuroDreams",
+      "numbersTitle": "Números (6):",
+      "dreamTitle": "Sueño (1):"
+    }
   }
 } 

@@ -6,6 +6,7 @@
     "worldClocks": "World Clocks",
     "worldMap": "World Map",
     "games": "Games",
+    "bets": "Bets",
     "agent": "Voice Agent"
   },
   "WorldClocks": {
@@ -70,6 +71,7 @@
     "inputPlaceholder": "Type your message...",
     "loading": "Loading chat...",
     "thinking": "Thinking...",
+    "searchingWeb": "Searching the web...",
     "recording": "Recording in progress...",
     "startRecording": "Start voice recording",
     "stopRecording": "Stop voice recording",
@@ -77,7 +79,9 @@
     "searchMode": "Search modes",
     "noModeFound": "No mode found",
     "addImage": "Add image(s)",
-    "newChat": "New chat"
+    "newChat": "New chat",
+    "enableWebSearch": "Enable web search",
+    "disableWebSearch": "Disable web search"
   },
   "Agent": {
     "title": "Voice Agent",
@@ -99,5 +103,21 @@
   "Games": {
     "title": "Games",
     "description": "Play fun multiplayer games with friends and family."
+  },
+  "Bets": {
+    "title": "Bets",
+    "countLabel": "Number of bets (max 10)",
+    "generateButton": "Generate",
+    "bet": "Bet {index}",
+    "euromillions": {
+      "title": "EuroMillions",
+      "numbersTitle": "Numbers (5):",
+      "starsTitle": "Stars (2):"
+    },
+    "eurodreams": {
+      "title": "EuroDreams",
+      "numbersTitle": "Numbers (6):",
+      "dreamTitle": "Dream (1):"
+    }
   }
 } 

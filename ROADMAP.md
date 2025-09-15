@@ -3,12 +3,14 @@
 ## Next features
 
 - Allow to input files on chat
+- Allow the chat to generate files
 - Build a canvas for ai generated code (allow three.js)
-- Add real time access to the internet
+- Display sources in a nicer way
 
 ## Bugs
 
 - Re-design the reasoning part of the chat interface when a reasoning model is selected
+- Image generation is broken
 
 ## Minor things
 
