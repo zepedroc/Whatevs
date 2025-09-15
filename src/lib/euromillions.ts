@@ -47,7 +47,7 @@ export function generateEuroMillionsPick(): EuroMillionsPick {
   const evenHigh = highNumbers.filter((n) => n % 2 === 0);
 
   const { oddCount, evenCount } = generateOddEvenSplit();
-  const { lowCount, highCount } = generateHighLowTargets();
+  const { lowCount } = generateHighLowTargets();
 
   for (let attempt = 0; attempt < 100; attempt++) {
     const lowOddTarget = Math.max(0, Math.min(oddCount, getRandomIntInclusive(0, lowCount)));
