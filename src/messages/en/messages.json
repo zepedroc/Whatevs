@@ -6,7 +6,7 @@
     "worldClocks": "World Clocks",
     "worldMap": "World Map",
     "games": "Games",
-    "euromillions": "EuroMillions",
+    "bets": "Bets",
     "agent": "Voice Agent"
   },
   "WorldClocks": {
@@ -103,5 +103,21 @@
   "Games": {
     "title": "Games",
     "description": "Play fun multiplayer games with friends and family."
+  },
+  "Bets": {
+    "title": "Bets",
+    "countLabel": "Number of bets (max 10)",
+    "generateButton": "Generate",
+    "bet": "Bet {index}",
+    "euromillions": {
+      "title": "EuroMillions",
+      "numbersTitle": "Numbers (5):",
+      "starsTitle": "Stars (2):"
+    },
+    "eurodreams": {
+      "title": "EuroDreams",
+      "numbersTitle": "Numbers (6):",
+      "dreamTitle": "Dream (1):"
+    }
   }
 } 
