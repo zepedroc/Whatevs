@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "tsc": "tsc",
     "knip": "knip"
   },
@@ -48,6 +50,7 @@
     "cheerio": "1.0.0"
   },
   "devDependencies": {
+    "@types/jsdom": "21.1.7",
     "@tailwindcss/postcss": "4.1.11",
     "@types/leaflet": "1.9.20",
     "@types/node": "24.2.0",
@@ -61,6 +64,8 @@
     "eslint-plugin-react-you-might-not-need-an-effect": "0.4.1",
     "postcss": "8.5.6",
     "tailwindcss": "4.1.11",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vitest": "2.1.8",
+    "jsdom": "26.0.0"
   }
 }
