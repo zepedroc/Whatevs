@@ -58,6 +58,7 @@ export default function NavBar() {
     { key: 'worldMap', href: `/${locale}/world-map`, label: t('navigation.worldMap') },
     { key: 'games', href: `/${locale}/games`, label: t('navigation.games') },
     { key: 'bets', href: `/${locale}/games/bets`, label: t('navigation.bets') },
+    { key: 'debate', href: `/${locale}/debate`, label: t('navigation.debate') },
   ];
 
   return (

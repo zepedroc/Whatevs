@@ -7,6 +7,7 @@
     "worldMap": "Mapa Mundial",
     "games": "Jogos",
     "bets": "Apostas",
+    "debate": "Debate",
     "agent": "Agente de Voz"
   },
   "WorldClocks": {
@@ -116,5 +117,24 @@
       "numbersTitle": "Números (6):",
       "dreamTitle": "Sonho (1):"
     }
+  },
+  "Debate": {
+    "title": "Arena de Debate de IA",
+    "description": "Observa dois agentes de IA a debater qualquer tópico em tempo real",
+    "topic_label": "Tópico do Debate",
+    "topic_placeholder": "Introduza um tópico para os agentes de IA debaterem...",
+    "start_debate": "Iniciar Debate",
+    "debating": "Debatendo...",
+    "error_title": "Erro",
+    "error_validation": "Por favor, introduza um tópico de debate",
+    "error_general": "Falha ao gerar o debate",
+    "retry": "Tentar Novamente",
+    "no_debate_yet": "Nenhum debate ainda",
+    "debate_header": "Debate",
+    "live_streaming": "Transmissão ao vivo...",
+    "empty_state": "Introduza um tópico e clique em \"Iniciar Debate\" para começar",
+    "tip_title": "Dica:",
+    "tip_description": "O debate será transmitido em tempo real conforme os agentes de IA geram suas respostas. Você pode ver a conversa se desenrolar turno por turno.",
+    "new_debate": "Novo Debate"
   }
 } 
