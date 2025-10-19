@@ -131,6 +131,7 @@
     "empty_state": "Ingresa un tema y haz clic en \"Iniciar Debate\" para comenzar",
     "tip_title": "Consejo:",
     "tip_description": "El debate se transmitirá en tiempo real a medida que los agentes de IA generen sus respuestas. Puedes ver la conversación desarrollarse turno por turno.",
-    "new_debate": "Nuevo Debate"
+    "new_debate": "Nuevo Debate",
+    "allow_search": "Habilitar búsqueda web"
   }
 } 

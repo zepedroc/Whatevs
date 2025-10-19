@@ -4,6 +4,8 @@ import { useRef, useState } from 'react';
 
 import { useTranslations } from 'next-intl';
 
+import { Switch } from '@/components/ui/switch';
+
 import { streamPost } from '@/lib/streamApi';
 
 interface DebateTurn {
@@ -15,6 +17,7 @@ interface DebateTurn {
 export default function DebatePage() {
   const t = useTranslations('Debate');
   const [topic, setTopic] = useState('');
+  const [allowSearch, setAllowSearch] = useState(false);
   const [debateMessages, setDebateMessages] = useState<DebateTurn[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,10 +39,14 @@ export default function DebatePage() {
     setDebateMessages([]);
 
     try {
-      await streamPost<DebateTurn, { topic: string }>('api/debate/generate', { topic }, (data) => {
-        setDebateMessages((prev) => [...prev, data]);
-        setTimeout(scrollToBottom, 0);
-      });
+      await streamPost<DebateTurn, { topic: string; allowSearch: boolean }>(
+        'api/debate/generate',
+        { topic, allowSearch },
+        (data) => {
+          setDebateMessages((prev) => [...prev, data]);
+          setTimeout(scrollToBottom, 0);
+        },
+      );
     } catch (err) {
       const errorMessage =
         err instanceof Error
@@ -61,6 +68,7 @@ export default function DebatePage() {
 
   const handleNewDebate = () => {
     setTopic('');
+    setAllowSearch(false);
     setDebateMessages([]);
     setError(null);
     setLoading(false);
@@ -104,6 +112,17 @@ export default function DebatePage() {
                 t('start_debate')
               )}
             </button>
+          </div>
+          <div className="mt-4 flex items-center gap-3">
+            <Switch
+              id="allow-search"
+              checked={allowSearch}
+              onCheckedChange={(checked) => setAllowSearch(checked)}
+              className="data-[state=checked]:bg-black"
+            />
+            <label htmlFor="allow-search" className="text-sm text-gray-600">
+              {t('allow_search')}
+            </label>
           </div>
         </div>
 

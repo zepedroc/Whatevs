@@ -138,6 +138,7 @@
     "empty_state": "Enter a topic and click \"Start Debate\" to begin",
     "tip_title": "Tip:",
     "tip_description": "The debate will stream in real-time as the AI agents generate their responses. You can watch the conversation unfold turn by turn.",
-    "new_debate": "New Debate"
+    "new_debate": "New Debate",
+    "allow_search": "Allow web search"
   }
 } 

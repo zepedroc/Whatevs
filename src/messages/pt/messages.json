@@ -135,6 +135,7 @@
     "empty_state": "Introduza um tópico e clique em \"Iniciar Debate\" para começar",
     "tip_title": "Dica:",
     "tip_description": "O debate será transmitido em tempo real conforme os agentes de IA geram suas respostas. Você pode ver a conversa se desenrolar turno por turno.",
-    "new_debate": "Novo Debate"
+    "new_debate": "Novo Debate",
+    "allow_search": "Permitir pesquisa na web"
   }
 } 
