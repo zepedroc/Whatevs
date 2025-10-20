@@ -28,7 +28,7 @@ async function getImage(prompt: string) {
 export default function ImagesPage() {
   const t = useTranslations('Images');
   const [input, setInput] = useState('');
-  const [currentImage, setCurrentImage] = useState('');
+  const [images, setImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,17 +38,26 @@ export default function ImagesPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    setImages([]); // Clear old images
 
-    const img = await getImage(input);
+    // Generate 2 images concurrently
+    const imagePromises = [getImage(input), getImage(input)];
+    const imageBlobs = await Promise.all(imagePromises);
 
-    // Convert blob to base64
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64String = reader.result as string;
-      setCurrentImage(base64String);
-      setIsLoading(false);
-    };
-    reader.readAsDataURL(img);
+    // Convert blobs to base64
+    const base64Promises = imageBlobs.map((blob) => {
+      return new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve(reader.result as string);
+        };
+        reader.readAsDataURL(blob);
+      });
+    });
+
+    const base64Images = await Promise.all(base64Promises);
+    setImages(base64Images);
+    setIsLoading(false);
   };
 
   return (
@@ -65,17 +74,17 @@ export default function ImagesPage() {
               onChange={handleInputChange}
               value={input}
             />
-            <Button size="default" type="submit">
+            <Button size="default" type="submit" className="cursor-pointer">
               {t('generateButton')}
             </Button>
           </form>
         </div>
       </div>
-      <div className="mt-12 w-full max-w-2xl">
-        <div className="grid gap-6">
-          <div className="bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-lg">
-            {isLoading && (
-              <>
+      <div className="mt-12 w-full max-w-4xl">
+        <div className="grid gap-6 md:grid-cols-2">
+          {isLoading && (
+            <>
+              <div className="bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-lg">
                 <div className="aspect-4/3 bg-gray-100 dark:bg-gray-800 animate-pulse">
                   <div className="flex items-center justify-center h-full">
                     <ImageIcon className="w-12 h-12 text-gray-500 dark:text-gray-400" />
@@ -90,12 +99,36 @@ export default function ImagesPage() {
                     <div className="h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
                   </div>
                 </div>
-              </>
-            )}
-            {currentImage && !isLoading && (
-              <Image src={currentImage} alt={t('generatedImageAlt')} height={400} width={800} />
-            )}
-          </div>
+              </div>
+              <div className="bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-lg">
+                <div className="aspect-4/3 bg-gray-100 dark:bg-gray-800 animate-pulse">
+                  <div className="flex items-center justify-center h-full">
+                    <ImageIcon className="w-12 h-12 text-gray-500 dark:text-gray-400" />
+                  </div>
+                </div>
+                <div className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
+                      <div className="h-3 w-24 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
+                    </div>
+                    <div className="h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+          {images.map((image, index) => (
+            <div key={index} className="bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-lg">
+              <Image
+                src={image}
+                alt={`${t('generatedImageAlt')} ${index + 1}`}
+                height={400}
+                width={400}
+                className="w-full h-auto"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </main>
