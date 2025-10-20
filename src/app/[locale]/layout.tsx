@@ -9,7 +9,7 @@ import '../globals.css';
 
 type LocaleLayoutProps = {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
 const matrixFont = VT323({
