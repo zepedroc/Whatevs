@@ -3,13 +3,13 @@
  * All requests are proxied through /api/backend/ route
  */
 
-export interface ApiError {
+interface ApiError {
   error: string;
   message?: string;
   status?: number;
 }
 
-export interface ApiResponse<T = unknown> {
+interface ApiResponse<T = unknown> {
   data?: T;
   error?: ApiError;
   isError: boolean;

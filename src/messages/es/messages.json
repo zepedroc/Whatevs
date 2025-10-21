@@ -6,7 +6,6 @@
     "worldClocks": "Relojes Mundiales",
     "worldMap": "Mapa Mundial",
     "games": "Juegos",
-    "bets": "Apuestas",
     "debate": "Debate",
     "agent": "Agente de Voz"
   },
@@ -78,7 +77,9 @@
     "addImage": "Agregar imagen(es)",
     "newChat": "Nuevo chat",
     "enableWebSearch": "Activar búsqueda web",
-    "disableWebSearch": "Desactivar búsqueda web"
+    "disableWebSearch": "Desactivar búsqueda web",
+    "errorTooLarge": "Tu solicitud es demasiado grande. Intenta acortar tu mensaje o eliminar algunos adjuntos.",
+    "errorGeneral": "Algo salió mal. Por favor, inténtalo de nuevo."
   },
   "Agent": {
     "title": "Agente de Voz",
@@ -97,22 +98,6 @@
   "Games": {
     "title": "Juegos",
     "description": "Juega divertidos juegos multijugador con amigos y familia."
-  },
-  "Bets": {
-    "title": "Apuestas",
-    "countLabel": "Número de apuestas (máx. 10)",
-    "generateButton": "Generar",
-    "bet": "Apuesta {index}",
-    "euromillions": {
-      "title": "Euromillones",
-      "numbersTitle": "Números (5):",
-      "starsTitle": "Estrellas (2):"
-    },
-    "eurodreams": {
-      "title": "EuroDreams",
-      "numbersTitle": "Números (6):",
-      "dreamTitle": "Sueño (1):"
-    }
   },
   "Debate": {
     "title": "Arena de Debate de IA",

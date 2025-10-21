@@ -47,6 +47,28 @@ function ChatSection({ mode }: { mode: string }) {
   const { messages, sendMessage, setMessages, status } = useChat({
     transport,
     id: `main-chat-${mode}-${useWebSearch ? 'web' : 'noweb'}`,
+    onError: (error: unknown) => {
+      const asString = String(error ?? '');
+      // Handle common oversize indicators (HTTP 413 / request_too_large)
+      if (
+        asString.includes('413') ||
+        asString.toLowerCase().includes('request entity too large') ||
+        asString.toLowerCase().includes('request_too_large')
+      ) {
+        toast.error(
+          t('Chat.errorTooLarge', {
+            default: 'Your request is too large. Try shortening your message or removing some attachments.',
+          }) as unknown as string,
+        );
+        return;
+      }
+      // Fallback
+      toast.error(
+        t('Chat.errorGeneral', {
+          default: 'Something went wrong. Please try again.',
+        }) as unknown as string,
+      );
+    },
   });
   const { isRecording, transcript, toggleRecording } = useSpeechRecognition();
 

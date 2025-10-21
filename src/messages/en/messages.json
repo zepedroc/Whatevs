@@ -6,7 +6,6 @@
     "worldClocks": "World Clocks",
     "worldMap": "World Map",
     "games": "Games",
-    "bets": "Bets",
     "debate": "Debate",
     "agent": "Voice Agent"
   },
@@ -82,7 +81,9 @@
     "addImage": "Add image(s)",
     "newChat": "New chat",
     "enableWebSearch": "Enable web search",
-    "disableWebSearch": "Disable web search"
+    "disableWebSearch": "Disable web search",
+    "errorTooLarge": "Your request is too large. Try sending a smaller image.",
+    "errorGeneral": "Something went wrong. Please try again."
   },
   "Agent": {
     "title": "Voice Agent",
@@ -104,22 +105,6 @@
   "Games": {
     "title": "Games",
     "description": "Play fun multiplayer games with friends and family."
-  },
-  "Bets": {
-    "title": "Bets",
-    "countLabel": "Number of bets (max 10)",
-    "generateButton": "Generate",
-    "bet": "Bet {index}",
-    "euromillions": {
-      "title": "EuroMillions",
-      "numbersTitle": "Numbers (5):",
-      "starsTitle": "Stars (2):"
-    },
-    "eurodreams": {
-      "title": "EuroDreams",
-      "numbersTitle": "Numbers (6):",
-      "dreamTitle": "Dream (1):"
-    }
   },
   "Debate": {
     "title": "AI Debate Arena",

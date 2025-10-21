@@ -3,7 +3,7 @@
  * Parses SSE (Server-Sent Events) where each event is terminated by a blank line
  */
 
-export interface StreamError {
+interface StreamError {
   error: string;
   message?: string;
 }
@@ -44,6 +44,10 @@ export async function streamPost<T = unknown, B = unknown>(
 
     // Check for HTTP errors
     if (!response.ok) {
+      // Surface a clearer message for oversized requests
+      if (response.status === 413) {
+        throw new Error('Request too large');
+      }
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
