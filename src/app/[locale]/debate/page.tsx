@@ -44,7 +44,7 @@ export default function DebatePage() {
         { topic, allowSearch },
         (data) => {
           setDebateMessages((prev) => [...prev, data]);
-          setTimeout(scrollToBottom, 0);
+          setTimeout(scrollToBottom, 100);
         },
       );
     } catch (err) {
@@ -156,10 +156,17 @@ export default function DebatePage() {
             </div>
           </div>
 
-          <div className="max-h-120 overflow-y-auto p-4">
+          <div className="max-h-110 overflow-y-auto p-4">
             {debateMessages.length === 0 && !loading ? (
               <div className="flex items-center justify-center py-12 text-gray-500">
                 <p>{t('empty_state')}</p>
+              </div>
+            ) : debateMessages.length === 0 && loading ? (
+              <div className="flex items-center justify-center py-12 text-gray-600">
+                <div className="flex flex-col items-center gap-2">
+                  <span className="animate-pulse text-2xl">🤔</span>
+                  <p className="font-medium">{t('debaters_thinking')}</p>
+                </div>
               </div>
             ) : (
               <div className="space-y-4">

@@ -121,6 +121,7 @@
     "debate_header": "Debate",
     "live_streaming": "Live streaming...",
     "empty_state": "Enter a topic and click \"Start Debate\" to begin",
+    "debaters_thinking": "Debaters are thinking...",
     "tip_title": "Tip:",
     "tip_description": "The debate will stream in real-time as the AI agents generate their responses. You can watch the conversation unfold turn by turn.",
     "new_debate": "New Debate",
