@@ -165,7 +165,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ row: fallback[0], col: fallback[1], note: 'fallback-illegal' });
     }
     return NextResponse.json({ row: move.row, col: move.col });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
