@@ -4,14 +4,16 @@ import { useState } from 'react';
 
 import dynamic from 'next/dynamic';
 
+import { Bot } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 // Use dynamic import with no SSR for the game component since it uses browser APIs
 const PongGame = dynamic(() => import('@/components/games/pong-game'), { ssr: false });
 const Connect4Game = dynamic(() => import('@/components/games/connect4-game'), { ssr: false });
 const SpaceInvadersGame = dynamic(() => import('@/components/games/space-invaders'), { ssr: false });
+const TicTacToe = dynamic(() => import('@/components/games/tic-tac-toe'), { ssr: false });
 
-type GameType = 'pong' | 'connect4' | 'space-invaders';
+type GameType = 'pong' | 'connect4' | 'space-invaders' | 'tic-tac-toe';
 
 export default function GamesPage() {
   const t = useTranslations('Games');
@@ -31,9 +33,9 @@ export default function GamesPage() {
         <div className="flex flex-wrap gap-4 border-b border-gray-200 dark:border-gray-700">
           <button
             onClick={() => handleGameSelect('pong')}
-            className={`py-3 px-6 font-medium text-lg rounded-t-lg transition-colors ${
+            className={`py-3 px-6 font-medium text-lg rounded-t-lg transition-colors cursor-pointer ${
               activeGame === 'pong'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-black text-white'
                 : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
@@ -41,9 +43,9 @@ export default function GamesPage() {
           </button>
           <button
             onClick={() => handleGameSelect('connect4')}
-            className={`py-3 px-6 font-medium text-lg rounded-t-lg transition-colors ${
+            className={`py-3 px-6 font-medium text-lg rounded-t-lg transition-colors cursor-pointer ${
               activeGame === 'connect4'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-black text-white'
                 : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
@@ -51,13 +53,26 @@ export default function GamesPage() {
           </button>
           <button
             onClick={() => handleGameSelect('space-invaders')}
-            className={`py-3 px-6 font-medium text-lg rounded-t-lg transition-colors ${
+            className={`py-3 px-6 font-medium text-lg rounded-t-lg transition-colors cursor-pointer ${
               activeGame === 'space-invaders'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-black text-white'
                 : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
             Space Invaders
+          </button>
+          <button
+            onClick={() => handleGameSelect('tic-tac-toe')}
+            className={`py-3 px-6 font-medium text-lg rounded-t-lg transition-colors cursor-pointer ${
+              activeGame === 'tic-tac-toe'
+                ? 'bg-black text-white'
+                : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+            }`}
+          >
+            <span className="inline-flex items-center gap-2">
+              <span>Tic-Tac-Toe</span>
+              <Bot className="w-4 h-4" />
+            </span>
           </button>
         </div>
       </div>
@@ -97,6 +112,16 @@ export default function GamesPage() {
             </p>
             <div className="bg-black rounded-lg p-4 w-full max-w-4xl mx-auto">
               <SpaceInvadersGame />
+            </div>
+          </div>
+        )}
+
+        {activeGame === 'tic-tac-toe' && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Tic-Tac-Toe</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">Play Tic-Tac-Toe against an AI model.</p>
+            <div className="rounded-lg p-4 w-full max-w-3xl mx-auto border border-gray-200 dark:border-gray-800">
+              <TicTacToe />
             </div>
           </div>
         )}
