@@ -14,7 +14,20 @@ const PLAYER_1_COLOR = '#3b82f6'; // Blue
 const PLAYER_2_COLOR = '#ef4444'; // Red
 const EMPTY_COLOR = '#1f2937'; // Dark gray
 const WINNING_LENGTH = 4;
-const ANIMATION_DURATION = 500; // ms
+// Drop animation tuning
+const DROP_BASE_DURATION_MS = 450; // minimum duration regardless of distance
+const DROP_PER_ROW_MS = 120; // additional ms per row traveled
+const DROP_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
+
+// Visual layout constants to keep sizes aligned across animations/overlays
+const CELL_DIAMETER_PX = 48; // circle size
+const CELL_MARGIN_PX = 4; // m-1
+const ROW_GAP_X_PX = 2; // gap-[2px] between cells horizontally
+const CELL_STEP_X_PX = CELL_DIAMETER_PX + 2 * CELL_MARGIN_PX + ROW_GAP_X_PX; // 48 + 8 + 2 = 58
+const CELL_STEP_Y_PX = CELL_DIAMETER_PX + 2 * CELL_MARGIN_PX; // 48 + 8 = 56
+const BOARD_INNER_OFFSET_PX = 2; // matches container padding p-0.5 (2px)
+const HOVER_LEFT_TWEAK_PX = -4; // small alignment nudge for overlay
+const HOVER_TOP_TWEAK_PX = -5; // small alignment nudge for overlay
 
 type CellValue = 0 | 1 | 2; // 0: empty, 1: player 1, 2: player 2
 type GameBoard = CellValue[][];
@@ -42,6 +55,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   const [isAnimating, setIsAnimating] = useState(false);
   const [winningCells, setWinningCells] = useState<WinningCells>(null);
   const [showWinMessage, setShowWinMessage] = useState(false);
+  const [hoveredColumn, setHoveredColumn] = useState<number | null>(null);
 
   // AI controls
   const MODELS = useMemo(
@@ -217,48 +231,48 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
     }
   }, [winner]);
 
-  // Handle animation
+  // Smooth drop animation: trigger a single CSS transition from above-board to target row
   useEffect(() => {
     if (!animatingPiece || !isAnimating) return;
 
-    // If the piece has reached its target position
-    if (animatingPiece.currentPosition > animatingPiece.targetRow) {
-      // Update the board with the final position
-      const newBoard = [...board.map((row) => [...row])];
-      newBoard[animatingPiece.targetRow][animatingPiece.col] = animatingPiece.player;
-      setBoard(newBoard);
-      setLastMove([animatingPiece.targetRow, animatingPiece.col]);
-      setAnimatingPiece(null);
-      setIsAnimating(false);
+    // If we haven't yet moved to the target row, schedule it on the next frame
+    if (animatingPiece.currentPosition !== animatingPiece.targetRow) {
+      const raf1 = requestAnimationFrame(() => {
+        const raf2 = requestAnimationFrame(() => {
+          setAnimatingPiece((prev) => (prev ? { ...prev, currentPosition: prev.targetRow } : prev));
+        });
+        return () => cancelAnimationFrame(raf2);
+      });
+      return () => cancelAnimationFrame(raf1);
+    }
+  }, [animatingPiece, isAnimating]);
 
-      // Check for win
-      if (checkWin(newBoard, animatingPiece.targetRow, animatingPiece.col, animatingPiece.player)) {
-        setWinner(animatingPiece.player);
-        setIsGameOver(true);
-        return;
-      }
+  // Finalize the move when the transition completes
+  const handleDropTransitionEnd = useCallback(() => {
+    if (!animatingPiece || !isAnimating) return;
 
-      // Check for draw
-      if (checkDraw(newBoard)) {
-        setIsGameOver(true);
-        return;
-      }
+    const newBoard = [...board.map((row) => [...row])];
+    newBoard[animatingPiece.targetRow][animatingPiece.col] = animatingPiece.player;
+    setBoard(newBoard);
+    setLastMove([animatingPiece.targetRow, animatingPiece.col]);
+    setAnimatingPiece(null);
+    setIsAnimating(false);
 
-      // Switch player
-      setCurrentPlayer(animatingPiece.player === 1 ? 2 : 1);
+    // Check for win
+    if (checkWin(newBoard, animatingPiece.targetRow, animatingPiece.col, animatingPiece.player)) {
+      setWinner(animatingPiece.player);
+      setIsGameOver(true);
       return;
     }
 
-    // Continue the animation
-    const dropSpeed = ANIMATION_DURATION / (animatingPiece.targetRow + 2); // +2 to account for starting above the board
-    const timer = setTimeout(() => {
-      setAnimatingPiece({
-        ...animatingPiece,
-        currentPosition: animatingPiece.currentPosition + 1,
-      });
-    }, dropSpeed);
+    // Check for draw
+    if (checkDraw(newBoard)) {
+      setIsGameOver(true);
+      return;
+    }
 
-    return () => clearTimeout(timer);
+    // Switch player
+    setCurrentPlayer(animatingPiece.player === 1 ? 2 : 1);
   }, [animatingPiece, isAnimating, board, checkWin]);
 
   // Make a move
@@ -283,7 +297,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
       col: column,
       player: currentPlayer,
       targetRow: targetRow,
-      currentPosition: 0, // Start above the board
+      currentPosition: -1, // Start slightly above the board for smoother drop-in
     });
     setIsAnimating(true);
   };
@@ -365,7 +379,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
         )}
       </div>
 
-      <div className="bg-blue-900 p-4 rounded-lg">
+      <div className="rounded-xl p-4 shadow-2xl ring-1 ring-white/10 bg-gradient-to-b from-slate-900 to-slate-800">
         {/* Column selectors */}
         <div className="flex mb-2">
           {Array(columns)
@@ -374,24 +388,48 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
               <button
                 key={`selector-${col}`}
                 onClick={() => makeMove(col)}
+                onMouseEnter={() => setHoveredColumn(col)}
+                onMouseLeave={() => setHoveredColumn(null)}
+                onFocus={() => setHoveredColumn(col)}
+                onBlur={() => setHoveredColumn(null)}
                 disabled={isGameOver || isAnimating || board[0][col] !== 0}
-                className="flex-1 h-8 mx-1 rounded-t-lg bg-blue-700 hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="flex-1 h-8 mx-1 rounded-t-lg cursor-pointer transition-colors bg-blue-700/70 hover:bg-blue-500/80 disabled:bg-gray-600 disabled:cursor-not-allowed ring-1 ring-white/10"
                 aria-label={`Drop in column ${col + 1}`}
               />
             ))}
         </div>
 
         {/* Game board */}
-        <div className="bg-blue-800 p-2 rounded-lg relative">
+        <div
+          className="relative rounded-xl p-0.5 shadow-inner ring-1 ring-white/10 bg-gradient-to-b from-blue-900 to-indigo-900"
+          onMouseLeave={() => setHoveredColumn(null)}
+        >
+          {/* Column hover highlight */}
+          {hoveredColumn !== null && (
+            <div
+              className="absolute inset-y-0 pointer-events-none"
+              style={{
+                left: BOARD_INNER_OFFSET_PX + CELL_MARGIN_PX + hoveredColumn * CELL_STEP_X_PX + HOVER_LEFT_TWEAK_PX,
+                width: CELL_DIAMETER_PX + 2 * CELL_MARGIN_PX,
+                top: BOARD_INNER_OFFSET_PX + CELL_MARGIN_PX + HOVER_TOP_TWEAK_PX,
+                height: rows * CELL_STEP_Y_PX,
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02))',
+                boxShadow: 'inset 0 0 0 2px rgba(255,255,255,0.06)',
+                borderRadius: '12px',
+                zIndex: 1,
+              }}
+            />
+          )}
           {/* Static board and pieces */}
           {board.map((row, rowIndex) => (
-            <div key={`row-${rowIndex}`} className="flex">
+            <div key={`row-${rowIndex}`} className="flex gap-[2px]">
               {row.map((cell, colIndex) => (
                 <div
                   key={`cell-${rowIndex}-${colIndex}`}
                   className="w-12 h-12 m-1 rounded-full flex items-center justify-center overflow-hidden"
                   style={{
                     backgroundColor: EMPTY_COLOR,
+                    boxShadow: 'inset 0 8px 14px rgba(0,0,0,0.55), inset 0 -6px 10px rgba(255,255,255,0.06)',
                   }}
                 >
                   {/* Static pieces */}
@@ -400,12 +438,17 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
                       className="w-full h-full rounded-full"
                       style={{
                         backgroundColor: cell === 1 ? PLAYER_1_COLOR : PLAYER_2_COLOR,
+                        backgroundImage:
+                          'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), rgba(255,255,255,0) 45%), radial-gradient(circle at 70% 70%, rgba(0,0,0,0.35), rgba(0,0,0,0) 60%)',
                         transform: isWinningCell(rowIndex, colIndex)
                           ? 'scale(1.1) rotate(0deg)'
                           : lastMove && lastMove[0] === rowIndex && lastMove[1] === colIndex
                             ? 'scale(1.05)'
                             : 'scale(1)',
-                        boxShadow: isWinningCell(rowIndex, colIndex) ? '0 0 10px 3px rgba(255, 255, 255, 0.7)' : 'none',
+                        // Outer glow for winning discs
+                        boxShadow: isWinningCell(rowIndex, colIndex)
+                          ? '0 0 12px 4px rgba(255,255,255,0.75), 0 6px 14px rgba(0,0,0,0.35)'
+                          : '0 6px 14px rgba(0,0,0,0.4), inset 0 -8px 12px rgba(0,0,0,0.35)',
                         animation: isWinningCell(rowIndex, colIndex) ? 'pulse 1.5s infinite' : 'none',
                         transition: 'transform 0.3s, box-shadow 0.3s, background-color 0.3s',
                       }}
@@ -421,14 +464,18 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
             <div
               className="absolute rounded-full"
               style={{
-                width: '48px', // Match the cell size
-                height: '48px',
+                width: `${CELL_DIAMETER_PX}px`, // Match the cell size
+                height: `${CELL_DIAMETER_PX}px`,
                 backgroundColor: animatingPiece.player === 1 ? PLAYER_1_COLOR : PLAYER_2_COLOR,
-                left: `calc(${animatingPiece.col} * 56px + 10px)`, // 56px per cell (48px + 8px margin)
-                top: `calc(${animatingPiece.currentPosition} * 56px + 10px)`, // Position based on current animation state
-                transition: 'top 0.1s ease-in',
+                backgroundImage:
+                  'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), rgba(255,255,255,0) 45%), radial-gradient(circle at 70% 70%, rgba(0,0,0,0.35), rgba(0,0,0,0) 60%)',
+                left: BOARD_INNER_OFFSET_PX + CELL_MARGIN_PX + animatingPiece.col * CELL_STEP_X_PX, // step per cell (diameter + margins + gap)
+                top: BOARD_INNER_OFFSET_PX + CELL_MARGIN_PX + animatingPiece.currentPosition * CELL_STEP_Y_PX, // Position based on current animation state
+                transition: `top ${DROP_BASE_DURATION_MS + DROP_PER_ROW_MS * (animatingPiece.targetRow + 1)}ms ${DROP_EASING}`,
+                boxShadow: '0 6px 14px rgba(0,0,0,0.45), inset 0 -8px 12px rgba(0,0,0,0.35)',
                 zIndex: 10,
               }}
+              onTransitionEnd={handleDropTransitionEnd}
             />
           )}
 
