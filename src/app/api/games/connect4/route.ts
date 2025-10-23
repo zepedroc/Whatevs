@@ -20,11 +20,6 @@ function isValidBoard(board: unknown): board is Board {
   );
 }
 
-function serializeBoard(board: Board): string {
-  // Row-major, top row first, join digits without separators
-  return board.flat().join('');
-}
-
 function boardToGridString(board: Board): string {
   // Returns 6 lines (or rows lines) of 7 digits (or cols), top to bottom
   return board.map((row) => row.join('')).join('\n');
@@ -120,20 +115,6 @@ function sortByCenterPreference(cols: number[], totalCols: number): number[] {
   return [...cols].sort((a, b) => Math.abs(a - center) - Math.abs(b - center));
 }
 
-function columnHeights(board: Board): number[] {
-  const rows = board.length;
-  const cols = board[0].length;
-  const heights: number[] = [];
-  for (let c = 0; c < cols; c += 1) {
-    let h = 0;
-    for (let r = 0; r < rows; r += 1) {
-      if (board[r][c] !== 0) h += 1;
-    }
-    heights.push(h);
-  }
-  return heights;
-}
-
 function extractColFromText(text: string): number | null {
   const jsonMatch = text.match(/\{[\s\S]*?\}/);
   if (jsonMatch) {
@@ -180,19 +161,15 @@ export async function POST(req: Request) {
 
     const rows = b.length;
     const cols = b[0].length;
-    const s = serializeBoard(b);
     const grid = boardToGridString(b);
-    const legalStr = JSON.stringify(legal);
-    const allowedStr = JSON.stringify(allowedSorted);
-    const heights = JSON.stringify(columnHeights(b));
     const allCols: number[] = [];
     for (let i = 0; i < cols; i += 1) allCols.push(i);
 
     const system = [
       'You are a strong Connect 4 engine. Respond ONLY with a single JSON object.',
       'Format: {"col": 0-based integer}. No prose, no code fences, no markdown.',
-      'Hard constraints: choose ONLY from AllowedColumns and NEVER from UnsafeColumns.',
-      'Primary priorities in order: (1) take immediate win; (2) block opponent immediate win; (3) prefer center-most; (4) choose moves that extend or create threats (threes with open ends) over isolated placements.',
+      'Primary priorities in order: (1) take immediate win; (2) block opponent immediate win; (3) choose moves that extend or create threats (threes with open ends) over isolated placements.',
+      'Connection of four can be horizontal, vertical, or diagonal.',
       'Obey gravity: pieces fall to the lowest empty cell.',
     ].join('\n');
 
@@ -200,13 +177,10 @@ export async function POST(req: Request) {
       `Board rows=${rows} cols=${cols}. Cells: 0 empty, 1 player1, 2 player2.`,
       'BoardGrid (top row first, each line has cols digits):',
       grid,
-      `RowMajorFlat: ${s}`,
-      `ColumnHeights (top-filled count per column): ${heights}`,
       `AI plays as: ${aiPlaysAs}`,
-      `LegalColumns: ${legalStr}`,
-      `AllowedColumns (choose from this list only): ${allowedStr}`,
       'Return the single best move as JSON. Example: {"col":3}',
     ].join('\n');
+    console.log('🚀 -> user:', user);
 
     const { text } = await generateText({ model: groq.chat(model), system, prompt: user, temperature: 0 });
     let col = extractColFromText(text);

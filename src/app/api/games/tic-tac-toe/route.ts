@@ -18,12 +18,9 @@ function isValidBoard(board: unknown): board is Board {
   );
 }
 
-function serializeBoard(board: Board): string {
-  // Row-major to 9-char string using '.' for empty
-  return board
-    .flat()
-    .map((c) => (c === null ? '.' : c))
-    .join('');
+function boardToGridString(board: Board): string {
+  // Returns 3 lines with symbols X/O/. and column headers comment for readability
+  return board.map((row) => row.map((c) => (c === null ? '.' : c)).join('')).join('\n');
 }
 
 function getLegalMoves(board: Board): Array<[number, number]> {
@@ -133,27 +130,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ row, col });
     }
 
-    const s = serializeBoard(b);
-    const legalMovesStr = JSON.stringify(legal);
+    const grid = boardToGridString(b);
 
     const system = [
       'You are a perfect Tic-Tac-Toe engine. Respond with ONLY a single compact JSON object.',
       'The JSON format is: {"row": 0-2, "col": 0-2}. No prose, no code fences.',
       'Play optimally to win or force a draw. Never choose an illegal move.',
+      'Primary priorities in order: (1) take immediate win; (2) block opponent immediate win; (3) choose moves that extend or create threats (threes with open ends) over isolated placements.',
+      'Connection of four can be horizontal, vertical, or diagonal.',
     ].join('\n');
 
     const user = [
-      `Board (row-major, '.' = empty): ${s}`,
+      'BoardGrid (top row first; "." = empty):',
+      grid,
       `AI plays as: ${aiPlaysAs}`,
-      `LegalMoves: ${legalMovesStr}`,
       'Return the single best move as JSON. Example: {"row":0,"col":2}',
     ].join('\n');
+    console.log('🚀 -> user:', user);
 
-    const { text } = await generateText({
-      model: groq.chat(model),
-      system,
-      prompt: user,
-    });
+    const { text } = await generateText({ model: groq.chat(model), system, prompt: user, temperature: 0 });
 
     const move = extractMoveFromText(text);
     const fallback = legal[0];
