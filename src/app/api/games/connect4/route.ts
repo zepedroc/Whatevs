@@ -180,7 +180,6 @@ export async function POST(req: Request) {
       `AI plays as: ${aiPlaysAs}`,
       'Return the single best move as JSON. Example: {"col":3}',
     ].join('\n');
-    console.log('🚀 -> user:', user);
 
     const { text } = await generateText({ model: groq.chat(model), system, prompt: user, temperature: 0 });
     let col = extractColFromText(text);

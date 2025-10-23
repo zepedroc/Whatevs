@@ -70,25 +70,32 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   const [humanPlaysAs, setHumanPlaysAs] = useState<1 | 2>(1);
   const aiPlaysAs = useMemo<1 | 2>(() => (humanPlaysAs === 1 ? 2 : 1), [humanPlaysAs]);
   const [isRequesting, setIsRequesting] = useState(false);
+  const [mode, setMode] = useState<'human-ai' | 'ai-ai'>('human-ai');
+  const [modelP1, setModelP1] = useState<string>(MODELS[0].id);
+  const [modelP2, setModelP2] = useState<string>(MODELS[1]?.id ?? MODELS[0].id);
+  const [isAiAiRunning, setIsAiAiRunning] = useState(false);
 
-  const requestAiMove = useCallback(async (): Promise<number | null> => {
-    try {
-      setIsRequesting(true);
-      const res = await fetch('/api/games/connect4', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ board, aiPlaysAs, model }),
-      });
-      if (!res.ok) return null;
-      const data = (await res.json()) as { col?: number };
-      if (typeof data.col === 'number') return data.col;
-      return null;
-    } catch {
-      return null;
-    } finally {
-      setIsRequesting(false);
-    }
-  }, [board, aiPlaysAs, model]);
+  const requestAiMove = useCallback(
+    async (ai: 1 | 2, m: string): Promise<number | null> => {
+      try {
+        setIsRequesting(true);
+        const res = await fetch('/api/games/connect4', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ board, aiPlaysAs: ai, model: m }),
+        });
+        if (!res.ok) return null;
+        const data = (await res.json()) as { col?: number };
+        if (typeof data.col === 'number') return data.col;
+        return null;
+      } catch {
+        return null;
+      } finally {
+        setIsRequesting(false);
+      }
+    },
+    [board],
+  );
 
   // Reset the game
   const resetGame = () => {
@@ -110,16 +117,31 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   const hardReset = useCallback(
     (firstPlayer: 'human' | 'ai' = 'human') => {
       resetGame();
-      if (firstPlayer === 'ai') {
-        void requestAiMove().then((col) => {
-          if (col == null) return;
-          makeMove(col);
-        });
+      if (mode === 'human-ai') {
+        if (firstPlayer === 'ai') {
+          void requestAiMove(aiPlaysAs, model).then((col) => {
+            if (col == null) return;
+            makeMove(col);
+          });
+        }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [aiPlaysAs, model, rows, columns],
+    [aiPlaysAs, model, rows, columns, mode],
   );
+
+  const resetAiAi = useCallback(() => {
+    resetGame();
+    setCurrentPlayer(1); // always start with P1
+  }, []);
+
+  useEffect(() => {
+    if (mode === 'ai-ai') {
+      resetAiAi();
+      setIsAiAiRunning(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
 
   // Check if the board is full (draw)
   const checkDraw = (board: GameBoard) => {
@@ -314,14 +336,41 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   // Request AI move when appropriate
   useEffect(() => {
     if (isGameOver || isAnimating || isRequesting) return;
-    if (currentPlayer !== aiPlaysAs) return;
     if (legalColumns.length === 0) return;
-    void (async () => {
-      const col = await requestAiMove();
-      if (col == null) return;
-      makeMove(col);
-    })();
-  }, [currentPlayer, aiPlaysAs, isAnimating, isGameOver, isRequesting, legalColumns, makeMove, requestAiMove]);
+    if (mode === 'human-ai') {
+      if (currentPlayer !== aiPlaysAs) return;
+      void (async () => {
+        const col = await requestAiMove(aiPlaysAs, model);
+        if (col == null) return;
+        makeMove(col);
+      })();
+    } else {
+      if (!isAiAiRunning) return;
+      // ai-ai mode: prevent same model matchup
+      if (modelP1 === modelP2) return;
+      const ai = currentPlayer; // 1 or 2
+      const m = ai === 1 ? modelP1 : modelP2;
+      void (async () => {
+        const col = await requestAiMove(ai, m);
+        if (col == null) return;
+        makeMove(col);
+      })();
+    }
+  }, [
+    currentPlayer,
+    aiPlaysAs,
+    isAnimating,
+    isGameOver,
+    isRequesting,
+    legalColumns,
+    makeMove,
+    requestAiMove,
+    mode,
+    model,
+    modelP1,
+    modelP2,
+    isAiAiRunning,
+  ]);
 
   // moved above to avoid use-before-define
 
@@ -335,37 +384,119 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   return (
     <div className="flex flex-col items-center">
       {/* Controls */}
+      {/* Mode selector */}
       <div className="mb-4 flex items-center gap-3">
-        <label className="text-sm">Model</label>
+        <label className="text-sm">Mode</label>
         <select
           className="rounded-md border px-2 py-1 bg-background"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
+          value={mode}
+          onChange={(e) => setMode(e.target.value === 'ai-ai' ? 'ai-ai' : 'human-ai')}
         >
-          {MODELS.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.label}
-            </option>
-          ))}
+          <option value="human-ai">Human vs AI</option>
+          <option value="ai-ai">AI vs AI</option>
         </select>
+      </div>
 
-        <label className="text-sm ml-4">First move</label>
-        <select
-          className="rounded-md border px-2 py-1 bg-background"
-          value={humanPlaysAs}
-          onChange={(e) => {
-            const v = e.target.value === '1' ? 1 : 2;
-            setHumanPlaysAs(v);
-            hardReset(v === 1 ? 'human' : 'ai');
-          }}
-        >
-          <option value="1">Human (P1)</option>
-          <option value="2">AI (P1)</option>
-        </select>
+      {/* Model/First move selectors */}
+      <div className="mb-4 flex items-center gap-3">
+        {mode === 'human-ai' ? (
+          <>
+            <label className="text-sm">Model</label>
+            <select
+              className="rounded-md border px-2 py-1 bg-background"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+            >
+              {MODELS.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
 
+            <label className="text-sm">First move</label>
+            <select
+              className="rounded-md border px-2 py-1 bg-background"
+              value={humanPlaysAs}
+              onChange={(e) => {
+                const v = e.target.value === '1' ? 1 : 2;
+                setHumanPlaysAs(v);
+                hardReset(v === 1 ? 'human' : 'ai');
+              }}
+            >
+              <option value="1">Human (P1)</option>
+              <option value="2">AI (P1)</option>
+            </select>
+          </>
+        ) : (
+          <>
+            <label className="text-sm">Model (P1)</label>
+            <select
+              className="rounded-md border px-2 py-1 bg-background"
+              value={modelP1}
+              onChange={(e) => {
+                const next = e.target.value;
+                setModelP1(next);
+                if (next === modelP2) {
+                  const alt = MODELS.find((m) => m.id !== next)?.id ?? modelP2;
+                  setModelP2(alt);
+                }
+              }}
+            >
+              {MODELS.filter((m) => m.id !== modelP2).map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+
+            <label className="text-sm">Model (P2)</label>
+            <select
+              className="rounded-md border px-2 py-1 bg-background"
+              value={modelP2}
+              onChange={(e) => {
+                const next = e.target.value;
+                setModelP2(next);
+                if (next === modelP1) {
+                  const alt = MODELS.find((m) => m.id !== next)?.id ?? modelP1;
+                  setModelP1(alt);
+                }
+              }}
+            >
+              {MODELS.filter((m) => m.id !== modelP1).map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
+      </div>
+
+      {/* Action buttons */}
+      <div className="mb-4 flex items-center gap-3">
         <button
-          className="ml-4 rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
-          onClick={() => hardReset(humanPlaysAs === 1 ? 'human' : 'ai')}
+          className="rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
+          onClick={() => {
+            resetAiAi();
+            setIsAiAiRunning(true);
+          }}
+          disabled={isRequesting || isAnimating || isAiAiRunning}
+        >
+          Start
+        </button>
+        <button
+          className="rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
+          onClick={() => setIsAiAiRunning(false)}
+          disabled={!isAiAiRunning}
+        >
+          Stop
+        </button>
+        <button
+          className="rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
+          onClick={() =>
+            mode === 'human-ai' ? hardReset(humanPlaysAs === 1 ? 'human' : 'ai') : (setIsAiAiRunning(false), resetAiAi())
+          }
           disabled={isRequesting || isAnimating}
         >
           Reset

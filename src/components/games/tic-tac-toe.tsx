@@ -51,6 +51,10 @@ export default function TicTacToe() {
   const [humanPlaysAs, setHumanPlaysAs] = useState<'X' | 'O'>('X');
   const [status, setStatus] = useState<'playing' | 'win' | 'loss' | 'draw'>('playing');
   const [isRequesting, setIsRequesting] = useState(false);
+  const [mode, setMode] = useState<'human-ai' | 'ai-ai'>('human-ai');
+  const [modelP1, setModelP1] = useState<string>(MODELS[0].id);
+  const [modelP2, setModelP2] = useState<string>(MODELS[1]?.id ?? MODELS[0].id);
+  const [isAiAiRunning, setIsAiAiRunning] = useState(false);
 
   const aiPlaysAs = useMemo<'X' | 'O'>(() => (humanPlaysAs === 'X' ? 'O' : 'X'), [humanPlaysAs]);
 
@@ -71,24 +75,47 @@ export default function TicTacToe() {
       const fresh = deepClone(EMPTY_BOARD);
       setBoard(fresh);
       setStatus('playing');
-      if (firstPlayer === 'ai') {
-        // Trigger AI move immediately
-        void requestAiMove(fresh, aiPlaysAs, model).then((move) => {
-          if (!move) return;
-          setBoard((prev) => {
-            if (prev[move.row][move.col] !== null) return prev;
-            const next = deepClone(prev);
-            next[move.row][move.col] = aiPlaysAs;
-            return next;
+      if (mode === 'human-ai') {
+        if (firstPlayer === 'ai') {
+          // Trigger AI move immediately
+          void requestAiMove(fresh, aiPlaysAs, model).then((move) => {
+            if (!move) return;
+            setBoard((prev) => {
+              if (prev[move.row][move.col] !== null) return prev;
+              const next = deepClone(prev);
+              next[move.row][move.col] = aiPlaysAs;
+              return next;
+            });
           });
-        });
+        }
       }
     },
-    [aiPlaysAs, model],
+    [aiPlaysAs, model, mode],
   );
+
+  // Reset behavior when switching to AI vs AI
+  const resetAiAi = useCallback(() => {
+    const fresh = deepClone(EMPTY_BOARD);
+    setBoard(fresh);
+    setStatus('playing');
+    // First move is always X; the AI move loop effect will pick it up
+  }, []);
+
+  // When mode changes, reset appropriately
+  useEffect(() => {
+    if (mode === 'ai-ai') {
+      resetAiAi();
+      setIsAiAiRunning(false);
+    } else {
+      // default to human first when switching back
+      reset('human');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
 
   const onCellClick = useCallback(
     (r: number, c: number) => {
+      if (mode === 'ai-ai') return; // disable clicks in AI vs AI mode
       if (isRequesting) return;
       if (status !== 'playing') return;
       if (board[r][c] !== null) return;
@@ -114,7 +141,7 @@ export default function TicTacToe() {
         })();
       }
     },
-    [board, humanPlaysAs, aiPlaysAs, isRequesting, status, model],
+    [board, humanPlaysAs, aiPlaysAs, isRequesting, status, model, mode],
   );
 
   async function requestAiMove(b: Board, ai: 'X' | 'O', m: string): Promise<{ row: number; col: number } | null> {
@@ -138,47 +165,156 @@ export default function TicTacToe() {
     }
   }
 
+  // AI vs AI loop: automatically make moves for the side to play
+  useEffect(() => {
+    if (mode !== 'ai-ai') return;
+    if (!isAiAiRunning) return;
+    if (isRequesting) return;
+    if (status !== 'playing') return;
+    const turn = currentTurn(board);
+    const modelForTurn = turn === 'X' ? modelP1 : modelP2;
+    // Enforce distinct models: if equal (shouldn't happen due to UI filters), skip to avoid self-play
+    if (modelP1 === modelP2) return;
+    void (async () => {
+      const move = await requestAiMove(board, turn, modelForTurn);
+      if (!move) return;
+      setBoard((prev) => {
+        if (prev[move.row][move.col] !== null) return prev;
+        const next = deepClone(prev);
+        next[move.row][move.col] = turn;
+        return next;
+      });
+    })();
+  }, [mode, board, status, isRequesting, modelP1, modelP2, isAiAiRunning]);
+
   const turn = currentTurn(board);
   const info = useMemo(() => {
     if (status === 'win') return 'You win!';
     if (status === 'loss') return 'AI wins!';
     if (status === 'draw') return 'Draw!';
+    if (mode === 'ai-ai') return 'AI vs AI running...';
     return turn === humanPlaysAs ? 'Your move' : 'AI is thinking...';
-  }, [status, turn, humanPlaysAs]);
+  }, [status, turn, humanPlaysAs, mode]);
 
   return (
     <div className="flex flex-col gap-4 items-center">
+      {/* Mode selector */}
       <div className="flex gap-3 items-center">
-        <label className="text-sm">Model</label>
+        <label className="text-sm font-medium">Mode</label>
         <select
           className="rounded-md border px-2 py-1 bg-background"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
+          value={mode}
+          onChange={(e) => setMode(e.target.value === 'ai-ai' ? 'ai-ai' : 'human-ai')}
         >
-          {MODELS.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.label}
-            </option>
-          ))}
+          <option value="human-ai">Human vs AI</option>
+          <option value="ai-ai">AI vs AI</option>
         </select>
+      </div>
 
-        <label className="text-sm ml-4">First move</label>
-        <select
-          className="rounded-md border px-2 py-1 bg-background"
-          value={humanPlaysAs}
-          onChange={(e) => {
-            const val = e.target.value === 'X' ? 'X' : 'O';
-            setHumanPlaysAs(val);
-            reset(val === 'X' ? 'human' : 'ai');
-          }}
-        >
-          <option value="X">Human (X)</option>
-          <option value="O">AI (X)</option>
-        </select>
+      {/* Model selectors */}
+      <div className="flex gap-3 items-center flex-wrap justify-center">
+        {mode === 'human-ai' ? (
+          <>
+            <label className="text-sm">Model</label>
+            <select
+              className="rounded-md border px-2 py-1 bg-background"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+            >
+              {MODELS.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
 
+            <label className="text-sm">First move</label>
+            <select
+              className="rounded-md border px-2 py-1 bg-background"
+              value={humanPlaysAs}
+              onChange={(e) => {
+                const val = e.target.value === 'X' ? 'X' : 'O';
+                setHumanPlaysAs(val);
+                reset(val === 'X' ? 'human' : 'ai');
+              }}
+            >
+              <option value="X">Human (X)</option>
+              <option value="O">AI (X)</option>
+            </select>
+          </>
+        ) : (
+          <>
+            <label className="text-sm">Model (X)</label>
+            <select
+              className="rounded-md border px-2 py-1 bg-background"
+              value={modelP1}
+              onChange={(e) => {
+                const next = e.target.value;
+                setModelP1(next);
+                if (next === modelP2) {
+                  const alt = MODELS.find((m) => m.id !== next)?.id ?? modelP2;
+                  setModelP2(alt);
+                }
+              }}
+            >
+              {MODELS.filter((m) => m.id !== modelP2).map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+
+            <label className="text-sm">Model (O)</label>
+            <select
+              className="rounded-md border px-2 py-1 bg-background"
+              value={modelP2}
+              onChange={(e) => {
+                const next = e.target.value;
+                setModelP2(next);
+                if (next === modelP1) {
+                  const alt = MODELS.find((m) => m.id !== next)?.id ?? modelP1;
+                  setModelP1(alt);
+                }
+              }}
+            >
+              {MODELS.filter((m) => m.id !== modelP1).map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-2 items-center">
+        {mode === 'ai-ai' && (
+          <>
+            <button
+              className="rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
+              onClick={() => {
+                resetAiAi();
+                setIsAiAiRunning(true);
+              }}
+              disabled={isRequesting || isAiAiRunning}
+            >
+              Start
+            </button>
+            <button
+              className="rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
+              onClick={() => setIsAiAiRunning(false)}
+              disabled={!isAiAiRunning}
+            >
+              Stop
+            </button>
+          </>
+        )}
         <button
-          className="ml-4 rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
-          onClick={() => reset(humanPlaysAs === 'X' ? 'human' : 'ai')}
+          className="rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
+          onClick={() =>
+            mode === 'human-ai' ? reset(humanPlaysAs === 'X' ? 'human' : 'ai') : (setIsAiAiRunning(false), resetAiAi())
+          }
           disabled={isRequesting}
         >
           Reset
@@ -192,7 +328,7 @@ export default function TicTacToe() {
               key={`${rIdx}-${cIdx}`}
               className="w-24 h-24 flex items-center justify-center text-4xl font-bold bg-gray-100 dark:bg-gray-800 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-60 cursor-pointer"
               onClick={() => onCellClick(rIdx, cIdx)}
-              disabled={isRequesting || status !== 'playing'}
+              disabled={isRequesting || status !== 'playing' || mode === 'ai-ai'}
             >
               {cell ?? ''}
             </button>
