@@ -1,337 +1,446 @@
-'use client';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { Play, RotateCcw, Trophy } from 'lucide-react';
 
-interface PongGameProps {
-  width?: number;
-  height?: number;
-  winningScore?: number;
-}
-
-// Game constants
-const DEFAULT_WINNING_SCORE = 5;
-const PADDLE_WIDTH = 15;
+// --- Constants ---
+const CANVAS_WIDTH = 800;
+const CANVAS_HEIGHT = 500;
+const PADDLE_WIDTH = 12;
 const PADDLE_HEIGHT = 80;
-const PADDLE_SPEED = 5;
-const BALL_SIZE = 10;
-const BALL_SPEED = 4;
-const LEFT_PADDLE_COLOR = '#3B82F6'; // Blue
-const RIGHT_PADDLE_COLOR = '#EF4444'; // Red
+const BALL_RADIUS = 8;
+const WIN_SCORE = 5;
+const INITIAL_BALL_SPEED = 5;
+const MAX_BALL_SPEED = 12;
+const AI_SPEED = 6;
 
-export default function PongGame({ width = 800, height = 500, winningScore = DEFAULT_WINNING_SCORE }: PongGameProps) {
+// --- Types ---
+type Vector = { x: number; y: number };
+type Ball = {
+  pos: Vector;
+  vel: Vector;
+  speed: number;
+  active: boolean;
+  color: string;
+  trail: Vector[];
+};
+type GameState = 'MENU' | 'PLAYING' | 'PAUSED' | 'GAME_OVER';
+
+export default function DualBallPong() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const requestRef = useRef<number | null>(null);
-  const previousTimeRef = useRef<number | null>(null);
-  const gameStateRef = useRef({
-    leftPaddleY: height / 2 - PADDLE_HEIGHT / 2,
-    rightPaddleY: height / 2 - PADDLE_HEIGHT / 2,
-    ballX: width / 2,
-    ballY: height / 2,
-    ballSpeedX: BALL_SPEED,
-    ballSpeedY: BALL_SPEED,
-    leftScore: 0,
-    rightScore: 0,
-    gameOver: false,
-    winner: '',
+  const requestRef = useRef<number>(0);
+  const [gameState, setGameState] = useState<GameState>('MENU');
+  const [scores, setScores] = useState({ player: 0, ai: 0 });
+  const [winner, setWinner] = useState<'PLAYER' | 'AI' | null>(null);
+
+  // Mutable game state (kept out of React state for 60fps loop)
+  const gameRef = useRef({
+    playerY: CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2,
+    aiY: CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2,
+    targetAiY: CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2,
+    balls: [] as Ball[],
+    mouseY: CANVAS_HEIGHT / 2,
+    shakeIntensity: 0,
   });
 
-  // Game state for rendering
-  const [gameStarted, setGameStarted] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-  const [keysPressed, setKeysPressed] = useState<{ [key: string]: boolean }>({});
-
-  // Refs for direct access in the game loop
-  const keysPressedRef = useRef(keysPressed);
-
-  // Update the keys pressed ref when state changes
-  useEffect(() => {
-    keysPressedRef.current = keysPressed;
-  }, [keysPressed]);
-
-  // Handle keyboard input
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Prevent default behavior for game controls to avoid page scrolling
-      if (['w', 's', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-        e.preventDefault();
-      }
-      setKeysPressed((prev) => ({ ...prev, [e.key]: true }));
+  // --- Initialization Helpers ---
+  const createBall = (startLeft: boolean, color: string): Ball => {
+    const angle = (Math.random() * Math.PI) / 4 - Math.PI / 8; // Random angle within +/- 22.5 deg
+    const dir = startLeft ? 1 : -1;
+    return {
+      pos: { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 2 },
+      vel: {
+        x: INITIAL_BALL_SPEED * Math.cos(angle) * dir,
+        y: INITIAL_BALL_SPEED * Math.sin(angle),
+      },
+      speed: INITIAL_BALL_SPEED,
+      active: true,
+      color: color,
+      trail: [],
     };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      setKeysPressed((prev) => ({ ...prev, [e.key]: false }));
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
-
-  const resetBall = useCallback(() => {
-    // Randomize initial direction
-    const dirX = Math.random() > 0.5 ? 1 : -1;
-    const dirY = Math.random() > 0.5 ? 1 : -1;
-
-    // Update game state ref directly
-    gameStateRef.current.ballX = width / 2;
-    gameStateRef.current.ballY = height / 2;
-    gameStateRef.current.ballSpeedX = BALL_SPEED * dirX;
-    gameStateRef.current.ballSpeedY = BALL_SPEED * dirY;
-  }, [width, height]);
-
-  // Check if game is over
-  const checkGameOver = useCallback(() => {
-    if (gameStateRef.current.leftScore >= winningScore) {
-      gameStateRef.current.gameOver = true;
-      gameStateRef.current.winner = 'Left Player';
-      setGameOver(true);
-      return true;
-    } else if (gameStateRef.current.rightScore >= winningScore) {
-      gameStateRef.current.gameOver = true;
-      gameStateRef.current.winner = 'Right Player';
-      setGameOver(true);
-      return true;
-    }
-    return false;
-  }, [winningScore]);
-
-  // Reset game
-  const resetGame = () => {
-    gameStateRef.current = {
-      leftPaddleY: height / 2 - PADDLE_HEIGHT / 2,
-      rightPaddleY: height / 2 - PADDLE_HEIGHT / 2,
-      ballX: width / 2,
-      ballY: height / 2,
-      ballSpeedX: BALL_SPEED * (Math.random() > 0.5 ? 1 : -1),
-      ballSpeedY: BALL_SPEED * (Math.random() > 0.5 ? 1 : -1),
-      leftScore: 0,
-      rightScore: 0,
-      gameOver: false,
-      winner: '',
-    };
-
-    setGameOver(false);
-    setGameStarted(true);
   };
 
-  // Game animation loop using requestAnimationFrame for smoother animation
-  const animate = useCallback((time: number) => {
-    if (previousTimeRef.current === null) {
-      previousTimeRef.current = time;
-    }
+  const initGame = useCallback(() => {
+    setScores({ player: 0, ai: 0 });
+    setWinner(null);
+    gameRef.current.playerY = CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2;
+    gameRef.current.aiY = CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2;
+    gameRef.current.balls = [
+      createBall(true, '#22d3ee'), // Cyan ball
+      createBall(false, '#f472b6'), // Pink ball
+    ];
+    setGameState('PLAYING');
+  }, []);
 
-    previousTimeRef.current = time;
+  const resetBalls = () => {
+    gameRef.current.balls = [createBall(Math.random() > 0.5, '#22d3ee'), createBall(Math.random() > 0.5, '#f472b6')];
+  };
 
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      requestRef.current = window.requestAnimationFrame(animate);
-      return;
-    }
+  // --- Game Loop Mechanics ---
+  const update = () => {
+    const { current: game } = gameRef;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      requestRef.current = window.requestAnimationFrame(animate);
-      return;
-    }
+    // 1. Update Player Paddle (Mouse follows)
+    const targetPlayerY = Math.max(0, Math.min(CANVAS_HEIGHT - PADDLE_HEIGHT, game.mouseY - PADDLE_HEIGHT / 2));
+    // Smooth ease-in for player paddle purely visual, feels nice
+    game.playerY += (targetPlayerY - game.playerY) * 0.3;
 
-    // Clear canvas
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, width, height);
+    // 2. Update AI Paddle
+    // AI Strategy: Find closest incoming ball
+    let targetBall = null;
+    let maxThreatX = -Infinity;
 
-    // If game is over, show winner message
-    if (gameStateRef.current.gameOver) {
-      ctx.fillStyle = 'white';
-      ctx.font = '48px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(`${gameStateRef.current.winner} wins!`, width / 2, height / 2 - 24);
-      ctx.font = '24px Arial';
-      ctx.fillText('Press "Play Again" to restart', width / 2, height / 2 + 24);
-
-      // Continue animation loop
-      requestRef.current = window.requestAnimationFrame(animate);
-      return;
-    }
-
-    // Get current keys pressed
-    const currentKeysPressed = keysPressedRef.current;
-
-    // Move paddles based on key presses
-    if (currentKeysPressed['w'] && gameStateRef.current.leftPaddleY > 0) {
-      gameStateRef.current.leftPaddleY -= PADDLE_SPEED;
-    }
-    if (currentKeysPressed['s'] && gameStateRef.current.leftPaddleY < height - PADDLE_HEIGHT) {
-      gameStateRef.current.leftPaddleY += PADDLE_SPEED;
-    }
-    if (currentKeysPressed['ArrowUp'] && gameStateRef.current.rightPaddleY > 0) {
-      gameStateRef.current.rightPaddleY -= PADDLE_SPEED;
-    }
-    if (currentKeysPressed['ArrowDown'] && gameStateRef.current.rightPaddleY < height - PADDLE_HEIGHT) {
-      gameStateRef.current.rightPaddleY += PADDLE_SPEED;
-    }
-
-    // Move ball
-    gameStateRef.current.ballX += gameStateRef.current.ballSpeedX;
-    gameStateRef.current.ballY += gameStateRef.current.ballSpeedY;
-
-    // Ball collision with top and bottom walls
-    if (gameStateRef.current.ballY <= 0 || gameStateRef.current.ballY >= height - BALL_SIZE) {
-      gameStateRef.current.ballSpeedY = -gameStateRef.current.ballSpeedY;
-    }
-
-    // Ball collision with paddles
-    if (
-      (gameStateRef.current.ballX <= PADDLE_WIDTH &&
-        gameStateRef.current.ballY + BALL_SIZE >= gameStateRef.current.leftPaddleY &&
-        gameStateRef.current.ballY <= gameStateRef.current.leftPaddleY + PADDLE_HEIGHT) ||
-      (gameStateRef.current.ballX >= width - PADDLE_WIDTH - BALL_SIZE &&
-        gameStateRef.current.ballY + BALL_SIZE >= gameStateRef.current.rightPaddleY &&
-        gameStateRef.current.ballY <= gameStateRef.current.rightPaddleY + PADDLE_HEIGHT)
-    ) {
-      gameStateRef.current.ballSpeedX = -gameStateRef.current.ballSpeedX * 1.05; // Increase speed slightly on paddle hit
-    }
-
-    // Ball out of bounds - scoring
-    if (gameStateRef.current.ballX <= 0) {
-      // Right player scores
-      gameStateRef.current.rightScore += 1;
-
-      // Check if game is over
-      if (!checkGameOver()) {
-        resetBall();
-      }
-    } else if (gameStateRef.current.ballX >= width - BALL_SIZE) {
-      // Left player scores
-      gameStateRef.current.leftScore += 1;
-
-      // Check if game is over
-      if (!checkGameOver()) {
-        resetBall();
+    for (const ball of game.balls) {
+      if (ball.vel.x > 0) {
+        // Incoming to AI
+        if (ball.pos.x > maxThreatX) {
+          maxThreatX = ball.pos.x;
+          targetBall = ball;
+        }
       }
     }
 
-    // Draw paddles with different colors
-    // Left paddle (blue)
-    ctx.fillStyle = LEFT_PADDLE_COLOR;
-    ctx.fillRect(0, gameStateRef.current.leftPaddleY, PADDLE_WIDTH, PADDLE_HEIGHT);
+    // If no immediate threat, loosely track the nearest ball regardless of direction
+    if (!targetBall) {
+      let minDistance = Infinity;
+      for (const ball of game.balls) {
+        const dist = CANVAS_WIDTH - ball.pos.x;
+        if (dist < minDistance) {
+          minDistance = dist;
+          targetBall = ball;
+        }
+      }
+    }
 
-    // Right paddle (red)
-    ctx.fillStyle = RIGHT_PADDLE_COLOR;
-    ctx.fillRect(width - PADDLE_WIDTH, gameStateRef.current.rightPaddleY, PADDLE_WIDTH, PADDLE_HEIGHT);
+    if (targetBall) {
+      game.targetAiY = targetBall.pos.y - PADDLE_HEIGHT / 2;
+    } else {
+      game.targetAiY = CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2; // Return to center if bored
+    }
 
-    // Draw ball as a circle (restored)
-    ctx.beginPath();
-    ctx.arc(
-      gameStateRef.current.ballX + BALL_SIZE / 2,
-      gameStateRef.current.ballY + BALL_SIZE / 2,
-      BALL_SIZE / 2,
-      0,
-      Math.PI * 2,
-    );
-    ctx.fillStyle = 'white';
-    ctx.fill();
-    ctx.closePath();
+    // Clamp AI target
+    game.targetAiY = Math.max(0, Math.min(CANVAS_HEIGHT - PADDLE_HEIGHT, game.targetAiY));
 
-    // Draw center line
-    ctx.beginPath();
-    ctx.moveTo(width / 2, 0);
-    ctx.lineTo(width / 2, height);
-    ctx.strokeStyle = 'white';
-    ctx.stroke();
+    // Move AI towards target
+    if (game.aiY < game.targetAiY) {
+      game.aiY = Math.min(game.aiY + AI_SPEED, game.targetAiY);
+    } else if (game.aiY > game.targetAiY) {
+      game.aiY = Math.max(game.aiY - AI_SPEED, game.targetAiY);
+    }
 
-    // Draw scores with labels
-    ctx.font = '24px Arial';
-    ctx.textAlign = 'center';
+    // 3. Update Balls
+    let scoreChanged = false;
+    game.balls.forEach((ball) => {
+      if (!ball.active) return;
 
-    // Left score
-    ctx.fillStyle = LEFT_PADDLE_COLOR;
-    ctx.fillText(`Left: ${gameStateRef.current.leftScore}`, width / 4, 50);
+      // Update trail
+      ball.trail.push({ ...ball.pos });
+      if (ball.trail.length > 10) ball.trail.shift();
 
-    // Right score
-    ctx.fillStyle = RIGHT_PADDLE_COLOR;
-    ctx.fillText(`Right: ${gameStateRef.current.rightScore}`, (3 * width) / 4, 50);
+      // Move
+      ball.pos.x += ball.vel.x;
+      ball.pos.y += ball.vel.y;
 
-    // Continue animation loop
-    requestRef.current = window.requestAnimationFrame(animate);
-  }, [width, height, checkGameOver, resetBall]);
+      // Ceiling/Floor Collision
+      if (ball.pos.y - BALL_RADIUS < 0 || ball.pos.y + BALL_RADIUS > CANVAS_HEIGHT) {
+        ball.vel.y = -ball.vel.y;
+        ball.pos.y = Math.max(BALL_RADIUS, Math.min(CANVAS_HEIGHT - BALL_RADIUS, ball.pos.y));
+      }
 
-  // Start/stop game loop
-  useEffect(() => {
-    if (gameStarted) {
-      // Initialize game state
-      gameStateRef.current = {
-        leftPaddleY: height / 2 - PADDLE_HEIGHT / 2,
-        rightPaddleY: height / 2 - PADDLE_HEIGHT / 2,
-        ballX: width / 2,
-        ballY: height / 2,
-        ballSpeedX: BALL_SPEED * (Math.random() > 0.5 ? 1 : -1),
-        ballSpeedY: BALL_SPEED * (Math.random() > 0.5 ? 1 : -1),
-        leftScore: 0,
-        rightScore: 0,
-        gameOver: false,
-        winner: '',
+      // Paddle Collision Helpers
+      const hitPaddle = (paddleX: number, paddleY: number) => {
+        return (
+          ball.pos.x - BALL_RADIUS < paddleX + PADDLE_WIDTH &&
+          ball.pos.x + BALL_RADIUS > paddleX &&
+          ball.pos.y > paddleY &&
+          ball.pos.y < paddleY + PADDLE_HEIGHT
+        );
       };
 
-      // Start animation loop
-      requestRef.current = window.requestAnimationFrame(animate);
-    } else if (requestRef.current) {
-      window.cancelAnimationFrame(requestRef.current);
+      // Player Paddle Collision
+      if (ball.vel.x < 0 && hitPaddle(10, game.playerY)) {
+        // 10 is paddle left margin
+        let collidePoint = ball.pos.y - (game.playerY + PADDLE_HEIGHT / 2);
+        collidePoint = collidePoint / (PADDLE_HEIGHT / 2);
+        const angleRad = (Math.PI / 4) * collidePoint;
+        const dir = 1;
+        ball.speed = Math.min(ball.speed + 0.5, MAX_BALL_SPEED);
+        ball.vel.x = dir * ball.speed * Math.cos(angleRad);
+        ball.vel.y = ball.speed * Math.sin(angleRad);
+        ball.pos.x = 10 + PADDLE_WIDTH + BALL_RADIUS;
+      }
+
+      // AI Paddle Collision
+      if (ball.vel.x > 0 && hitPaddle(CANVAS_WIDTH - 10 - PADDLE_WIDTH, game.aiY)) {
+        let collidePoint = ball.pos.y - (game.aiY + PADDLE_HEIGHT / 2);
+        collidePoint = collidePoint / (PADDLE_HEIGHT / 2);
+        const angleRad = (Math.PI / 4) * collidePoint;
+        const dir = -1;
+        ball.speed = Math.min(ball.speed + 0.5, MAX_BALL_SPEED);
+        ball.vel.x = dir * ball.speed * Math.cos(angleRad);
+        ball.vel.y = ball.speed * Math.sin(angleRad);
+        ball.pos.x = CANVAS_WIDTH - 10 - PADDLE_WIDTH - BALL_RADIUS;
+      }
+
+      // Scoring
+      if (ball.pos.x + BALL_RADIUS < 0) {
+        // AI scored
+        setScores((prev) => ({ ...prev, ai: prev.ai + 1 }));
+        ball.active = false;
+        scoreChanged = true;
+        game.shakeIntensity = 10;
+      } else if (ball.pos.x - BALL_RADIUS > CANVAS_WIDTH) {
+        // Player scored
+        setScores((prev) => ({ ...prev, player: prev.player + 1 }));
+        ball.active = false;
+        scoreChanged = true;
+        game.shakeIntensity = 10;
+      }
+    });
+
+    // Reset balls if both are inactive
+    if (game.balls.every((b) => !b.active)) {
+      resetBalls();
     }
 
-    return () => {
-      if (requestRef.current) {
-        window.cancelAnimationFrame(requestRef.current);
+    // If a score happened and only one ball remains active, spawn a new one to keep two in play
+    if (scoreChanged) {
+      const activeBalls = game.balls.filter((b) => b.active);
+      if (activeBalls.length === 1) {
+        const existingColor = activeBalls[0].color;
+        const newColor = existingColor === '#22d3ee' ? '#f472b6' : '#22d3ee';
+        const newBall = createBall(Math.random() > 0.5, newColor);
+        game.balls = [activeBalls[0], newBall];
       }
-    };
-  }, [gameStarted, animate, height, width]);
+    }
 
+    if (game.shakeIntensity > 0) {
+      game.shakeIntensity *= 0.9;
+      if (game.shakeIntensity < 0.5) game.shakeIntensity = 0;
+    }
+  };
+
+  // Check win condition outside the loop to avoid state update loop issues
+  useEffect(() => {
+    if (scores.player >= WIN_SCORE) {
+      setWinner('PLAYER');
+      setGameState('GAME_OVER');
+    } else if (scores.ai >= WIN_SCORE) {
+      setWinner('AI');
+      setGameState('GAME_OVER');
+    }
+  }, [scores]);
+
+  // --- Rendering --- //
+  const draw = (ctx: CanvasRenderingContext2D) => {
+    const { current: game } = gameRef;
+
+    // Clear with slight trail effect for whole screen if desired, but standard clear is cleaner for this style
+    ctx.fillStyle = '#0f172a'; // slate-900
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    // Screen shake
+    ctx.save();
+    if (game.shakeIntensity > 0) {
+      const dx = (Math.random() - 0.5) * game.shakeIntensity;
+      const dy = (Math.random() - 0.5) * game.shakeIntensity;
+      ctx.translate(dx, dy);
+    }
+
+    // Draw Net
+    ctx.strokeStyle = '#1e293b'; // slate-800
+    ctx.setLineDash([10, 15]);
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(CANVAS_WIDTH / 2, 0);
+    ctx.lineTo(CANVAS_WIDTH / 2, CANVAS_HEIGHT);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Helper to draw glowing elements
+    const drawGlowingRect = (x: number, y: number, w: number, h: number, color: string, glow: number = 20) => {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = glow;
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, w, h);
+      ctx.shadowBlur = 0;
+    };
+
+    const drawGlowingCircle = (x: number, y: number, r: number, color: string, glow: number = 20) => {
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.shadowColor = color;
+      ctx.shadowBlur = glow;
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.closePath();
+      ctx.shadowBlur = 0;
+    };
+
+    // Player Paddle (Cyan)
+    drawGlowingRect(10, game.playerY, PADDLE_WIDTH, PADDLE_HEIGHT, '#22d3ee');
+    // AI Paddle (Magenta)
+    drawGlowingRect(CANVAS_WIDTH - 10 - PADDLE_WIDTH, game.aiY, PADDLE_WIDTH, PADDLE_HEIGHT, '#e879f9');
+
+    // Balls
+    game.balls.forEach((ball) => {
+      if (!ball.active) return;
+
+      // Draw Trail
+      ball.trail.forEach((pos, i) => {
+        const opacity = (i / ball.trail.length) * 0.5;
+        const size = BALL_RADIUS * (i / ball.trail.length);
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+        ctx.fillStyle = ball.color;
+        ctx.globalAlpha = opacity;
+        ctx.fill();
+        ctx.closePath();
+      });
+      ctx.globalAlpha = 1.0;
+
+      // Draw Ball
+      drawGlowingCircle(ball.pos.x, ball.pos.y, BALL_RADIUS, ball.color, 30);
+
+      // White center for extra pop
+      ctx.beginPath();
+      ctx.arc(ball.pos.x, ball.pos.y, BALL_RADIUS * 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.closePath();
+    });
+
+    ctx.restore();
+  };
+
+  const animate = useCallback(() => {
+    if (gameState !== 'PLAYING') return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    update();
+    draw(ctx);
+
+    requestRef.current = requestAnimationFrame(animate);
+  }, [gameState]);
+
+  useEffect(() => {
+    if (gameState === 'PLAYING') {
+      requestRef.current = requestAnimationFrame(animate);
+    } else if (gameState === 'GAME_OVER' || gameState === 'MENU') {
+      // Draw one last frame or initial frame if needed
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext('2d');
+      if (ctx) draw(ctx);
+    }
+    return () => {
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+  }, [gameState, animate]);
+
+  // --- Input Handling ---
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (gameState !== 'PLAYING') return;
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (rect) {
+      gameRef.current.mouseY = e.clientY - rect.top;
+    }
+  };
+
+  // --- UI Rendering ---
   return (
-    <div className="flex flex-col items-center">
-      {!gameStarted ? (
-        <div className="mb-4 text-center">
-          <h3 className="text-xl mb-4">Controls:</h3>
-          <div className="flex justify-center gap-12 mb-6">
-            <div>
-              <h4 className="font-semibold mb-2" style={{ color: LEFT_PADDLE_COLOR }}>
-                Left Player
-              </h4>
-              <p>W (up)</p>
-              <p>S (down)</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2" style={{ color: RIGHT_PADDLE_COLOR }}>
-                Right Player
-              </h4>
-              <p>↑ (up)</p>
-              <p>↓ (down)</p>
-            </div>
-          </div>
-          <p className="mb-4">First to {winningScore} points wins!</p>
-          <button
-            onClick={() => setGameStarted(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
-          >
-            Start Game
-          </button>
-        </div>
-      ) : (
+    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 font-sans select-none">
+      {/* Header / Scoreboard */}
+      <div className="w-full max-w-[800px] flex justify-between items-center mb-6 px-4">
         <div className="flex flex-col items-center">
-          <canvas ref={canvasRef} width={width} height={height} className="border border-gray-700 rounded-lg" />
-          {gameOver && (
-            <div className="mt-4">
+          <h2 className="text-cyan-400 font-bold text-xl tracking-wider uppercase drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
+            Player
+          </h2>
+          <div className="text-6xl font-black text-slate-100 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] font-mono">
+            {String(scores.player).padStart(2, '0')}
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <div className="text-slate-700 font-bold text-xl tracking-[0.5em]">VS</div>
+          <div className="text-slate-600 text-sm mt-2">TARGET: {WIN_SCORE}</div>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <h2 className="text-fuchsia-400 font-bold text-xl tracking-wider uppercase drop-shadow-[0_0_10px_rgba(232,121,249,0.5)]">
+            AI-Core
+          </h2>
+          <div className="text-6xl font-black text-slate-100 drop-shadow-[0_0_15px_rgba(232,121,249,0.8)] font-mono">
+            {String(scores.ai).padStart(2, '0')}
+          </div>
+        </div>
+      </div>
+
+      {/* Game Container */}
+      <div className="relative group rounded-2xl p-1 bg-gradient-to-br from-cyan-500 via-purple-500 to-fuchsia-500 shadow-[0_0_50px_-12px_rgba(168,85,247,0.5)]">
+        <div className="relative rounded-xl overflow-hidden bg-slate-900" onMouseMove={handleMouseMove}>
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_WIDTH}
+            height={CANVAS_HEIGHT}
+            className="block cursor-none"
+            style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+          />
+
+          {/* Scanlines overlay for retro feel */}
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] opacity-20 mix-blend-overlay"></div>
+
+          {/* Overlays */}
+          {gameState === 'MENU' && (
+            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center">
+              <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-fuchsia-400 drop-shadow-[0_0_20px_rgba(168,85,247,0.5)] mb-8 italic tracking-tight">
+                NEON PONG DX
+              </h1>
               <button
-                onClick={resetGame}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                onClick={initGame}
+                className="group relative px-8 py-4 bg-slate-800 text-cyan-50 font-bold text-xl rounded-full overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] active:scale-95"
               >
-                Play Again
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="relative flex items-center gap-3">
+                  <Play className="w-6 h-6 fill-current" /> START GAME
+                </span>
               </button>
+              <p className="text-slate-400 mt-6 flex flex-col items-center gap-1">
+                <span className="text-sm uppercase tracking-widest">Two balls active simultaneously</span>
+                <span className="text-xs opacity-50">Use mouse to control left paddle</span>
+              </p>
+            </div>
+          )}
+
+          {gameState === 'GAME_OVER' && (
+            <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center animate-in fade-in duration-700">
+              <Trophy
+                className={`w-20 h-20 mb-4 ${winner === 'PLAYER' ? 'text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]' : 'text-slate-600'}`}
+              />
+
+              <h2 className="text-5xl font-black text-white mb-2 drop-shadow-lg">
+                {winner === 'PLAYER' ? 'VICTORY' : 'DEFEAT'}
+              </h2>
+              <p className={`text-2xl font-bold mb-8 ${winner === 'PLAYER' ? 'text-cyan-400' : 'text-fuchsia-400'}`}>
+                {winner === 'PLAYER' ? 'Humanity prevails' : 'AI superiority achieved'}
+              </p>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={initGame}
+                  className="flex items-center gap-2 px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-bold transition-all hover:shadow-[0_0_20px_rgba(34,211,238,0.5)]"
+                >
+                  <RotateCcw className="w-5 h-5" /> PLAY AGAIN
+                </button>
+              </div>
             </div>
           )}
         </div>
-      )}
+      </div>
+
+      <div className="mt-8 text-slate-500 text-sm">First to {WIN_SCORE} points wins.</div>
     </div>
   );
 }
