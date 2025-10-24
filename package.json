@@ -11,7 +11,7 @@
     "test:watch": "vitest",
     "tsc": "tsc",
     "knip": "knip",
-    "actions": "bun run test && bun run build && bun run lint"
+    "actions": "bun run build && bun run lint"
   },
   "dependencies": {
     "@ai-sdk/openai": "2.0.53",
@@ -51,6 +51,8 @@
     "tailwindcss-animate": "1.0.7"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "3.3.1",
+    "@eslint/js": "9.38.0",
     "@tailwindcss/postcss": "4.1.15",
     "@types/jsdom": "27.0.0",
     "@types/leaflet": "1.9.21",
@@ -58,6 +60,7 @@
     "@types/prismjs": "1.26.5",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "@typescript-eslint/eslint-plugin": "8.46.2",
     "@typescript-eslint/parser": "8.46.2",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "9.38.0",

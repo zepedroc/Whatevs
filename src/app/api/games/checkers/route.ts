@@ -102,7 +102,7 @@ function generateAllMoves(board: Board, side: 'b' | 'w'): Move[] {
     for (let c = 0; c < 10; c += 1) {
       const cell = board[r][c];
       if (cellColor(cell) !== side) continue;
-      const pieceMoves = isKing(cell) ? generateKingQuiet(board, { r, c }, side) : generateManQuiet(board, { r, c }, side);
+      const pieceMoves = isKing(cell) ? generateKingQuiet(board, { r, c }) : generateManQuiet(board, { r, c }, side);
       quietMoves.push(...pieceMoves);
     }
   }
@@ -127,7 +127,7 @@ function generateManQuiet(board: Board, at: Coord, side: 'b' | 'w'): Move[] {
   return moves;
 }
 
-function generateKingQuiet(board: Board, at: Coord, _side?: 'b' | 'w'): Move[] {
+function generateKingQuiet(board: Board, at: Coord): Move[] {
   const moves: Move[] = [];
   const dirs = [
     { r: 1, c: 1 },
@@ -361,7 +361,7 @@ export async function POST(req: Request) {
     }
     const move = legal[idx];
     return NextResponse.json(move);
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
