@@ -137,7 +137,7 @@ export async function POST(req: Request) {
       'The JSON format is: {"row": 0-2, "col": 0-2}. No prose, no code fences.',
       'Play optimally to win or force a draw. Never choose an illegal move.',
       'Primary priorities in order: (1) take immediate win; (2) block opponent immediate win; (3) choose moves that extend or create threats (threes with open ends) over isolated placements.',
-      'Connection of four can be horizontal, vertical, or diagonal.',
+      'Connection of three can be horizontal, vertical, or diagonal.',
     ].join('\n');
 
     const user = [
