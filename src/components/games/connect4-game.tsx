@@ -98,7 +98,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   );
 
   // Reset the game
-  const resetGame = () => {
+  const resetGame = useCallback(() => {
     setBoard(
       Array(rows)
         .fill(0)
@@ -112,7 +112,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
     setIsAnimating(false);
     setWinningCells(null);
     setShowWinMessage(false);
-  };
+  }, [rows, columns]);
 
   const hardReset = useCallback(
     (firstPlayer: 'human' | 'ai' = 'human') => {
@@ -130,14 +130,14 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
     [aiPlaysAs, model, rows, columns, mode],
   );
 
-  const resetAiAi = useCallback(() => {
+  const resetAiVsAi = useCallback(() => {
     resetGame();
     setCurrentPlayer(1); // always start with P1
-  }, []);
+  }, [resetGame]);
 
   useEffect(() => {
     if (mode === 'ai-ai') {
-      resetAiAi();
+      resetAiVsAi();
       setIsAiAiRunning(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -298,31 +298,34 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
   }, [animatingPiece, isAnimating, board, checkWin]);
 
   // Make a move
-  const makeMove = (column: number) => {
-    if (isGameOver || isAnimating || isRequesting) return;
+  const makeMove = useCallback(
+    (column: number) => {
+      if (isGameOver || isAnimating || isRequesting) return;
 
-    // Find the lowest empty row in the selected column
-    let targetRow = -1;
+      // Find the lowest empty row in the selected column
+      let targetRow = -1;
 
-    for (let r = rows - 1; r >= 0; r--) {
-      if (board[r][column] === 0) {
-        targetRow = r;
-        break;
+      for (let r = rows - 1; r >= 0; r--) {
+        if (board[r][column] === 0) {
+          targetRow = r;
+          break;
+        }
       }
-    }
 
-    // If column is full, do nothing
-    if (targetRow === -1) return;
+      // If column is full, do nothing
+      if (targetRow === -1) return;
 
-    // Start animation
-    setAnimatingPiece({
-      col: column,
-      player: currentPlayer,
-      targetRow: targetRow,
-      currentPosition: -1, // Start slightly above the board for smoother drop-in
-    });
-    setIsAnimating(true);
-  };
+      // Start animation
+      setAnimatingPiece({
+        col: column,
+        player: currentPlayer,
+        targetRow: targetRow,
+        currentPosition: -1, // Start slightly above the board for smoother drop-in
+      });
+      setIsAnimating(true);
+    },
+    [isGameOver, isAnimating, isRequesting, rows, board, currentPlayer],
+  );
 
   // Compute legal columns
   const legalColumns = useMemo(() => {
@@ -478,7 +481,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
         <button
           className="rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
           onClick={() => {
-            resetAiAi();
+            resetAiVsAi();
             setIsAiAiRunning(true);
           }}
           disabled={isRequesting || isAnimating || isAiAiRunning}
@@ -495,7 +498,7 @@ export default function Connect4Game({ rows = DEFAULT_ROWS, columns = DEFAULT_CO
         <button
           className="rounded-md border px-3 py-1 hover:bg-muted disabled:opacity-50"
           onClick={() =>
-            mode === 'human-ai' ? hardReset(humanPlaysAs === 1 ? 'human' : 'ai') : (setIsAiAiRunning(false), resetAiAi())
+            mode === 'human-ai' ? hardReset(humanPlaysAs === 1 ? 'human' : 'ai') : (setIsAiAiRunning(false), resetAiVsAi())
           }
           disabled={isRequesting || isAnimating}
         >
