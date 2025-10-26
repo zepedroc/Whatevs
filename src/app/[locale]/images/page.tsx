@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { ImageIcon } from '@/icons/icons';
 
 async function getImage(prompt: string) {
-  const response = await fetch('https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell', {
+  const response = await fetch('https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell', {
     headers: {
       Authorization: `Bearer ${process.env.HUGGINGFACE_INFERENCE_TOKEN}`,
       'Content-Type': 'application/json',
