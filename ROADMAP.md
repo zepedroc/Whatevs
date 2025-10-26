@@ -10,8 +10,3 @@
 ## Bugs
 
 - Re-design the reasoning part of the chat interface when a reasoning model is selected
-- Image generation is broken
-
-## Minor things
-
-- Put eslint working

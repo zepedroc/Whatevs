@@ -6,7 +6,7 @@
     "worldClocks": "Relojes Mundiales",
     "worldMap": "Mapa Mundial",
     "games": "Juegos",
-    "bets": "Apuestas",
+    "debate": "Debate",
     "agent": "Agente de Voz"
   },
   "WorldClocks": {
@@ -77,7 +77,9 @@
     "addImage": "Agregar imagen(es)",
     "newChat": "Nuevo chat",
     "enableWebSearch": "Activar búsqueda web",
-    "disableWebSearch": "Desactivar búsqueda web"
+    "disableWebSearch": "Desactivar búsqueda web",
+    "errorTooLarge": "Tu solicitud es demasiado grande. Intenta acortar tu mensaje o eliminar algunos adjuntos.",
+    "errorGeneral": "Algo salió mal. Por favor, inténtalo de nuevo."
   },
   "Agent": {
     "title": "Agente de Voz",
@@ -97,20 +99,25 @@
     "title": "Juegos",
     "description": "Juega divertidos juegos multijugador con amigos y familia."
   },
-  "Bets": {
-    "title": "Apuestas",
-    "countLabel": "Número de apuestas (máx. 10)",
-    "generateButton": "Generar",
-    "bet": "Apuesta {index}",
-    "euromillions": {
-      "title": "Euromillones",
-      "numbersTitle": "Números (5):",
-      "starsTitle": "Estrellas (2):"
-    },
-    "eurodreams": {
-      "title": "EuroDreams",
-      "numbersTitle": "Números (6):",
-      "dreamTitle": "Sueño (1):"
-    }
+  "Debate": {
+    "title": "Arena de Debate de IA",
+    "description": "Observa cómo dos agentes de IA debaten cualquier tema en tiempo real",
+    "topic_label": "Tema del Debate",
+    "topic_placeholder": "Ingresa un tema para que los agentes de IA debatan...",
+    "start_debate": "Iniciar Debate",
+    "debating": "Debatiendo...",
+    "error_title": "Error",
+    "error_validation": "Por favor, ingresa un tema de debate",
+    "error_general": "Error al generar el debate",
+    "retry": "Reintentar",
+    "no_debate_yet": "Sin debate aún",
+    "debate_header": "Debate",
+    "live_streaming": "Transmisión en vivo...",
+    "empty_state": "Ingresa un tema y haz clic en \"Iniciar Debate\" para comenzar",
+    "debaters_thinking": "Los debatientes están pensando...",
+    "tip_title": "Consejo:",
+    "tip_description": "El debate se transmitirá en tiempo real a medida que los agentes de IA generen sus respuestas. Puedes ver la conversación desarrollarse turno por turno.",
+    "new_debate": "Nuevo Debate",
+    "allow_search": "Habilitar búsqueda web"
   }
 } 

@@ -6,7 +6,7 @@
     "worldClocks": "World Clocks",
     "worldMap": "World Map",
     "games": "Games",
-    "bets": "Bets",
+    "debate": "Debate",
     "agent": "Voice Agent"
   },
   "WorldClocks": {
@@ -81,7 +81,9 @@
     "addImage": "Add image(s)",
     "newChat": "New chat",
     "enableWebSearch": "Enable web search",
-    "disableWebSearch": "Disable web search"
+    "disableWebSearch": "Disable web search",
+    "errorTooLarge": "Your request is too large. Try sending a smaller image.",
+    "errorGeneral": "Something went wrong. Please try again."
   },
   "Agent": {
     "title": "Voice Agent",
@@ -104,20 +106,25 @@
     "title": "Games",
     "description": "Play fun multiplayer games with friends and family."
   },
-  "Bets": {
-    "title": "Bets",
-    "countLabel": "Number of bets (max 10)",
-    "generateButton": "Generate",
-    "bet": "Bet {index}",
-    "euromillions": {
-      "title": "EuroMillions",
-      "numbersTitle": "Numbers (5):",
-      "starsTitle": "Stars (2):"
-    },
-    "eurodreams": {
-      "title": "EuroDreams",
-      "numbersTitle": "Numbers (6):",
-      "dreamTitle": "Dream (1):"
-    }
+  "Debate": {
+    "title": "AI Debate Arena",
+    "description": "Watch two AI agents debate any topic in real-time",
+    "topic_label": "Debate Topic",
+    "topic_placeholder": "Enter a topic for the AI agents to debate...",
+    "start_debate": "Start Debate",
+    "debating": "Debating...",
+    "error_title": "Error",
+    "error_validation": "Please enter a debate topic",
+    "error_general": "Failed to generate debate",
+    "retry": "Retry",
+    "no_debate_yet": "No debate yet",
+    "debate_header": "Debate",
+    "live_streaming": "Live streaming...",
+    "empty_state": "Enter a topic and click \"Start Debate\" to begin",
+    "debaters_thinking": "Debaters are thinking...",
+    "tip_title": "Tip:",
+    "tip_description": "The debate will stream in real-time as the AI agents generate their responses. You can watch the conversation unfold turn by turn.",
+    "new_debate": "New Debate",
+    "allow_search": "Allow web search"
   }
 } 

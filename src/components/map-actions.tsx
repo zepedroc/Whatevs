@@ -101,6 +101,17 @@ export function MapActions({ onLocationFound, onTimezoneChange }: MapActionsProp
       body: { mode: 'location_finder' },
     }),
     id: 'timezone-lookup', // Unique ID to separate this chat instance
+    onError: (error: unknown) => {
+      const asString = String(error ?? '');
+      if (
+        asString.includes('413') ||
+        asString.toLowerCase().includes('request entity too large') ||
+        asString.toLowerCase().includes('request_too_large')
+      ) {
+        console.error(error);
+        return;
+      }
+    },
     onFinish: async ({ message }: { message: UIMessage }) => {
       try {
         const textContent = message.parts.find((part) => part.type === 'text')?.text || '';

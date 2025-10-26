@@ -81,7 +81,7 @@ export default function ChatForm({
               <Button
                 type="button"
                 onClick={onNewChat}
-                className="rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 p-2 transition-colors"
+                className="rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 p-2 transition-colors cursor-pointer"
                 title={t('Chat.newChat')}
                 disabled={status === 'submitted' || status === 'streaming'}
                 style={{ minWidth: '32px', height: '32px' }}
@@ -124,7 +124,7 @@ export default function ChatForm({
                 <Button
                   type="button"
                   onClick={onToggleWebSearch}
-                  className={`rounded-lg p-2 transition-colors ${
+                  className={`rounded-lg p-2 transition-colors cursor-pointer ${
                     useWebSearch ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
                   }`}
                   title={useWebSearch ? t('Chat.disableWebSearch') : t('Chat.enableWebSearch')}
@@ -139,7 +139,7 @@ export default function ChatForm({
                 <Button
                   type="button"
                   onClick={toggleRecording}
-                  className={`rounded-lg p-2 transition-colors ${
+                  className={`rounded-lg p-2 transition-colors cursor-pointer ${
                     isRecording ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
                   }`}
                   title={isRecording ? t('Chat.stopRecording') : t('Chat.startRecording')}
@@ -160,7 +160,7 @@ export default function ChatForm({
                   )}
                 </Button>
                 <Button
-                  className="rounded-lg bg-gray-900 p-2 hover:bg-gray-800 transition-colors"
+                  className="rounded-lg bg-gray-900 p-2 hover:bg-gray-800 transition-colors cursor-pointer"
                   type="submit"
                   disabled={status === 'submitted' || status === 'streaming' || input.length === 0}
                   style={{ minWidth: '32px', height: '32px' }}

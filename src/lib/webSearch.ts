@@ -1,6 +1,6 @@
 import { load as loadHtml } from 'cheerio';
 
-export type WebResult = { title: string; url: string; snippet: string };
+type WebResult = { title: string; url: string; snippet: string };
 
 export async function fetchDuckDuckGoResults(query: string, maxResults = 3): Promise<WebResult[]> {
   const commonHeaders = {
@@ -92,11 +92,11 @@ export async function fetchDuckDuckGoResults(query: string, maxResults = 3): Pro
   }
 }
 
-export function normalizeTitle(title: string): string {
+function normalizeTitle(title: string): string {
   return title.toLowerCase().replace(/\s+/g, ' ').trim();
 }
 
-export function getDomain(urlString: string): string {
+function getDomain(urlString: string): string {
   try {
     const u = new URL(urlString);
     return u.hostname.replace(/^www\./, '');
