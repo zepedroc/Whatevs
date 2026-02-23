@@ -7,6 +7,7 @@
     "worldMap": "World Map",
     "games": "Games",
     "debate": "Debate",
+    "colabsAI": "Colabs AI",
     "agent": "Voice Agent"
   },
   "WorldClocks": {
@@ -126,5 +127,26 @@
     "tip_description": "The debate will stream in real-time as the AI agents generate their responses. You can watch the conversation unfold turn by turn.",
     "new_debate": "New Debate",
     "allow_search": "Allow web search"
+  },
+  "ColabsAI": {
+    "title": "Colabs AI Council",
+    "description": "Query multiple LLMs in parallel and see their responses stream in real-time.",
+    "query_label": "Your question",
+    "query_placeholder": "Ask the council anything...",
+    "rounds_label": "Rounds",
+    "ask_council": "Ask Council",
+    "querying": "Querying...",
+    "error_title": "Error",
+    "error_validation": "Please enter a question",
+    "error_general": "Failed to query council",
+    "retry": "Retry",
+    "no_responses_yet": "No responses yet",
+    "responses_header": "Council Responses",
+    "live_streaming": "Live streaming...",
+    "empty_state": "Enter a question and click \"Ask Council\" to begin",
+    "council_thinking": "Council is thinking...",
+    "new_query": "New Query",
+    "round_label": "Round {round}",
+    "thinking": "Thinking..."
   }
 } 
