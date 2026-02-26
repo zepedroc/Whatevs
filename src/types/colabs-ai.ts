@@ -1,3 +1,5 @@
+export type CouncilMode = 'parallel' | 'conversation';
+
 export interface RoundResponse {
   type: 'round_response';
   round: number;

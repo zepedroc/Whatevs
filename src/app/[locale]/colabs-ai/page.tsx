@@ -16,6 +16,8 @@ export default function ColabsAIPage() {
     setQuery,
     rounds,
     setRounds,
+    mode,
+    setMode,
     responses,
     loading,
     error,
@@ -49,6 +51,8 @@ export default function ColabsAIPage() {
         onQueryChange={setQuery}
         rounds={rounds}
         onRoundsChange={setRounds}
+        mode={mode}
+        onModeChange={setMode}
         loading={loading}
         hasResponses={responses.length > 0}
         onAskCouncil={handleQuery}

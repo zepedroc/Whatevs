@@ -3,12 +3,13 @@
 import { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { streamPostNDJSON } from '@/lib/streamApi';
-import type { CouncilStreamEvent, RoundResponse } from '@/types/colabs-ai';
+import type { CouncilMode, CouncilStreamEvent, RoundResponse } from '@/types/colabs-ai';
 
 export function useCouncilQuery() {
   const t = useTranslations('ColabsAI');
   const [query, setQuery] = useState('');
   const [rounds, setRounds] = useState(3);
+  const [mode, setMode] = useState<CouncilMode>('parallel');
   const [responses, setResponses] = useState<RoundResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,9 +30,9 @@ export function useCouncilQuery() {
     setResponses([]);
 
     try {
-      await streamPostNDJSON<CouncilStreamEvent, { query: string; rounds: number }>(
+      await streamPostNDJSON<CouncilStreamEvent, { query: string; rounds: number; mode: CouncilMode }>(
         'council/query',
-        { query: query.trim(), rounds },
+        { query: query.trim(), rounds, mode },
         (event) => {
           if (event.type === 'round_response') {
             setResponses((prev) => [...prev, event]);
@@ -71,6 +72,8 @@ export function useCouncilQuery() {
     setQuery,
     rounds,
     setRounds,
+    mode,
+    setMode,
     responses,
     loading,
     error,
