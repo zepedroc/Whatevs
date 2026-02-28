@@ -3,7 +3,15 @@
 import { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { streamPostNDJSON } from '@/lib/streamApi';
-import type { CouncilMode, CouncilStreamEvent, RoundResponse } from '@/types/colabs-ai';
+import type {
+  BenchmarkCaseResult,
+  BenchmarkCaseStartedEvent,
+  BenchmarkStreamEvent,
+  BenchmarkSummary,
+  CouncilMode,
+  CouncilStreamEvent,
+  RoundResponse,
+} from '@/types/colabs-ai';
 
 export function useCouncilQuery() {
   const t = useTranslations('ColabsAI');
@@ -11,6 +19,10 @@ export function useCouncilQuery() {
   const [rounds, setRounds] = useState(3);
   const [mode, setMode] = useState<CouncilMode>('parallel');
   const [responses, setResponses] = useState<RoundResponse[]>([]);
+  const [benchmarkCaseStarts, setBenchmarkCaseStarts] = useState<BenchmarkCaseStartedEvent[]>([]);
+  const [benchmarkCaseResults, setBenchmarkCaseResults] = useState<BenchmarkCaseResult[]>([]);
+  const [benchmarkSummary, setBenchmarkSummary] = useState<BenchmarkSummary | null>(null);
+  const [activeBenchmarkCaseIndex, setActiveBenchmarkCaseIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -20,7 +32,9 @@ export function useCouncilQuery() {
   };
 
   const handleQuery = async () => {
-    if (!query.trim()) {
+    const isBenchmarkMode = mode === 'benchmark';
+
+    if (!isBenchmarkMode && !query.trim()) {
       setError(t('error_validation'));
       return;
     }
@@ -28,19 +42,62 @@ export function useCouncilQuery() {
     setLoading(true);
     setError(null);
     setResponses([]);
+    setBenchmarkCaseStarts([]);
+    setBenchmarkCaseResults([]);
+    setBenchmarkSummary(null);
+    setActiveBenchmarkCaseIndex(null);
 
     try {
-      await streamPostNDJSON<CouncilStreamEvent, { query: string; rounds: number; mode: CouncilMode }>(
-        'council/query',
-        { query: query.trim(), rounds, mode },
-        (event) => {
-          if (event.type === 'round_response') {
-            setResponses((prev) => [...prev, event]);
+      if (isBenchmarkMode) {
+        await streamPostNDJSON<BenchmarkStreamEvent, Record<string, never>>(
+          'benchmark/run',
+          {},
+          (event) => {
+            if (event.type === 'benchmark_case_started') {
+              setBenchmarkCaseStarts((prev) => {
+                if (prev.some((existing) => existing.case_index === event.case_index)) {
+                  return prev;
+                }
+                const next = [...prev, event];
+                next.sort((a, b) => a.case_index - b.case_index);
+                return next;
+              });
+              setActiveBenchmarkCaseIndex(event.case_index);
+              setTimeout(scrollToBottom, 100);
+              return;
+            }
+
+            if (event.type === 'benchmark_case_result') {
+              setBenchmarkCaseResults((prev) => {
+                const withoutCurrent = prev.filter(
+                  (existing) => existing.case_index !== event.data.case_index,
+                );
+                const next = [...withoutCurrent, event.data];
+                next.sort((a, b) => a.case_index - b.case_index);
+                return next;
+              });
+              setTimeout(scrollToBottom, 100);
+              return;
+            }
+
+            setBenchmarkSummary(event.data);
+            setActiveBenchmarkCaseIndex(null);
             setTimeout(scrollToBottom, 100);
-          }
-        },
-      );
-      setQuery('');
+          },
+        );
+      } else {
+        await streamPostNDJSON<CouncilStreamEvent, { query: string; rounds: number; mode: CouncilMode }>(
+          'council/query',
+          { query: query.trim(), rounds, mode },
+          (event) => {
+            if (event.type === 'round_response') {
+              setResponses((prev) => [...prev, event]);
+              setTimeout(scrollToBottom, 100);
+            }
+          },
+        );
+        setQuery('');
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error
@@ -63,6 +120,10 @@ export function useCouncilQuery() {
   const handleNewQuery = () => {
     setQuery('');
     setResponses([]);
+    setBenchmarkCaseStarts([]);
+    setBenchmarkCaseResults([]);
+    setBenchmarkSummary(null);
+    setActiveBenchmarkCaseIndex(null);
     setError(null);
     setLoading(false);
   };
@@ -75,6 +136,10 @@ export function useCouncilQuery() {
     mode,
     setMode,
     responses,
+    benchmarkCaseStarts,
+    benchmarkCaseResults,
+    benchmarkSummary,
+    activeBenchmarkCaseIndex,
     loading,
     error,
     messagesEndRef,
