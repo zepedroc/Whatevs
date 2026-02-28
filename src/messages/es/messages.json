@@ -46,6 +46,10 @@
     "instructor": {
       "title": "Instructor",
       "description": "Un instructor cualificado."
+    },
+    "reasoning": {
+      "title": "Razonamiento",
+      "description": "Una IA especializada en resolución de problemas complejos y análisis lógico."
     }
   },
   "Index": {

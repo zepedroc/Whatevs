@@ -47,8 +47,8 @@
       "title": "Instrutor",
       "description": "Um instrutor especializado."
     },
-    "deepSeekReasoning": {
-      "title": "DeepSeek Raciocínio",
+    "reasoning": {
+      "title": "Raciocínio",
       "description": "Uma IA especializada em resolução de problemas complexos e análise lógica."
     }
   },

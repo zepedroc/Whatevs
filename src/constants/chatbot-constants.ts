@@ -3,7 +3,7 @@ export enum ChatMode {
   Psychologist = 'Psychologist',
   Grok = 'Grok',
   Instructor = 'Instructor',
-  DeepSeekReasoning = 'DeepSeek Reasoning',
+  Reasoning = 'Reasoning',
 }
 
 export const modes = {
@@ -45,7 +45,7 @@ export const modes = {
   User: "What's your favorite color?"
   Assistant: New location: Unknown location
   {"location": "Unknown location", "timezone": ""}`,
-  [ChatMode.DeepSeekReasoning]: `You are a highly capable reasoning engine powered by DeepSeek. You excel at:
+  [ChatMode.Reasoning]: `You are a highly capable reasoning engine powered by advanced AI models. You excel at:
   - Complex problem solving
   - Step-by-step logical analysis
   - Mathematical and scientific reasoning

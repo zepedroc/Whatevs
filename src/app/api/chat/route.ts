@@ -98,7 +98,7 @@ export async function POST(req: Request) {
   })();
 
   const model = (() => {
-    if (mode === ChatMode.DeepSeekReasoning) return groq.chat('deepseek-r1-distill-llama-70b');
+    if (mode === ChatMode.Reasoning) return groq.chat('openai/gpt-oss-120b');
     if (lastUserHasImage) return groq.chat('meta-llama/llama-4-maverick-17b-128e-instruct');
     return groq.chat('openai/gpt-oss-120b');
   })();
