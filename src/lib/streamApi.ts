@@ -40,6 +40,7 @@ export async function streamPost<T = unknown, B = unknown>(
       method: 'POST',
       headers: requestHeaders,
       body: JSON.stringify(body),
+      cache: 'no-store',
     });
 
     // Check for HTTP errors
@@ -181,6 +182,7 @@ export async function streamPostNDJSON<T = unknown, B = unknown>(
       method: 'POST',
       headers: requestHeaders,
       body: JSON.stringify(body),
+      cache: 'no-store',
     });
 
     if (!response.ok) {

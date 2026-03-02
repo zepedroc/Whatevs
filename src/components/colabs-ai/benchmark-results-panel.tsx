@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   BenchmarkAnswerStatus,
   BenchmarkCaseResult,
@@ -95,7 +95,37 @@ function RawResponseHoverButton({
   rawResponse: string | null | undefined;
 }) {
   const [open, setOpen] = useState(false);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const content = rawResponse?.trim() ? rawResponse : 'No raw response returned.';
+  const CLOSE_DELAY_MS = 140;
+
+  const clearCloseTimeout = useCallback(() => {
+    if (!closeTimeoutRef.current) {
+      return;
+    }
+
+    clearTimeout(closeTimeoutRef.current);
+    closeTimeoutRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearCloseTimeout();
+    };
+  }, [clearCloseTimeout]);
+
+  const openPopover = useCallback(() => {
+    clearCloseTimeout();
+    setOpen(true);
+  }, [clearCloseTimeout]);
+
+  const scheduleClose = useCallback(() => {
+    clearCloseTimeout();
+    closeTimeoutRef.current = setTimeout(() => {
+      setOpen(false);
+      closeTimeoutRef.current = null;
+    }, CLOSE_DELAY_MS);
+  }, [clearCloseTimeout]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -103,10 +133,10 @@ function RawResponseHoverButton({
         <button
           type="button"
           className="inline-flex items-center rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
-          onFocus={() => setOpen(true)}
-          onBlur={() => setOpen(false)}
+          onPointerEnter={openPopover}
+          onPointerLeave={scheduleClose}
+          onFocus={openPopover}
+          onBlur={scheduleClose}
         >
           {label}
         </button>
@@ -114,8 +144,9 @@ function RawResponseHoverButton({
       <PopoverContent
         align="end"
         className="w-[28rem] max-w-[70vw] p-3"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
+        sideOffset={8}
+        onPointerEnter={openPopover}
+        onPointerLeave={scheduleClose}
       >
         <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
           {label} raw response

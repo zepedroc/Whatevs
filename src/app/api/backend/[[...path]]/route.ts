@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 // List of hop-by-hop headers that should not be forwarded
 const HOP_BY_HOP_HEADERS = [
   'connection',
@@ -34,7 +37,9 @@ async function handleRequest(request: NextRequest) {
 
     // Forward all headers except hop-by-hop headers
     request.headers.forEach((value, key) => {
-      if (!HOP_BY_HOP_HEADERS.includes(key.toLowerCase())) {
+      const lowerKey = key.toLowerCase();
+      // Avoid compression to reduce buffering and improve flush behavior for streams.
+      if (!HOP_BY_HOP_HEADERS.includes(lowerKey) && lowerKey !== 'accept-encoding') {
         forwardHeaders.append(key, value);
       }
     });
@@ -53,6 +58,7 @@ async function handleRequest(request: NextRequest) {
       headers: forwardHeaders,
       body: requestBody,
       ...(requestBody && { duplex: 'half' }),
+      cache: 'no-store',
     });
 
     // Prepare response headers
