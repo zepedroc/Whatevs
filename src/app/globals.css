@@ -162,6 +162,10 @@
   }
 
   @layer base {
+    button,
+    select {
+      cursor: pointer;
+    }
     * {
       @apply border-border;
     }

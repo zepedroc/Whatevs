@@ -7,6 +7,7 @@
     "worldMap": "Mapa Mundial",
     "games": "Juegos",
     "debate": "Debate",
+    "colabsAI": "Colabs AI",
     "agent": "Agente de Voz"
   },
   "WorldClocks": {
@@ -45,6 +46,10 @@
     "instructor": {
       "title": "Instructor",
       "description": "Un instructor cualificado."
+    },
+    "reasoning": {
+      "title": "Razonamiento",
+      "description": "Una IA especializada en resolución de problemas complejos y análisis lógico."
     }
   },
   "Index": {
@@ -119,5 +124,29 @@
     "tip_description": "El debate se transmitirá en tiempo real a medida que los agentes de IA generen sus respuestas. Puedes ver la conversación desarrollarse turno por turno.",
     "new_debate": "Nuevo Debate",
     "allow_search": "Habilitar búsqueda web"
+  },
+  "ColabsAI": {
+    "title": "Consejo Colabs AI",
+    "description": "Consulta múltiples LLMs en paralelo y ve sus respuestas en tiempo real.",
+    "query_label": "Tu pregunta",
+    "query_placeholder": "Pregunta al consejo lo que quieras...",
+    "rounds_label": "Rondas",
+    "mode_label": "Modo",
+    "mode_parallel": "Paralelo",
+    "mode_conversation": "Conversacion",
+    "ask_council": "Preguntar al Consejo",
+    "querying": "Consultando...",
+    "error_title": "Error",
+    "error_validation": "Por favor, introduce una pregunta",
+    "error_general": "Error al consultar el consejo",
+    "retry": "Reintentar",
+    "no_responses_yet": "Sin respuestas aún",
+    "responses_header": "Respuestas del Consejo",
+    "live_streaming": "Transmisión en vivo...",
+    "empty_state": "Introduce una pregunta y haz clic en \"Preguntar al Consejo\" para comenzar",
+    "council_thinking": "El consejo está pensando...",
+    "new_query": "Nueva Consulta",
+    "round_label": "Ronda {round}",
+    "thinking": "Pensando..."
   }
 } 

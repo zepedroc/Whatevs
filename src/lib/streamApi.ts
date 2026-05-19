@@ -40,6 +40,7 @@ export async function streamPost<T = unknown, B = unknown>(
       method: 'POST',
       headers: requestHeaders,
       body: JSON.stringify(body),
+      cache: 'no-store',
     });
 
     // Check for HTTP errors
@@ -145,6 +146,97 @@ export async function streamPost<T = unknown, B = unknown>(
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     console.error('Stream API Error:', error);
 
+    throw {
+      error: 'Failed to stream data',
+      message: errorMessage,
+    } as StreamError;
+  }
+}
+
+/**
+ * Stream a POST request and process each NDJSON (newline-delimited JSON) line
+ * Used for colabs.ai council endpoint which returns application/x-ndjson
+ * @template T - Type of each parsed line
+ * @template B - Type of request body
+ * @param endpoint - API endpoint (without /api/backend/ prefix)
+ * @param body - Request body
+ * @param onData - Callback function called for each parsed JSON line
+ * @param headers - Optional custom headers
+ * @returns Promise that resolves when stream ends or rejects on error
+ */
+export async function streamPostNDJSON<T = unknown, B = unknown>(
+  endpoint: string,
+  body: B,
+  onData: (data: T) => void,
+  headers?: Record<string, string>,
+): Promise<void> {
+  try {
+    const url = `/api/backend/${endpoint}`;
+    const requestHeaders: HeadersInit = {
+      'Content-Type': 'application/json',
+      Accept: 'application/x-ndjson',
+      ...headers,
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: requestHeaders,
+      body: JSON.stringify(body),
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      if (response.status === 413) {
+        throw new Error('Request too large');
+      }
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('Response body is not readable');
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          const remaining = buffer.trim();
+          if (remaining) {
+            try {
+              onData(JSON.parse(remaining) as T);
+            } catch (parseError) {
+              console.warn('Failed to parse final NDJSON line:', remaining, parseError);
+            }
+          }
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split(/\r?\n/);
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+
+          try {
+            onData(JSON.parse(trimmed) as T);
+          } catch (parseError) {
+            console.error('Failed to parse NDJSON line:', trimmed, parseError);
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Stream NDJSON Error:', error);
     throw {
       error: 'Failed to stream data',
       message: errorMessage,
